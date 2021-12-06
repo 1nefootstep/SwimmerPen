@@ -7,6 +7,7 @@ import { Platform } from 'react-native';
 import RecordButton from '../components/camera/RecordButton';
 import SelectMode from '../components/SelectMode';
 import SelectResolution from '../components/camera/SelectResolution';
+import LoadVideo from '../components/annotator/LoadVideo';
 
 export default function CameraScreen() {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
@@ -67,6 +68,7 @@ export default function CameraScreen() {
             <Column flex={1} alignItems="flex-start" ml="3">
               <Column flex={1} justifyContent="space-around">
                 <SelectMode />
+                <LoadVideo />
                 <Column flex={2} />
                 <SelectResolution
                   resolutions={['480', '720', '1080', '2160']}
