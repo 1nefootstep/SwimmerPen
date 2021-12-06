@@ -1,3 +1,5 @@
+import { Platform } from 'react-native';
+
 import * as FS from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
@@ -78,6 +80,9 @@ function getNextNumber(videoDirFiles: Array<string>): number {
       let num: number;
       try {
         num = parseInt(baseName.replace(NAME_PREFIX, '')) + 1;
+        if (isNaN(num)) {
+          num = 1;
+        }
       } catch {
         num = 1;
       }
@@ -111,22 +116,28 @@ async function getNextNumberInAlbum(
   let names = assets.assets.map((e, i) => e.filename);
   let nextNum = getNextNumber(names);
   if (assets.hasNextPage) {
-    nextNum = Math.max(nextNum, await getNextNumberInAlbum(album, assets.endCursor));
+    nextNum = Math.max(
+      nextNum,
+      await getNextNumberInAlbum(album, assets.endCursor)
+    );
   }
   return nextNum;
 }
 
 export async function saveVideo(uri: string): Promise<boolean> {
+  let assetUri: string = uri;
   const albumRef = await MediaLibrary.getAlbumAsync(ALBUM_NAME);
-  let nextNum: number;
-  if (albumRef === null) {
-    nextNum = 1;
-  } else {
-    nextNum = await getNextNumberInAlbum(albumRef);
+  if (Platform.OS === 'android') {    
+    let nextNum: number;
+    if (albumRef === null) {
+      nextNum = 1;
+    } else {
+      nextNum = await getNextNumberInAlbum(albumRef);
+    }
+    assetUri = await renameFile(uri, `${NAME_PREFIX}${nextNum}`);
   }
-  const renamedUri = await renameFile(uri, `${NAME_PREFIX}${nextNum}`);
   try {
-    const asset = await MediaLibrary.createAssetAsync(renamedUri);
+    const asset = await MediaLibrary.createAssetAsync(assetUri);
     if (albumRef === null) {
       await MediaLibrary.createAlbumAsync(ALBUM_NAME, asset, false);
     } else {
