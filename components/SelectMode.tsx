@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Button, Modal, Column, Radio, Box } from 'native-base';
+import { Button, Modal, Column, Radio, Box, Text } from 'native-base';
 
 import {
   Modes,
@@ -58,8 +58,12 @@ export default function SelectMode() {
   return (
     <>
       <Box flex={1} justifyContent="center">
-        <Button variant="subtle" onPress={() => setShowModal(true)}>
-          {modeToModeName(mode)}
+        <Button
+          w={[12, 16, 20, 32, 40]}
+          variant="subtle"
+          onPress={() => setShowModal(true)}
+        >
+          <Text fontSize={[6, 8, 10, 14, 18]}>{modeToModeName(mode)}</Text>
         </Button>
       </Box>
 

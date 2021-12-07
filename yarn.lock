@@ -5896,6 +5896,11 @@ react-is@^17.0.1, react-is@^17.0.2:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.2.tgz#e691d4a8e9c789365655539ab372762b0efb54f0"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
+react-native-dashed-line@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-native-dashed-line/-/react-native-dashed-line-1.1.0.tgz#dd586dbeabee3bc7d51aef0b8ae0d9fda418b1fc"
+  integrity sha512-eO1YxTSYuE/1eaOO/mnV/DSQ45e7LQ690D6iv24Oyl9FcZFFiIIwoCurHnS+myJQvydppsshY1d0WwaQroNx/Q==
+
 react-native-safe-area-context@3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-3.2.0.tgz#06113c6b208f982d68ab5c3cebd199ca93db6941"

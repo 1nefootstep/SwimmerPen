@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Button, Modal, Column, Radio, Box } from 'native-base';
+import { Button, Modal, Column, Radio, Box, Text } from 'native-base';
 
 interface SelectResolutionProps {
   resolutions: Array<string>;
@@ -13,8 +13,8 @@ export default function SelectResolution(props: SelectResolutionProps) {
   return (
     <>
       <Box flex={1} justifyContent="center">
-        <Button variant="subtle" onPress={() => setShowModal(true)}>
-          Resolution
+        <Button w={[12,16,20,32,40]} variant="subtle" onPress={() => setShowModal(true)}>
+          <Text fontSize={[6,8,10,14,18]}>Resolution</Text>
         </Button>
       </Box>
 
