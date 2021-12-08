@@ -3,6 +3,7 @@ import {
   PoolDistance,
 } from '../../AKB/AnnotationKnowledgeBank';
 import { Distance, Timestamp } from '../../AKB/Annotations';
+import { RaceDistance } from '../../AKB/PoolConfig';
 import { StrokeRange } from '../../AKB/StrokeCounts';
 import {
   AddAnnotationAction,
@@ -68,13 +69,13 @@ export function updateName(name: string): UpdateNameAction {
 
 export function updatePoolConfig(
   poolDistance: PoolDistance,
-  modeIndex: number
+  raceDistance: RaceDistance,
 ): UpdatePoolConfigAction {
   return {
     type: ANNOTATION_ACTION_TYPES.UPDATE_POOL_CONFIG,
     payload: {
       poolDistance: poolDistance,
-      modeIndex: modeIndex,
+      raceDistance: raceDistance,
     },
   };
 }
@@ -83,8 +84,8 @@ export function resetPoolConfig(): UpdatePoolConfigAction {
   return {
     type: ANNOTATION_ACTION_TYPES.UPDATE_POOL_CONFIG,
     payload: {
-      poolDistance: PoolDistance.Unassigned,
-      modeIndex: -1,
+      poolDistance: '50m',
+      raceDistance: '100m',
     }
   }
 }

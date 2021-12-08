@@ -5,33 +5,34 @@ import { Button, Modal, Column, Radio, Box, Text } from 'native-base';
 import {
   Modes,
   getModes,
-  PoolDistance,
-  poolDistanceToNumber,
-  numberToPoolDistance,
   getDefaultMode,
 } from '../state/AKB/AnnotationKnowledgeBank';
-import { ModeState } from '../state/redux/reducers/mode.reducer';
-import { updateMode, AppDispatch } from '../state/redux';
+import { updatePoolConfig, AppDispatch } from '../state/redux';
 import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
+import {
+  numberToPoolDistance,
+  PoolConfig,
+  PoolDistance,
+  RaceDistance,
+} from '../state/AKB/PoolConfig';
 
 export default function SelectMode() {
   const dispatch = useAppDispatch();
-  const mode = useAppSelector((state) => state?.mode);
+  const poolConfig = useAppSelector((state) => state?.annotation.poolConfig);
 
   const [modes, setModes] = useState<Modes | null>(null);
 
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
-  const [poolDistance, setPoolDistance] = useState<PoolDistance>(
-    PoolDistance.D50m
-  );
-  const [modeIndex, setModeIndex] = useState<number>(0);
+  const [poolDistance, setPoolDistance] = useState<PoolDistance>('50m');
+  const [raceDistance, setRaceDistance] = useState<RaceDistance>('100m');
 
   useEffect(() => {
     (() => {
       const modes: Modes = getModes();
       setModes(modes);
-      setPoolDistance(mode.poolDistance);
+      setPoolDistance(poolConfig.poolDistance);
+      setRaceDistance(poolConfig.raceDistance);
     })();
   }, []);
 
@@ -39,14 +40,10 @@ export default function SelectMode() {
     return <></>;
   }
 
-  const modeToModeName = (mode: ModeState): string => {
+  const modeToModeName = (pc: PoolConfig): string => {
     const fallbackMode = getDefaultMode();
     if (modes !== null) {
-      const possibleRaceDists = modes.get(mode.poolDistance);
-      if (possibleRaceDists === undefined) {
-        return fallbackMode.name;
-      }
-      const selectedMode = possibleRaceDists[mode.modeIndex];
+      const selectedMode = modes[poolDistance][raceDistance];
       if (selectedMode === undefined) {
         return fallbackMode.name;
       }
@@ -63,7 +60,9 @@ export default function SelectMode() {
           variant="subtle"
           onPress={() => setShowModal(true)}
         >
-          <Text fontSize={[6, 8, 10, 14, 18]}>{modeToModeName(mode)}</Text>
+          <Text fontSize={[6, 8, 10, 14, 18]}>
+            {modeToModeName(poolConfig)}
+          </Text>
         </Button>
       </Box>
 
@@ -77,16 +76,11 @@ export default function SelectMode() {
               name="poolDistance"
               size="sm"
               onChange={(pd: string) => {
-                let pdInNum = parseInt(pd);
-                if (pdInNum === NaN) {
-                  pdInNum = 50;
-                }
-                setPoolDistance(numberToPoolDistance(pdInNum));
+                setPoolDistance(pd);
               }}
             >
               <Column space={3}>
-                {Array.from(modes.keys()).map((e, i) => {
-                  const poolLengthInStr = poolDistanceToNumber(e).toString();
+                {Array.from(Object.keys(modes)).map((e, i) => {
                   return (
                     <Radio
                       key={i}
@@ -96,9 +90,9 @@ export default function SelectMode() {
                         ml: '2',
                         fontSize: 'sm',
                       }}
-                      value={poolLengthInStr}
+                      value={e}
                     >
-                      {poolLengthInStr}m
+                      {e}
                     </Radio>
                   );
                 })}

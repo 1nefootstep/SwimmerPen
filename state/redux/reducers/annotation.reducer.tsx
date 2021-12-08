@@ -7,15 +7,14 @@ import {
   LoadAnnotationAction,
 } from '../types';
 import { ANNOTATION_ACTION_TYPES } from '../actions';
-import {
-  AnnotationInformation,
-  PoolDistance,
-} from '../../AKB/AnnotationKnowledgeBank';
+import { AnnotationInformation } from '../../AKB/AnnotationKnowledgeBank';
+import { PoolConfig } from '../../AKB/PoolConfig';
 
 function initState() {
+  const poolConfig: PoolConfig = { poolDistance: '50m', raceDistance: '100m' };
   return {
     name: '',
-    poolConfig: { poolDistance: PoolDistance.Unassigned, modeIndex: -1 },
+    poolConfig: poolConfig,
     annotations: {},
     strokeCounts: {},
   };
