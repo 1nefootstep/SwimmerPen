@@ -8,11 +8,11 @@ import {
   StrokeCounts,
   StrokeRange,
 } from './StrokeCounts';
+import { PoolConfig } from './PoolConfig';
 
 export interface AnnotationInformation {
   name: string;
-  poolDistance: PoolDistance;
-  modeIndex: number;
+  poolConfig: PoolConfig;
   annotations: Annotations;
   strokeCounts: StrokeCounts;
 }
@@ -27,7 +27,6 @@ export type CheckpointResponse =
     };
 
 export enum PoolDistance {
-  Unassigned,
   D25m,
   D50m,
 }
@@ -45,7 +44,7 @@ export function numberToPoolDistance(num: number): PoolDistance {
     case 50:
       return PoolDistance.D50m;
     default:
-      return PoolDistance.Unassigned;
+      return PoolDistance.D50m;
   }
 }
 
@@ -99,7 +98,7 @@ const modePool25m: AnnotationMode[] = [];
 export function defaultAKB(): AnnotationInformation {
   return {
     name: '',
-    poolDistance: PoolDistance.Unassigned,
+    poolDistance: PoolDistance.D50m,
     modeIndex: -1,
     annotations: new Annotations([]),
     strokeCounts: new StrokeCounts([]),

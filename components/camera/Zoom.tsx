@@ -1,18 +1,7 @@
 import React, { useState } from 'react';
 
-import {
-  Button,
-  Modal,
-  Column,
-  Radio,
-  Box,
-  Slider,
-  ZStack,
-  usePropsResolution,
-  Icon,
-} from 'native-base';
+import { Box, Slider, ZStack } from 'native-base';
 import DashedLine from 'react-native-dashed-line';
-import { zIndex } from 'styled-system';
 
 interface ZoomProps {
   zoom: number;
@@ -44,7 +33,14 @@ export default function Zoom(props: ZoomProps) {
       >
         <Slider.Track bgColor="transparent" />
         <Slider.Thumb borderWidth="0" bg="transparent">
-          <Box zIndex={2} size="3" w="100%" h="2" _dark={{bgColor:"yellow.300"}} _light={{bgColor:"yellow.300"}}/>
+          <Box
+            zIndex={2}
+            size="3"
+            w="100%"
+            h="2"
+            _dark={{ bgColor: 'yellow.300' }}
+            _light={{ bgColor: 'yellow.300' }}
+          />
         </Slider.Thumb>
       </Slider>
       <DashedLine

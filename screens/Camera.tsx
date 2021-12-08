@@ -7,13 +7,11 @@ import { Platform } from 'react-native';
 import RecordButton from '../components/camera/RecordButton';
 import SelectMode from '../components/SelectMode';
 import SelectResolution from '../components/camera/SelectResolution';
-import LoadVideo from '../components/annotator/LoadVideo';
 import Zoom from '../components/camera/Zoom';
-import DashedLine from 'react-native-dashed-line';
 import BackButton from '../components/BackButton';
 import MuteButton from '../components/camera/MuteButton';
 
-export default function CameraScreen() {
+export default function CameraScreen({navigation}) {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const cameraRef = useRef<Camera>(null);
   const [ratio, setRatio] = useState('4:3');
@@ -65,7 +63,7 @@ export default function CameraScreen() {
         type={Camera.Constants.Type.back}
         onCameraReady={onCameraReady}
         zoom={zoom}
-        autoFocus={true}
+        autoFocus='on'
         ratio={ratio}
         ref={cameraRef}
       >
@@ -73,7 +71,7 @@ export default function CameraScreen() {
           <Column flex={1} mr="3">
             <Column flex={1} alignItems="flex-start">
               <Column justifyContent="space-around" m={3}>
-                <BackButton />
+                <BackButton goBack={navigation.goBack}/>
                 <SelectMode />
                 <Column flex={2} />
                 <MuteButton isMute={isMute} setIsMute={setIsMute} />

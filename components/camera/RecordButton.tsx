@@ -1,12 +1,10 @@
 import React, { RefObject } from 'react';
-import { Platform } from 'react-native';
 
 import { IconButton } from 'native-base';
 import { Entypo } from '@expo/vector-icons';
 import { Camera, CameraRecordingOptions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 
-import { ALBUM_NAME } from '../../constants/Constants';
 import { saveVideo } from '../../filesystem/FileHandler';
 
 export default function RecordButton(props: {

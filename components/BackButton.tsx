@@ -4,13 +4,11 @@ import { IconButton } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 
 
-export default function BackButton() {
-  const onPress = async () => {};
-
+export default function BackButton(props:{goBack:any}) {
   return (
     <IconButton
       variant="unstyled"
-      onPress={onPress}
+      onPress={props.goBack}
       _icon={{
         as: Ionicons,
         name: 'chevron-back-sharp',
