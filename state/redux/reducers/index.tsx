@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-// import { modeReducer } from './mode.reducer';
 import { annotationReducer } from './annotation.reducer';
+import { recordingReducer } from './recording.reducer';
 
 export const rootReducer = combineReducers({
-  // mode: modeReducer,
   annotation: annotationReducer,
+  recording: recordingReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

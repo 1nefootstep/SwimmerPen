@@ -7,14 +7,15 @@ import {
   getModes,
   getDefaultMode,
 } from '../state/AKB/AnnotationKnowledgeBank';
-import { updatePoolConfig, AppDispatch } from '../state/redux';
 import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
 import {
-  numberToPoolDistance,
   PoolConfig,
   PoolDistance,
   RaceDistance,
+  strToPoolDistance,
+  strToRaceDistance,
 } from '../state/AKB/PoolConfig';
+import { updatePoolConfig } from '../state/redux';
 
 export default function SelectMode() {
   const dispatch = useAppDispatch();
@@ -43,7 +44,7 @@ export default function SelectMode() {
   const modeToModeName = (pc: PoolConfig): string => {
     const fallbackMode = getDefaultMode();
     if (modes !== null) {
-      const selectedMode = modes[poolDistance][raceDistance];
+      const selectedMode = modes[pc.poolDistance][pc.raceDistance];
       if (selectedMode === undefined) {
         return fallbackMode.name;
       }
@@ -76,7 +77,7 @@ export default function SelectMode() {
               name="poolDistance"
               size="sm"
               onChange={(pd: string) => {
-                setPoolDistance(pd);
+                setPoolDistance(strToPoolDistance(pd));
               }}
             >
               <Column space={3}>
@@ -121,16 +122,12 @@ export default function SelectMode() {
               defaultValue="0"
               name="raceDistance"
               size="sm"
-              onChange={(mi: string) => {
-                let miInNum = parseInt(mi);
-                if (miInNum === NaN) {
-                  miInNum = 0;
-                }
-                setModeIndex(miInNum);
+              onChange={(rd: string) => {
+                setRaceDistance(strToRaceDistance(rd));                
               }}
             >
               <Column space={3}>
-                {Array.from(modes.get(poolDistance) ?? []).map((e, i) => {
+                {Array.from(Object.keys(modes[poolDistance]) ?? []).map((e, i) => {
                   return (
                     <Radio
                       key={i}
@@ -140,9 +137,9 @@ export default function SelectMode() {
                         ml: '2',
                         fontSize: 'sm',
                       }}
-                      value={i.toString()}
+                      value={e}
                     >
-                      {e.name}
+                      {e}
                     </Radio>
                   );
                 })}
@@ -155,7 +152,7 @@ export default function SelectMode() {
               onPress={() => {
                 setShowModal(false);
                 setShowModal2(false);
-                dispatch(updateMode(poolDistance, modeIndex));
+                dispatch(updatePoolConfig(poolDistance, raceDistance));
               }}
             >
               Continue

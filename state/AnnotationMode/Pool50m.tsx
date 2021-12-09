@@ -1,5 +1,5 @@
-import { StrokeRange } from "../AKB/StrokeCounts";
-import { AnnotationMode, Checkpoint } from "./AnnotationMode";
+import { StrokeRange } from '../AKB/StrokeCounts';
+import { AnnotationMode, Checkpoint } from './AnnotationMode';
 
 function firstLapCheckpoint(startDistance: number): Array<Checkpoint> {
   return [
@@ -70,30 +70,4 @@ export function createAnnotationMode50m(totalDistance: number): AnnotationMode {
     checkpoints: checkpoints,
     strokeRanges: strokeRanges,
   };
-
-
-const NAME_PREFIX = '50m Pool';
-
-// export class Freestyle50mMode extends Pool50m {
-//   constructor() {
-//     super(NAME_PREFIX, 50);
-//   }
-// }
-
-// export class Freestyle100mMode extends Pool50m {
-//   constructor() {
-//     super(NAME_PREFIX, 100);
-//   }
-// }
-
-// export class Freestyle200mMode extends Pool50m {
-//   constructor() {
-//     super(NAME_PREFIX, 200);
-//   }
-// }
-
-// export class Freestyle400mMode extends Pool50m {
-//   constructor() {
-//     super(NAME_PREFIX, 400);
-//   }
-// }
+}

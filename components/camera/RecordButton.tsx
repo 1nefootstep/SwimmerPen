@@ -6,6 +6,8 @@ import { Camera, CameraRecordingOptions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 
 import { saveVideo } from '../../filesystem/FileHandler';
+import { useAppDispatch} from '../../state/redux/hooks';
+import { startRecording } from '../../state/redux';
 
 export default function RecordButton(props: {
   isRecording: boolean;
@@ -16,6 +18,8 @@ export default function RecordButton(props: {
   const isRecording = props.isRecording;
   const cameraRef = props.cameraRef.current;
   const isCameraReady = cameraRef !== null;
+
+  const dispatch = useAppDispatch();
 
   const onPress = async () => {
     if (isCameraReady) {
@@ -38,6 +42,7 @@ export default function RecordButton(props: {
             }
           })
           .catch((e) => console.log(`<RecordButton> error: ${e}`));
+        dispatch(startRecording(Date.now()));
       } else {
         cameraRef!.stopRecording();
       }

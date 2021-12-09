@@ -10,11 +10,10 @@ import { ANNOTATION_ACTION_TYPES } from '../actions';
 import { AnnotationInformation } from '../../AKB/AnnotationKnowledgeBank';
 import { PoolConfig } from '../../AKB/PoolConfig';
 
-function initState() {
-  const poolConfig: PoolConfig = { poolDistance: '50m', raceDistance: '100m' };
+function initState(): AnnotationInformation {
   return {
     name: '',
-    poolConfig: poolConfig,
+    poolConfig: { poolDistance: '50m', raceDistance: '100m' },
     annotations: {},
     strokeCounts: {},
   };

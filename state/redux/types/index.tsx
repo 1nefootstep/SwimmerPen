@@ -1,2 +1,2 @@
-// export * from './mode.types';
 export * from './annotation.types';
+export * from './recording.types';
