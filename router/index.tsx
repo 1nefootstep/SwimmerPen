@@ -2,9 +2,8 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Box, Text } from 'native-base';
-import Camera from '../screens/Camera';
+import CameraScreen from '../screens/CameraScreen';
 import Home from '../screens/Home';
-import BackButton from '../components/BackButton';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,8 +30,8 @@ export default function RootNavigator() {
           })}
         >
           <Stack.Screen
-            name="Camera"
-            component={Camera}
+            name="CameraScreen"
+            component={CameraScreen}
           />
         </Stack.Group>
 

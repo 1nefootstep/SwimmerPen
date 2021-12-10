@@ -68,3 +68,17 @@ export function numbersToStringRange(nums: Array<number>) {
   console.log(`numbersToStringRange, args: ${nums}`);
   return nums.map(e=>e.toString()).join('-');
 }
+
+function pad(pad: string, num: number, padLeft: boolean) {
+  if (padLeft) {
+    return (pad + num).slice(-pad.length);
+  } else {
+    return (num + pad).substring(0, pad.length);
+  }
+}
+
+export function formatTimeFromPosition(position: number): string {
+  const seconds = Math.floor((position % 60000) / 1000);
+  const mins = Math.floor(position / 60000);
+  return `${mins}:${pad("00", seconds, true)}`;
+}
