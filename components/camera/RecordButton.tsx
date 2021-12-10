@@ -5,9 +5,12 @@ import { Entypo } from '@expo/vector-icons';
 import { Camera, CameraRecordingOptions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
 
-import { saveVideo } from '../../filesystem/FileHandler';
-import { useAppDispatch} from '../../state/redux/hooks';
-import { startRecording } from '../../state/redux';
+import { useAppDispatch } from '../../state/redux/hooks';
+import {
+  saveVideoAndAnnotation,
+  startRecording,
+  stopRecording,
+} from '../../state/redux';
 
 export default function RecordButton(props: {
   isRecording: boolean;
@@ -34,19 +37,18 @@ export default function RecordButton(props: {
 
         cameraRef!
           .recordAsync(props.recordOptions)
-          .then(async ({ uri }) => {
-            const isSaveVideoSuccessful = await saveVideo(uri);
-            console.log(`isSaveVideoSuccessful: ${isSaveVideoSuccessful}`);
-            if (!isSaveVideoSuccessful) {
-              props.setIsRecording(false);
-            }
+          .then(({ uri }) => {
+            dispatch(saveVideoAndAnnotation(uri));
           })
-          .catch((e) => console.log(`<RecordButton> error: ${e}`));
-        dispatch(startRecording(Date.now()));
+          .catch(e => {
+            console.log(`<RecordButton> error: ${e}`);
+          });
+        dispatch(startRecording());
       } else {
         cameraRef!.stopRecording();
+        dispatch(stopRecording());
       }
-      props.setIsRecording((b) => !b);
+      props.setIsRecording(b => !b);
     }
   };
 
@@ -57,7 +59,7 @@ export default function RecordButton(props: {
       _icon={{
         as: Entypo,
         name: isRecording ? 'controller-stop' : 'controller-record',
-        size: ['12', '20'],
+        size: { sm: '16', md: '20', lg: '24' },
         color: ['rose.600'],
       }}
     />

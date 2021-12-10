@@ -5,6 +5,8 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
 
 import { ALBUM_NAME } from '../constants/Constants';
+import { useAppSelector } from '../state/redux/hooks';
+import { AnnotationInformation } from '../state/AKB/AnnotationKnowledgeBank';
 
 const APP_DIRECTORY_PATH = `${FS.documentDirectory}`;
 const NAME_PREFIX = 'SwimmerPen-';
@@ -124,10 +126,20 @@ async function getNextNumberInAlbum(
   return nextNum;
 }
 
-export async function saveVideo(uri: string): Promise<boolean> {
+export type SaveVideoResult =
+  | {
+      isSuccessful: true;
+      filename: string;
+      uri: string;
+    }
+  | {
+      isSuccessful: false;
+    };
+
+export async function saveVideo(uri: string): Promise<SaveVideoResult> {
   let assetUri: string = uri;
   const albumRef = await MediaLibrary.getAlbumAsync(ALBUM_NAME);
-  if (Platform.OS === 'android') {    
+  if (Platform.OS === 'android') {
     let nextNum: number;
     if (albumRef === null) {
       nextNum = 1;
@@ -143,9 +155,50 @@ export async function saveVideo(uri: string): Promise<boolean> {
     } else {
       await MediaLibrary.addAssetsToAlbumAsync([asset], albumRef, false);
     }
-    return true;
+    const assetInfo = await MediaLibrary.getAssetInfoAsync(asset);
+    return { isSuccessful: true, filename: assetInfo.filename, uri: assetInfo.uri };
   } catch (e) {
     console.log(`<FileHandler> Failed to save video: ${e}`);
+    return { isSuccessful: false };
+  }
+}
+
+export async function saveAnnotation(
+  basename: string,
+  annotationInfo: AnnotationInformation
+): Promise<boolean> {
+  try {
+    await FS.writeAsStringAsync(
+      `${FS.documentDirectory}/${basename}.txt`,
+      JSON.stringify(annotationInfo)
+    );
+    return true;
+  } catch (e) {
+    console.log(`<FileHandler> Failed to save annotation: ${e}`);
     return false;
+  }
+}
+
+export type LoadAnnotationResult =
+  | {
+      isSuccessful: true;
+      annotation: AnnotationInformation;
+    }
+  | {
+      isSuccessful: false;
+    };
+
+export async function loadAnnotation(
+  basename: string
+): Promise<LoadAnnotationResult> {
+  try {
+    const result = await FS.readAsStringAsync(
+      `${FS.documentDirectory}/${basename}.txt`
+    );
+    const annotationInfo: AnnotationInformation = JSON.parse(result);
+    return { isSuccessful: true, annotation: annotationInfo };
+  } catch (e) {
+    console.log(`<FileHandler> Failed to save annotation: ${e}`);
+    return { isSuccessful: false };
   }
 }

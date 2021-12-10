@@ -20,17 +20,27 @@ export type ClearAnnotatationAction = {
 export type UpdateNameAction = {
   type: string;
   payload: { name: string };
-}
+};
 
 export type UpdatePoolConfigAction = {
   type: string;
-  payload: PoolConfig;
-}
+  payload: { poolConfig: PoolConfig };
+};
 
 export type LoadAnnotationAction = {
   type: string;
-  payload: AnnotationInformation;
-}
+  payload: { annotation: AnnotationInformation };
+};
+
+export type SaveAnnotationAction = {
+  type: string;
+  payload: { filename: string };
+};
+
+export type SaveVideoAndAnnotationAction = {
+  type: string;
+  payload: { uri: string };
+};
 
 export type AnnotationActionTypes =
   | AddAnnotationAction

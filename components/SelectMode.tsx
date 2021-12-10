@@ -20,6 +20,7 @@ import { updatePoolConfig } from '../state/redux';
 export default function SelectMode() {
   const dispatch = useAppDispatch();
   const poolConfig = useAppSelector((state) => state?.annotation.poolConfig);
+  const isRecording = useAppSelector((state) => state?.recording.isRecording);
 
   const [modes, setModes] = useState<Modes | null>(null);
 
@@ -59,6 +60,7 @@ export default function SelectMode() {
         <Button
           w={[12, 16, 20, 32, 40]}
           variant="subtle"
+          isDisabled={isRecording}
           onPress={() => setShowModal(true)}
         >
           <Text fontSize={[6, 8, 10, 14, 18]}>
@@ -123,26 +125,28 @@ export default function SelectMode() {
               name="raceDistance"
               size="sm"
               onChange={(rd: string) => {
-                setRaceDistance(strToRaceDistance(rd));                
+                setRaceDistance(strToRaceDistance(rd));
               }}
             >
               <Column space={3}>
-                {Array.from(Object.keys(modes[poolDistance]) ?? []).map((e, i) => {
-                  return (
-                    <Radio
-                      key={i}
-                      alignItems="flex-start"
-                      _text={{
-                        mt: '-1',
-                        ml: '2',
-                        fontSize: 'sm',
-                      }}
-                      value={e}
-                    >
-                      {e}
-                    </Radio>
-                  );
-                })}
+                {Array.from(Object.keys(modes[poolDistance]) ?? []).map(
+                  (e, i) => {
+                    return (
+                      <Radio
+                        key={i}
+                        alignItems="flex-start"
+                        _text={{
+                          mt: '-1',
+                          ml: '2',
+                          fontSize: 'sm',
+                        }}
+                        value={e}
+                      >
+                        {e}
+                      </Radio>
+                    );
+                  }
+                )}
               </Column>
             </Radio.Group>
           </Modal.Body>

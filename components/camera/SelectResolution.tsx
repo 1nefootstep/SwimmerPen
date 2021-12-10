@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import { Button, Modal, Column, Radio, Box, Text } from 'native-base';
+import { useAppSelector } from '../../state/redux/hooks';
 
 interface SelectResolutionProps {
   resolutions: Array<string>;
@@ -10,10 +11,11 @@ interface SelectResolutionProps {
 export default function SelectResolution(props: SelectResolutionProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [quality, setQuality] = useState<string>(props.resolutions[0]);
+  const isRecording = useAppSelector((state) => state?.recording.isRecording);
   return (
     <>
       <Box flex={1} justifyContent="center">
-        <Button w={[12,16,20,32,40]} variant="subtle" onPress={() => setShowModal(true)}>
+        <Button w={[12,16,20,32,40]} variant="subtle" isDisabled={isRecording} onPress={() => setShowModal(true)}>
           <Text fontSize={[6,8,10,14,18]}>Resolution</Text>
         </Button>
       </Box>

@@ -10,8 +10,11 @@ import SelectResolution from '../components/camera/SelectResolution';
 import Zoom from '../components/camera/Zoom';
 import BackButton from '../components/BackButton';
 import MuteButton from '../components/camera/MuteButton';
+import CheckpointButton from '../components/camera/CheckpointButton';
+import LoadingScreen from './LoadingScreen';
+import ErrorScreen from './ErrorScreen';
 
-export default function CameraScreen({navigation}) {
+export default function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const cameraRef = useRef<Camera>(null);
   const [ratio, setRatio] = useState('4:3');
@@ -51,10 +54,10 @@ export default function CameraScreen({navigation}) {
   };
 
   if (hasPermission === null) {
-    return <Center />;
+    return <ErrorScreen failReason="Do not have camera permissions or microphone permission." />;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <LoadingScreen itemThatIsLoading="camera" />;
   }
   return (
     <Box flex={1}>
@@ -63,7 +66,7 @@ export default function CameraScreen({navigation}) {
         type={Camera.Constants.Type.back}
         onCameraReady={onCameraReady}
         zoom={zoom}
-        autoFocus='on'
+        autoFocus="on"
         ratio={ratio}
         ref={cameraRef}
       >
@@ -71,7 +74,7 @@ export default function CameraScreen({navigation}) {
           <Column flex={1} mr="3">
             <Column flex={1} alignItems="flex-start">
               <Column justifyContent="space-around" m={3}>
-                <BackButton goBack={navigation.goBack}/>
+                <BackButton goBack={navigation.goBack} />
                 <SelectMode />
                 <Column flex={2} />
                 <MuteButton isMute={isMute} setIsMute={setIsMute} />
@@ -86,13 +89,16 @@ export default function CameraScreen({navigation}) {
             <Column justifyContent="center" marginY={'25%'} mr="4">
               <Zoom zoom={zoom} setZoom={setZoom} />
             </Column>
-            <Column justifyContent="center">
+            <Column justifyContent="center" alignItems="center">
               <RecordButton
                 isRecording={isRecording}
                 setIsRecording={setIsRecording}
                 cameraRef={cameraRef}
                 recordOptions={{ quality: videoQuality }}
               />
+              <Center position="absolute" bottom={0} mb={{ sm: 5, md: 8, lg: 16 }}>
+                <CheckpointButton />
+              </Center>
             </Column>
           </Row>
         </Row>

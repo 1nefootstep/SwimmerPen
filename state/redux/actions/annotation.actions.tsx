@@ -1,10 +1,11 @@
 import {
   AnnotationInformation,
+  Distance,
+  Timestamp,
   PoolDistance,
-} from '../../AKB/AnnotationKnowledgeBank';
-import { Distance, Timestamp } from '../../AKB/Annotations';
-import { RaceDistance } from '../../AKB/PoolConfig';
-import { StrokeRange } from '../../AKB/StrokeCounts';
+  RaceDistance,
+  StrokeRange,
+} from '../../AKB';
 import {
   AddAnnotationAction,
   AddStrokeCountAction,
@@ -69,13 +70,15 @@ export function updateName(name: string): UpdateNameAction {
 
 export function updatePoolConfig(
   poolDistance: PoolDistance,
-  raceDistance: RaceDistance,
+  raceDistance: RaceDistance
 ): UpdatePoolConfigAction {
   return {
     type: ANNOTATION_ACTION_TYPES.UPDATE_POOL_CONFIG,
     payload: {
-      poolDistance: poolDistance,
-      raceDistance: raceDistance,
+      poolConfig: {
+        poolDistance: poolDistance,
+        raceDistance: raceDistance,
+      },
     },
   };
 }
@@ -84,10 +87,12 @@ export function resetPoolConfig(): UpdatePoolConfigAction {
   return {
     type: ANNOTATION_ACTION_TYPES.UPDATE_POOL_CONFIG,
     payload: {
-      poolDistance: '50m',
-      raceDistance: '100m',
-    }
-  }
+      poolConfig: {
+        poolDistance: '50m',
+        raceDistance: '100m',
+      },
+    },
+  };
 }
 
 export function loadAnnotation(annotationInfo: AnnotationInformation) {

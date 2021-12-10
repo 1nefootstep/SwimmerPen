@@ -1,5 +1,5 @@
 import { StrokeRange } from '../AKB/StrokeCounts';
-import { AnnotationMode, NameDistance as Checkpoint } from './AnnotationMode';
+import { AnnotationMode, Checkpoint } from './AnnotationMode';
 
 function firstLapCheckpoint(startDistance: number): Array<Checkpoint> {
   return [
@@ -25,28 +25,6 @@ function firstStrokeRange(startDistance: number): Array<StrokeRange> {
 function subsequentStrokeRange(startDistance: number): Array<StrokeRange> {
   return [new StrokeRange(startDistance + 10, startDistance + 20)];
 }
-
-// class Pool25m extends AnnotationMode {
-//   constructor(style: string, totalDistance: number) {
-//     let distanceLeft = totalDistance;
-//     let checkpoints: Array<Checkpoint> = [];
-//     let strokeRanges: Array<StrokeRange> = [];
-//     const POOL_DISTANCE = 25;
-//     let lastDistance = 0;
-//     while (distanceLeft > 0) {
-//       if (checkpoints.length === 0) {
-//         checkpoints = checkpoints.concat(firstLapCheckpoint(0));
-//         strokeRanges = strokeRanges.concat(firstStrokeRange(lastDistance));
-//       } else {
-//         checkpoints = checkpoints.concat(subsequentLapCheckpoint(lastDistance));
-//         strokeRanges = strokeRanges.concat(subsequentStrokeRange(lastDistance));
-//       }
-//       lastDistance += POOL_DISTANCE;
-//       distanceLeft -= POOL_DISTANCE;
-//     }
-//     super(`${style}-${totalDistance}m`, checkpoints, strokeRanges);
-//   }
-// }
 
 export function createAnnotationMode25m(totalDistance: number): AnnotationMode {
   let distanceLeft = totalDistance;

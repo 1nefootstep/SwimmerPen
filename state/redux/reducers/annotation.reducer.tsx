@@ -8,7 +8,6 @@ import {
 } from '../types';
 import { ANNOTATION_ACTION_TYPES } from '../actions';
 import { AnnotationInformation } from '../../AKB/AnnotationKnowledgeBank';
-import { PoolConfig } from '../../AKB/PoolConfig';
 
 function initState(): AnnotationInformation {
   return {
@@ -59,15 +58,17 @@ export function annotationReducer(
     }
     case ANNOTATION_ACTION_TYPES.UPDATE_POOL_CONFIG: {
       const { payload } = action as UpdatePoolConfigAction;
+      const { poolConfig } = payload;
       return {
         ...state,
-        poolConfig: payload,
+        poolConfig: poolConfig,
       };
     }
     case ANNOTATION_ACTION_TYPES.LOAD_ANNOTATION: {
       const { payload } = action as LoadAnnotationAction;
+      const { annotation } = payload;
       return {
-        ...payload,
+        ...annotation,
       };
     }
     default:
