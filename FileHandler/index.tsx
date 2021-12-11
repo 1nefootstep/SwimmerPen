@@ -2,10 +2,8 @@ import { Platform } from 'react-native';
 
 import * as FS from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
-import * as Sharing from 'expo-sharing';
 
 import { ALBUM_NAME } from '../constants/Constants';
-import { useAppSelector } from '../state/redux/hooks';
 import { AnnotationInformation } from '../state/AKB/AnnotationKnowledgeBank';
 
 const APP_DIRECTORY_PATH = `${FS.documentDirectory}`;

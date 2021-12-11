@@ -4,12 +4,15 @@ import { UpdateStatusAction, VideoActionTypes } from "../types";
 
 export type VideoInfo = {
   isLoaded: boolean;
-  status?: AVPlaybackStatus;
+  isControlVisible: boolean;
+  status: AVPlaybackStatus | null;  
 };
 
 function initState(): VideoInfo {
   return {
     isLoaded: false,
+    isControlVisible: false,
+    status: null,
   };
 }
 
@@ -26,6 +29,24 @@ export function videoReducer(
       return {
         ...state,
         status: status,
+      };
+    }
+    case VIDEO_ACTION_TYPES.CLEAR_VIDEO_STATUS: {
+      return {
+        ...state,
+        status: null,
+      };
+    }
+    case VIDEO_ACTION_TYPES.SHOW_CONTROL: {
+      return {
+        ...state,
+        isControlVisible: true,
+      };
+    }
+    case VIDEO_ACTION_TYPES.HIDE_CONTROL: {
+      return {
+        ...state,
+        isControlVisible: false,
       };
     }
     default:

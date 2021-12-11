@@ -3,12 +3,16 @@ import { Platform } from 'react-native';
 
 import { Button, Text } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
-import { loadVideo } from '../../state/VideoService';
+import { loadVideo } from '../../../state/VideoService';
 import { Video } from 'expo-av';
+import { useAppDispatch } from '../../../state/redux/hooks';
+import { clearVideoStatus } from '../../../state/redux';
 
 export default function LoadVideo(props: { videoRef: RefObject<Video> }) {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const canLoadVideo = hasPermission && props.videoRef.current !== null;
+
+  const dispatch = useAppDispatch();
   useEffect(() => {
     (async () => {
       if (Platform.OS !== 'web') {
@@ -32,10 +36,14 @@ export default function LoadVideo(props: { videoRef: RefObject<Video> }) {
     console.log(result);
 
     if (!result.cancelled) {
-      const loadSuccessful = await loadVideo(result.uri);
-      if (!loadSuccessful) {
-        console.log('LoadVideo: load unsuccessful');
-      }
+      loadVideo(result.uri)
+        .then(isSuccessful => {
+          if (!isSuccessful) {
+            console.log('LoadVideo: load unsuccessful');
+          }
+        })
+        .catch(e => console.log(`LoadVideo: ${e}`));
+      dispatch(clearVideoStatus());
     }
   };
 

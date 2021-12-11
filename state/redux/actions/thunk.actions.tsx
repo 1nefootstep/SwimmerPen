@@ -3,7 +3,7 @@ import { ThunkAction } from 'redux-thunk';
 import { getDefaultMode, getModes } from '../../AKB';
 import { findNextDistance } from '../../AnnotationMode';
 import { RootState } from '../reducers';
-import * as FileHandler from '../../../filesystem/FileHandler';
+import * as FileHandler from '../../../FileHandler';
 import { AppActionTypes } from '../types';
 import { addAnnotation } from './annotation.actions';
 import { updateDistance, updateLastRecordedUri } from './recording.actions';
