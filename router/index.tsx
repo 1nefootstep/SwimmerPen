@@ -4,10 +4,19 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Box, Text } from 'native-base';
 import CameraScreen from '../screens/CameraScreen';
 import Home from '../screens/Home';
+import AnnotationScreen from '../screens/AnnotationScreen';
 
 const Stack = createNativeStackNavigator();
 
 function PlaceholderScreen() {
+  return (
+    <Box flex={1} justifyContent="center" alignItems="center">
+      <Text>Placeholder</Text>
+    </Box>
+  );
+}
+
+function PlaceholderScreen2() {
   return (
     <Box flex={1} justifyContent="center" alignItems="center">
       <Text>Placeholder</Text>
@@ -22,21 +31,22 @@ export default function RootNavigator() {
         <Stack.Screen
           name="Home"
           component={Home}
-          options={{ title: 'SwimmerPen', headerShown: true, headerTitleAlign: 'center'}}
+          options={{
+            title: 'SwimmerPen',
+            headerShown: true,
+            headerTitleAlign: 'center',
+          }}
         />
         <Stack.Group
           screenOptions={({ navigation }) => ({
-            headerShown: false
+            headerShown: false,
           })}
         >
-          <Stack.Screen
-            name="CameraScreen"
-            component={CameraScreen}
-          />
+          <Stack.Screen name="CameraScreen" component={CameraScreen} />
+          <Stack.Screen name="AnnotationScreen" component={AnnotationScreen} />
         </Stack.Group>
 
-        <Stack.Screen name="Annotation" component={PlaceholderScreen} />
-        <Stack.Screen name="Result" component={PlaceholderScreen} />
+        <Stack.Screen name="ResultScreen" component={PlaceholderScreen2} />
       </Stack.Navigator>
     </NavigationContainer>
   );

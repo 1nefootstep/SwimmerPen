@@ -17,7 +17,7 @@ export default function Home({ navigation }) {
       <Button
         h={{sm: "25", md: "48", lg: "96"}}
         onPress={() => {
-          navigation.navigate('Camera');
+          navigation.navigate('CameraScreen');
         }}
         leftIcon={<Icon as={AntDesign} name="camera" size="sm" />}
       >
@@ -25,7 +25,7 @@ export default function Home({ navigation }) {
       </Button>
       <Button
         onPress={() => {
-          navigation.navigate('Annotation');
+          navigation.navigate('AnnotationScreen');
         }}
         leftIcon={<Icon as={AntDesign} name="camera" size="sm" />}
       >
@@ -33,7 +33,7 @@ export default function Home({ navigation }) {
       </Button>
       <Button
         onPress={() => {
-          navigation.navigate('Result ');
+          navigation.navigate('ResultScreen');
         }}
         leftIcon={<Icon as={AntDesign} name="camera" size="sm" />}
       >

@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import * as VideoService from '../../../state/VideoService';
-import { Slider, Center, Box, useBreakpointValue } from 'native-base';
+import { Slider, Center, Box, useBreakpointValue, Row } from 'native-base';
 import { useAppSelector } from '../../../state/redux/hooks';
 import { formatTimeFromPosition } from '../../../state/Util';
 import PlayPauseButton from './PlayPauseButton';
+import Marks from './Marks';
+import Hidden from '../../Hidden';
 
 export default function VideoProgressBar() {
   const annotations = useAppSelector(state => state?.annotation.annotations);
@@ -23,68 +25,60 @@ export default function VideoProgressBar() {
     md: '85%',
     lg: '90%',
   });
-  const [isHoverTextVisible, setIsHoverTextVisible] = useState<boolean>(false);
-  const [hoverText, setHoverText] = useState<string>('');
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [hoverText, setHoverText] = useState<string>('00:00');
+  const [v, setV] = useState<number>(0);
+
   return (
-    <Box
+    <Row
       position="absolute"
-      flexDir="row"
       bottom={0}
-      my={5}
+      mb={6}
       w="100%"
-      bgColor={`rgba(55, 55, 55, 0.4)`}
+      h="50"
+      bg={`rgba(55, 55, 55, 0.33)`}
     >
       <PlayPauseButton />
       <Slider
-        value={positionMillis}
+        value={isDragging ? v : positionMillis}
         onChange={newPos => {
+          setV(newPos);
           setHoverText(formatTimeFromPosition(newPos));
-          if (!isHoverTextVisible) {
-            setIsHoverTextVisible(true);
+          if (!isDragging) {
+            setIsDragging(true);
           }
+          VideoService.pause();
           VideoService.seek(newPos);
         }}
         onChangeEnd={newPos => {
-          setIsHoverTextVisible(false);
+          setIsDragging(false);
         }}
-        w={sliderWidth}
-        sliderSize={8}
-        thumbSize={5}
         minValue={0}
         maxValue={durationMillis}
-        step={10}
+        onTouchStart={() => setIsDragging(true)}
+        onTouchEnd={() => setIsDragging(false)}
+        w={sliderWidth}
+        thumbSize={12}
+        step={33}
       >
         <Slider.Track>
           <Slider.FilledTrack />
-          {Array.from(Object.values(annotations)).map((e, i) => {
-            const pct = ((e / durationMillis) * 100).toFixed(3);
-            return (
-              <Box
-                borderWidth={1}
-                borderColor="emerald.500"
-                position="absolute"
-                left={`${pct}%`}
-                h="100%"
-                w="1"
-                bgColor="emerald.200"
-              />
-            );
-          })}
-          <Slider.Thumb borderWidth="0" bg="rose.500">
+          <Marks annotations={annotations} durationMillis={durationMillis} />
+        </Slider.Track>
+        <Slider.Thumb bg="transparent">
+          <Hidden isHidden={!isDragging}>
             <Center
               position="absolute"
-              bottom={6}
+              bottom={8}
               w={16}
               h={5}
-              bgColor={
-                isHoverTextVisible ? 'rgba(52, 52, 52, 0.8)' : 'transparent'
-              }
+              bgColor={'rgba(52, 52, 52, 0.8)'}
             >
-              {isHoverTextVisible ? hoverText : ''}
+              {hoverText}
             </Center>
-          </Slider.Thumb>
-        </Slider.Track>
+          </Hidden>
+        </Slider.Thumb>
       </Slider>
-    </Box>
+    </Row>
   );
 }

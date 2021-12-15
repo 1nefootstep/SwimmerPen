@@ -44,10 +44,10 @@ export async function loadVideo(uri: string): Promise<boolean> {
   return false;
 }
 
-export async function seek(positionMillis: number) {
+export function seek(positionMillis: number) {
   if (_video.current) {
     const v = _video.current;
-    await v.setPositionAsync(positionMillis);
+    v.setPositionAsync(positionMillis);
   }
 }
 

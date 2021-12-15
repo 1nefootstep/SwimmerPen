@@ -5,10 +5,9 @@ import { useAppSelector } from '../../../state/redux/hooks';
 import * as VideoService from '../../../state/VideoService';
 
 export default function PlayPauseButton() {
-  const videoStatus = useAppSelector(state => state.video);
-  const isLoaded = videoStatus.isLoaded;
-  const isPlaying =
-    videoStatus.status?.isLoaded && videoStatus.status.isPlaying;
+  const videoStatus = useAppSelector(state => state.video.status);
+  const isLoaded = videoStatus?.isLoaded ?? false;
+  const isPlaying = (videoStatus?.isLoaded && videoStatus?.isPlaying) ?? false;
 
   return (
     <Button
@@ -22,7 +21,7 @@ export default function PlayPauseButton() {
       leftIcon={
         <Icon
           as={FontAwesome}
-          name={isPlaying ? 'stop' : 'start'}
+          name={isPlaying ? 'stop' : 'play'}
           size={5}
           color="muted.50"
         />

@@ -3,14 +3,12 @@ import { VIDEO_ACTION_TYPES } from "../actions/video.actions";
 import { UpdateStatusAction, VideoActionTypes } from "../types";
 
 export type VideoInfo = {
-  isLoaded: boolean;
   isControlVisible: boolean;
   status: AVPlaybackStatus | null;  
 };
 
 function initState(): VideoInfo {
   return {
-    isLoaded: false,
     isControlVisible: false,
     status: null,
   };
