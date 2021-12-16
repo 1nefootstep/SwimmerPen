@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Box } from 'native-base';
-import { Annotations } from '../../../state/AKB';
+import { Annotations } from '../../../../state/AKB';
 
 export default function Marks({
   annotations,
@@ -16,13 +16,14 @@ export default function Marks({
         const pct = ((e / durationMillis) * 100).toFixed(3);
         return (
           <Box
+            key={i}
             borderWidth={1}
-            borderColor="emerald.500"
+            borderColor="rose.500"
             position="absolute"
             left={`${pct}%`}
             h="100%"
-            w="1"
-            bgColor="emerald.200"
+            w="1.5"
+            bgColor="rose.200"
           />
         );
       })}

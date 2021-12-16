@@ -9,6 +9,14 @@ export type ClearStatusAction = {
   type: string;
 };
 
+export type ShowTimeAction = {
+  type: string;
+};
+
+export type HideTimeAction = {
+  type: string;
+};
+
 
 export type ShowControlAction = {
   type: string;
@@ -21,5 +29,7 @@ export type HideControlAction = {
 export type VideoActionTypes =
   | UpdateStatusAction
   | ClearStatusAction
+  | ShowTimeAction
+  | HideTimeAction
   | ShowControlAction
   | HideControlAction;

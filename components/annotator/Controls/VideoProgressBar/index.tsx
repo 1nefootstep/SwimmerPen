@@ -1,16 +1,20 @@
 import React, { useMemo, useState } from 'react';
 
-import * as VideoService from '../../../state/VideoService';
-import { Slider, Center, Box, useBreakpointValue, Row } from 'native-base';
-import { useAppSelector } from '../../../state/redux/hooks';
-import { formatTimeFromPosition } from '../../../state/Util';
+import * as VideoService from '../../../../state/VideoService';
+import { Slider, Center, useBreakpointValue, Row } from 'native-base';
+import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
+import { formatTimeFromPosition } from '../../../../state/Util';
 import PlayPauseButton from './PlayPauseButton';
 import Marks from './Marks';
-import Hidden from '../../Hidden';
+import Hidden from '../../../Hidden';
+import { hideTime, showTime } from '../../../../state/redux';
 
 export default function VideoProgressBar() {
-  const annotations = useAppSelector(state => state?.annotation.annotations);
-  const videoStatus = useAppSelector(state => state?.video.status);
+  const dispatch = useAppDispatch();
+  const annotations = useAppSelector(state => state.annotation.annotations);
+  const videoStatus = useAppSelector(state => state.video.status);
+  const isTimeVisible = useAppSelector(state => state.video.isTimeVisible);
+
   const positionMillis =
     videoStatus !== null && videoStatus.isLoaded
       ? videoStatus.positionMillis
@@ -26,37 +30,34 @@ export default function VideoProgressBar() {
     lg: '90%',
   });
   const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [hoverText, setHoverText] = useState<string>('00:00');
+  const hoverText = useMemo(
+    () => formatTimeFromPosition(positionMillis),
+    [positionMillis]
+  );
   const [v, setV] = useState<number>(0);
 
+  const setIsDraggingAndShowTime = (b: boolean) => {
+    setIsDragging(b);
+    b ? dispatch(showTime()) : dispatch(hideTime());
+  };
+
   return (
-    <Row
-      position="absolute"
-      bottom={0}
-      mb={6}
-      w="100%"
-      h="50"
-      bg={`rgba(55, 55, 55, 0.33)`}
-    >
+    <Row w="100%" h="50">
       <PlayPauseButton />
       <Slider
         value={isDragging ? v : positionMillis}
         onChange={newPos => {
           setV(newPos);
-          setHoverText(formatTimeFromPosition(newPos));
           if (!isDragging) {
-            setIsDragging(true);
+            setIsDraggingAndShowTime(true);
           }
           VideoService.pause();
           VideoService.seek(newPos);
         }}
-        onChangeEnd={newPos => {
-          setIsDragging(false);
-        }}
         minValue={0}
         maxValue={durationMillis}
-        onTouchStart={() => setIsDragging(true)}
-        onTouchEnd={() => setIsDragging(false)}
+        onTouchStart={() => setIsDraggingAndShowTime(true)}
+        onTouchEnd={() => setIsDraggingAndShowTime(false)}
         w={sliderWidth}
         thumbSize={12}
         step={33}
@@ -66,11 +67,11 @@ export default function VideoProgressBar() {
           <Marks annotations={annotations} durationMillis={durationMillis} />
         </Slider.Track>
         <Slider.Thumb bg="transparent">
-          <Hidden isHidden={!isDragging}>
+          <Hidden isHidden={!isTimeVisible}>
             <Center
               position="absolute"
               bottom={8}
-              w={16}
+              w={20}
               h={5}
               bgColor={'rgba(52, 52, 52, 0.8)'}
             >

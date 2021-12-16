@@ -1,13 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  Text,
-  Box,
-  Row,
-  Center,
-  Column,
-  Container,
-  Pressable,
-} from 'native-base';
+import { Center } from 'native-base';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 
@@ -25,7 +17,7 @@ export default function AnnotationScreen({ navigation }) {
   };
 
   const video = useRef<Video>(null);
-  const [isControlActive, setIsControlActive] = useState<boolean>(false);
+  const [isControlActive, setIsControlActive] = useState<boolean>(true);
 
   useEffect(() => {
     (() => {
@@ -34,7 +26,7 @@ export default function AnnotationScreen({ navigation }) {
   }, []);
 
   return (
-    <Center flex={1} bg="black">
+    <Center flex={1} bg="black" safeArea>
       <BackButton
         goBack={navigation.goBack}
         style={{ zIndex: 1, position: 'absolute', top: 0, left: 0, margin: 12 }}

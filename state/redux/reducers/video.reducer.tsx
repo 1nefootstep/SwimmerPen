@@ -4,12 +4,14 @@ import { UpdateStatusAction, VideoActionTypes } from "../types";
 
 export type VideoInfo = {
   isControlVisible: boolean;
+  isTimeVisible: boolean;
   status: AVPlaybackStatus | null;  
 };
 
 function initState(): VideoInfo {
   return {
     isControlVisible: false,
+    isTimeVisible: false,
     status: null,
   };
 }
@@ -45,6 +47,18 @@ export function videoReducer(
       return {
         ...state,
         isControlVisible: false,
+      };
+    }
+    case VIDEO_ACTION_TYPES.SHOW_TIME: {
+      return {
+        ...state,
+        isTimeVisible: true,
+      };
+    }
+    case VIDEO_ACTION_TYPES.HIDE_TIME: {
+      return {
+        ...state,
+        isTimeVisible: false,
       };
     }
     default:

@@ -1,12 +1,13 @@
 import { ThunkAction } from 'redux-thunk';
 
-import { getDefaultMode, getModes } from '../../AKB';
+import { getDefaultMode, getModes, PoolDistance, RaceDistance } from '../../AKB';
 import { findNextDistance } from '../../AnnotationMode';
 import { RootState } from '../reducers';
 import * as FileHandler from '../../../FileHandler';
 import { AppActionTypes } from '../types';
-import { addAnnotation } from './annotation.actions';
+import { addAnnotation, updatePoolConfig } from './annotation.actions';
 import { updateDistance, updateLastRecordedUri } from './recording.actions';
+import { setCurrentDistance } from './controls.actions';
 
 export type AppThunkAction = ThunkAction<
   void,
@@ -47,5 +48,15 @@ export function saveVideoAndAnnotation(uri: string): AppThunkAction {
       FileHandler.saveAnnotation(baseName, annotation);
       dispatch(updateLastRecordedUri(saveVideoResult.uri));
     }
+  };
+}
+
+export function updatePoolConfigAndResetCurrentDistance(
+  poolDistance: PoolDistance,
+  raceDistance: RaceDistance
+): AppThunkAction {
+  return (dispatch, getState) => {
+    dispatch(updatePoolConfig(poolDistance, raceDistance));
+    dispatch(setCurrentDistance(0));
   };
 }

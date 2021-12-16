@@ -1,8 +1,8 @@
 import React from 'react';
 import { Icon, Button } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAppSelector } from '../../../state/redux/hooks';
-import * as VideoService from '../../../state/VideoService';
+import { useAppSelector } from '../../../../state/redux/hooks';
+import * as VideoService from '../../../../state/VideoService';
 
 export default function PlayPauseButton() {
   const videoStatus = useAppSelector(state => state.video.status);

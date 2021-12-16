@@ -15,7 +15,7 @@ import {
   strToPoolDistance,
   strToRaceDistance,
 } from '../state/AKB/PoolConfig';
-import { updatePoolConfig } from '../state/redux';
+import { updatePoolConfigAndResetCurrentDistance } from '../state/redux';
 
 export default function SelectMode() {
   const dispatch = useAppDispatch();
@@ -156,7 +156,7 @@ export default function SelectMode() {
               onPress={() => {
                 setShowModal(false);
                 setShowModal2(false);
-                dispatch(updatePoolConfig(poolDistance, raceDistance));
+                dispatch(updatePoolConfigAndResetCurrentDistance(poolDistance, raceDistance));
               }}
             >
               Continue
