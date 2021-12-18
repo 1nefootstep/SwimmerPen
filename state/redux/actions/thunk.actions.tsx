@@ -1,6 +1,11 @@
 import { ThunkAction } from 'redux-thunk';
 
-import { getDefaultMode, getModes, PoolDistance, RaceDistance } from '../../AKB';
+import {
+  getDefaultMode,
+  getModes,
+  PoolDistance,
+  RaceDistance,
+} from '../../AKB';
 import { findNextDistance } from '../../AnnotationMode';
 import { RootState } from '../reducers';
 import * as FileHandler from '../../../FileHandler';
@@ -24,11 +29,13 @@ export function addAnnotationWhileRecording(): AppThunkAction {
       return;
     }
     const timeInMs = Date.now() - recording.startRecordTime;
-    dispatch(addAnnotation(recording.currentDistance, timeInMs));
-    const { poolDistance, raceDistance } = annotation.poolConfig;
-    const mode = getModes()[poolDistance][raceDistance] ?? getDefaultMode();
-    const nextDistance = findNextDistance(mode, recording.currentDistance);
-    dispatch(updateDistance(nextDistance));
+    if (recording.currentDistance !== 'DONE') {
+      dispatch(addAnnotation(recording.currentDistance, timeInMs));
+      const { poolDistance, raceDistance } = annotation.poolConfig;
+      const mode = getModes()[poolDistance][raceDistance] ?? getDefaultMode();
+      const nextDistance = findNextDistance(mode, recording.currentDistance);
+      dispatch(updateDistance(nextDistance));
+    }
   };
 }
 
@@ -46,7 +53,7 @@ export function saveVideoAndAnnotation(uri: string): AppThunkAction {
     if (saveVideoResult.isSuccessful) {
       const { baseName } = FileHandler.breakUri(saveVideoResult.filename);
       FileHandler.saveAnnotation(baseName, annotation);
-      dispatch(updateLastRecordedUri(saveVideoResult.uri));
+      // dispatch(updateLastRecordedUri(saveVideoResult.uri));
     }
   };
 }

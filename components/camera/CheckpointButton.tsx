@@ -9,19 +9,25 @@ import { useDispatch } from 'react-redux';
 
 export default function CheckpointButton() {
   const dispatch = useDispatch();
-  const recordingInfo = useAppSelector((state) => state?.recording);
+  const recordingInfo = useAppSelector(state => state?.recording);
   const onPress = () => {
     dispatch(addAnnotationWhileRecording());
   };
-
+  const description = recordingInfo.isRecording
+    ? recordingInfo.currentDistance !== 'DONE'
+      ? `${recordingInfo.currentDistance}m`
+      : 'DONE'
+    : '0m';
   return (
     <>
       <Button
         leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
         onPress={onPress}
-        isDisabled={!recordingInfo.isRecording}
+        isDisabled={
+          !recordingInfo.isRecording || recordingInfo.currentDistance === 'DONE'
+        }
       >
-        {recordingInfo.isRecording ? `${recordingInfo.currentDistance}m` : '0m'}
+        {description}
       </Button>
     </>
   );

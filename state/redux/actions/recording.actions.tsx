@@ -1,4 +1,5 @@
 import { Distance } from '../../AKB';
+import { DistanceOrDone } from '../../AnnotationMode';
 import {
   StartRecordingAction,
   StopRecordingAction,
@@ -25,7 +26,7 @@ export function stopRecording(): StopRecordingAction {
   };
 }
 
-export function updateDistance(distance: Distance): UpdateDistanceAction {
+export function updateDistance(distance: DistanceOrDone): UpdateDistanceAction {
   return {
     type: RECORDING_ACTION_TYPES.UPDATE_DISTANCE,
     payload: { distance: distance },

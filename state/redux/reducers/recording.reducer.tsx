@@ -1,4 +1,5 @@
 import { Distance } from '../../AKB/Annotations';
+import { DistanceOrDone } from '../../AnnotationMode';
 import { UnixTime } from '../../UnixTime';
 import { RECORDING_ACTION_TYPES } from '../actions';
 import { RecordingActionTypes, UpdateDistanceAction, UpdateLastRecordedUriAction } from '../types';
@@ -6,7 +7,7 @@ import { RecordingActionTypes, UpdateDistanceAction, UpdateLastRecordedUriAction
 export type RecordingInfo = {
   isRecording: boolean;
   startRecordTime: UnixTime;
-  currentDistance: Distance;
+  currentDistance: DistanceOrDone;
   lastRecordedUri: string;
 };
 

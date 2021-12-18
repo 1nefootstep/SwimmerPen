@@ -23,7 +23,7 @@ export default function SelectResolution(props: SelectResolutionProps) {
       <Modal isOpen={showModal} onClose={() => setShowModal(false)} size="lg">
         <Modal.Content maxWidth="350">
           <Modal.CloseButton />
-          <Modal.Header>Pool Length</Modal.Header>
+          <Modal.Header>Resolution</Modal.Header>
           <Modal.Body>
             <Radio.Group
               defaultValue="0"

@@ -1,4 +1,5 @@
 import { Distance } from '../../AKB/Annotations';
+import { DistanceOrDone } from '../../AnnotationMode';
 
 export type StartRecordingAction = {
   type: string;
@@ -10,7 +11,7 @@ export type StopRecordingAction = {
 
 export type UpdateDistanceAction = {
   type: string;
-  payload: { distance: Distance };
+  payload: { distance: DistanceOrDone };
 };
 
 export type UpdateLastRecordedUriAction = {

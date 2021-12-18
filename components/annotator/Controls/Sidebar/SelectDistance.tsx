@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 import { addAnnotation, setCurrentDistance } from '../../../../state/redux';
 import * as VideoService from '../../../../state/VideoService';
 import { getDefaultMode, getModes, Modes } from '../../../../state/AKB';
+import { zIndex } from 'styled-system';
 
 // const FactoryDropDown = Factory(DropDownPicker);
 
@@ -82,12 +83,14 @@ export default function SelectDistance() {
   return (
     <Row alignItems='center'>
       <Box
-        maxW={20}
+        maxW={24}
         mr={1}
       >
       <DropDownPicker
         items={items}
+        placeholder={`${currentDistance}m`}
         value={currentDistance}
+        dropDownContainerStyle={{zIndex: 20, elevation: 999}}
         open={isOpen}
         setOpen={b => {
           if (videoStatus !== null && videoStatus.isLoaded) {

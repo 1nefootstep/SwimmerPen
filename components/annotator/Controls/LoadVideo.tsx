@@ -1,16 +1,18 @@
-import React, { RefObject, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
-
 import { Button, Text } from 'native-base';
 import * as ImagePicker from 'expo-image-picker';
-import { loadVideo } from '../../../state/VideoService';
-import { Video } from 'expo-av';
-import { useAppDispatch } from '../../../state/redux/hooks';
-import { clearVideoStatus } from '../../../state/redux';
 
-export default function LoadVideo(props: { videoRef: RefObject<Video> }) {
+import * as VideoService from '../../../state/VideoService';
+import { useAppDispatch } from '../../../state/redux/hooks';
+import {
+  clearVideoStatus,
+  loadAnnotation as reduxLoadAnnotation,
+} from '../../../state/redux';
+import * as FileHandler from '../../../FileHandler';
+
+export default function LoadVideo() {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
-  const canLoadVideo = hasPermission && props.videoRef.current !== null;
 
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -26,7 +28,7 @@ export default function LoadVideo(props: { videoRef: RefObject<Video> }) {
     })();
   }, []);
 
-  const pickImage = async () => {
+  const pickVideo = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Videos,
       allowsEditing: false,
@@ -36,25 +38,31 @@ export default function LoadVideo(props: { videoRef: RefObject<Video> }) {
     console.log(result);
 
     if (!result.cancelled) {
-      loadVideo(result.uri)
+      VideoService.loadVideo(result.uri)
         .then(isSuccessful => {
           if (!isSuccessful) {
             console.log('LoadVideo: load unsuccessful');
           }
         })
         .catch(e => console.log(`LoadVideo: ${e}`));
+      const { baseName } = FileHandler.breakUri(result.uri);
+      const loadAnnResult = await FileHandler.loadAnnotation(baseName);
+      if (loadAnnResult.isSuccessful) {
+        dispatch(reduxLoadAnnotation(loadAnnResult.annotation));
+      }
       dispatch(clearVideoStatus());
     }
   };
 
   return (
     <Button
-      w={{ sm: 8, md: 12, lg: 16 }}
-      variant="unstyled"
-      onPress={pickImage}
-      isDisabled={!canLoadVideo}
+      size={{ md: 'sm', lg: 'md' }}
+      colorScheme="info"
+      variant="subtle"
+      onPress={pickVideo}
+      isDisabled={!hasPermission}
     >
-      <Text fontSize={{ sm: 8, md: 10, lg: 12 }}>Load Video</Text>
+      Load Video
     </Button>
   );
 }

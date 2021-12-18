@@ -128,7 +128,7 @@ export type SaveVideoResult =
   | {
       isSuccessful: true;
       filename: string;
-      uri: string;
+      // uri: string;
     }
   | {
       isSuccessful: false;
@@ -153,8 +153,12 @@ export async function saveVideo(uri: string): Promise<SaveVideoResult> {
     } else {
       await MediaLibrary.addAssetsToAlbumAsync([asset], albumRef, false);
     }
-    const assetInfo = await MediaLibrary.getAssetInfoAsync(asset);
-    return { isSuccessful: true, filename: assetInfo.filename, uri: assetInfo.uri };
+    // const assetInfo = await MediaLibrary.getAssetInfoAsync(asset);
+    // return { isSuccessful: true, filename: assetInfo.filename, uri: assetInfo.uri };
+    // for ANDROID ONLY
+    const {baseName} = breakUri(assetUri);
+    return { isSuccessful: true, filename: baseName };
+    // return {isSuccessful}
   } catch (e) {
     console.log(`<FileHandler> Failed to save video: ${e}`);
     return { isSuccessful: false };
@@ -196,7 +200,7 @@ export async function loadAnnotation(
     const annotationInfo: AnnotationInformation = JSON.parse(result);
     return { isSuccessful: true, annotation: annotationInfo };
   } catch (e) {
-    console.log(`<FileHandler> Failed to save annotation: ${e}`);
+    console.log(`<FileHandler> Failed to load annotation: ${e}`);
     return { isSuccessful: false };
   }
 }
