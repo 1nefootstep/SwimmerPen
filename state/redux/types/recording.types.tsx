@@ -1,8 +1,10 @@
 import { Distance } from '../../AKB/Annotations';
 import { DistanceOrDone } from '../../AnnotationMode';
+import { UnixTime } from '../../UnixTime';
 
 export type StartRecordingAction = {
   type: string;
+  payload: { startTime: UnixTime };
 };
 
 export type StopRecordingAction = {

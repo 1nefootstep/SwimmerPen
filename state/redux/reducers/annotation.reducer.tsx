@@ -67,6 +67,10 @@ export function annotationReducer(
     case ANNOTATION_ACTION_TYPES.LOAD_ANNOTATION: {
       const { payload } = action as LoadAnnotationAction;
       const { annotation } = payload;
+      if (annotation === undefined || annotation === null) {
+        console.log(`Annotation reducer error: annotation passed in was ${annotation}`);
+        return state;
+      }
       return {
         ...annotation,
       };

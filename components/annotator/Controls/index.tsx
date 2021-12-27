@@ -6,7 +6,12 @@ import FineControlBar from './FineControlBar';
 import SelectDistance from './Sidebar/SelectDistance';
 import ToggleLineTool from './Sidebar/ToggleLineTool';
 import AddTimerButton from './Sidebar/AddTimerButton';
-import LoadVideo from './LoadVideo';
+import LoadVideo from './Sidebar/LoadVideo';
+import StrokeCounter from './Sidebar/StrokeCounter';
+
+function Spacer() {
+  return <Box h={2} />;
+}
 
 export default function AnnotationControls() {
   const [width, setWidth] = useState<number>(0);
@@ -37,7 +42,7 @@ export default function AnnotationControls() {
         position="absolute"
         top={{ sm: 4, md: 6, lg: 8 }}
         right={0}
-        w={40}
+        w={48}
         mr={2}
         bg={`rgba(55, 55, 55, 0.33)`}
         onLayout={({ nativeEvent }) => {
@@ -47,13 +52,15 @@ export default function AnnotationControls() {
       >
         <SelectDistance />
         <Box zIndex={-5}>
-          <Box h={2} />
-          <Row>
+          <Spacer />
+          <Row justifyContent='flex-end' mr={4}>
             <ToggleLineTool />
             <AddTimerButton />
           </Row>
-          <Box h={2} />
+          <Spacer />
           <LoadVideo />
+          <Spacer />
+          <StrokeCounter />
         </Box>
       </Box>
     </>

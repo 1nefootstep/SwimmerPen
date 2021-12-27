@@ -11,7 +11,7 @@ export default function CheckpointButton() {
   const dispatch = useDispatch();
   const recordingInfo = useAppSelector(state => state?.recording);
   const onPress = () => {
-    dispatch(addAnnotationWhileRecording());
+    dispatch(addAnnotationWhileRecording(Date.now()));
   };
   const description = recordingInfo.isRecording
     ? recordingInfo.currentDistance !== 'DONE'

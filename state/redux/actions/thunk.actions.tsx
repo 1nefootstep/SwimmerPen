@@ -11,8 +11,9 @@ import { RootState } from '../reducers';
 import * as FileHandler from '../../../FileHandler';
 import { AppActionTypes } from '../types';
 import { addAnnotation, updatePoolConfig } from './annotation.actions';
-import { updateDistance, updateLastRecordedUri } from './recording.actions';
+import { updateDistance } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
+import { UnixTime } from '../../UnixTime';
 
 export type AppThunkAction = ThunkAction<
   void,
@@ -21,14 +22,14 @@ export type AppThunkAction = ThunkAction<
   AppActionTypes
 >;
 
-export function addAnnotationWhileRecording(): AppThunkAction {
+export function addAnnotationWhileRecording(currentTime: UnixTime): AppThunkAction {
   return (dispatch, getState) => {
     const { annotation, recording } = getState();
     // simply do nothing if we aren't recording
     if (!recording.isRecording) {
       return;
     }
-    const timeInMs = Date.now() - recording.startRecordTime;
+    const timeInMs = currentTime - recording.startRecordTime;
     if (recording.currentDistance !== 'DONE') {
       dispatch(addAnnotation(recording.currentDistance, timeInMs));
       const { poolDistance, raceDistance } = annotation.poolConfig;

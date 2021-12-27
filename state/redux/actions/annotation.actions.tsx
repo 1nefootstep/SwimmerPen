@@ -99,7 +99,7 @@ export function loadAnnotation(annotationInfo: AnnotationInformation) {
   return {
     type: ANNOTATION_ACTION_TYPES.LOAD_ANNOTATION,
     payload: {
-      annotationInfo: annotationInfo,
+      annotation: annotationInfo,
     },
   };
 }

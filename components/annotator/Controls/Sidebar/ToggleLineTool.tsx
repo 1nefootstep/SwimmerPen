@@ -21,7 +21,6 @@ export default function ToggleLineTool() {
   return (
     <Button
       variant="subtle"
-      ml={1}
       size="sm"
       onPress={onPress}
       colorScheme={isLineVisible ? 'tertiary' : 'secondary'}

@@ -2,7 +2,7 @@ import { Distance } from '../../AKB/Annotations';
 import { DistanceOrDone } from '../../AnnotationMode';
 import { UnixTime } from '../../UnixTime';
 import { RECORDING_ACTION_TYPES } from '../actions';
-import { RecordingActionTypes, UpdateDistanceAction, UpdateLastRecordedUriAction } from '../types';
+import { RecordingActionTypes, StartRecordingAction, UpdateDistanceAction, UpdateLastRecordedUriAction } from '../types';
 
 export type RecordingInfo = {
   isRecording: boolean;
@@ -28,8 +28,9 @@ export function recordingReducer(
 ): RecordingInfo {
   switch (action.type) {
     case RECORDING_ACTION_TYPES.START_RECORDING: {
-      const startRecordTime: UnixTime = Date.now();
-      return { ...state, isRecording: true, startRecordTime: startRecordTime };
+      const { payload } = action as StartRecordingAction;
+      const { startTime } = payload;
+      return { ...state, isRecording: true, startRecordTime: startTime };
     }
     case RECORDING_ACTION_TYPES.STOP_RECORDING: {
       return { ...state, isRecording: false, currentDistance: 0 };

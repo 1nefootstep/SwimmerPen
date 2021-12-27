@@ -3,14 +3,9 @@ import { Row, Factory, Button, Icon, Column, Box } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
 
-import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../../state/redux/hooks';
 
-import { addAnnotation, setCurrentDistance } from '../../../../state/redux';
-import * as VideoService from '../../../../state/VideoService';
-import { getDefaultMode, getModes, Modes } from '../../../../state/AKB';
 import { maxHeight, zIndex } from 'styled-system';
-
-// const FactoryDropDown = Factory(DropDownPicker);
 
 export default function SelectDistance() {
   const dispatch = useAppDispatch();
@@ -46,39 +41,9 @@ export default function SelectDistance() {
 
   // const items = [{label: '0m', value: 0}];
 
-  const onChangeValue = (newValue: ValueType | ValueType[] | null) => {
-    if (videoStatus === null || !videoStatus.isLoaded) {
-      return;
-    }
+  const onChangeValue = () => {};
 
-    let distance: number;
-    if (newValue === null) {
-      distance = 0;
-    } else if (typeof newValue === 'number') {
-      distance = newValue as number;
-    } else {
-      distance = 0;
-    }
-    VideoService.seek(annotations[distance]);
-  };
-
-  const onPressCheckpoint = () => {
-    if (videoStatus !== null && videoStatus.isLoaded) {
-      dispatch(addAnnotation(currentDistance, videoStatus.positionMillis));
-      const currIndex = mode.checkpoints.findIndex(
-        cp => cp.distanceMeter === currentDistance
-      );
-      const nextIndex =
-        currIndex + 1 > mode.checkpoints.length - 1 ? currIndex : currIndex + 1;
-
-      const d = mode.checkpoints[nextIndex].distanceMeter;
-      dispatch(setCurrentDistance(d));
-      const toSeek = annotations[d];
-      if (toSeek !== undefined) {
-        VideoService.seek(toSeek);
-      }
-    }
-  };
+  const onPressCheckpoint = () => {};
 
   return (
     <Row alignItems='center' justifyContent='flex-end' mr={4}>

@@ -1,5 +1,6 @@
 import { Distance } from '../../AKB';
 import { DistanceOrDone } from '../../AnnotationMode';
+import { UnixTime } from '../../UnixTime';
 import {
   StartRecordingAction,
   StopRecordingAction,
@@ -14,9 +15,10 @@ export enum RECORDING_ACTION_TYPES {
   UPDATE_LAST_RECORDED_URI = 'RECORDING/UPDATE_LAST_RECORDED_URI',
 }
 
-export function startRecording(): StartRecordingAction {
+export function startRecording(startTime: UnixTime): StartRecordingAction {
   return {
     type: RECORDING_ACTION_TYPES.START_RECORDING,
+    payload: { startTime: startTime },
   };
 }
 

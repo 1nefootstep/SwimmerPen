@@ -42,7 +42,7 @@ export async function loadVideo(uri: string): Promise<boolean> {
     try {
       await v.loadAsync({ uri: uri });
     } catch (e) {
-      console.log(`Error at loadAsync: ${e}`);
+      console.log(`Error at loadAsync while loading ${uri}: ${e}`);
       return false;
     }
     return true;
