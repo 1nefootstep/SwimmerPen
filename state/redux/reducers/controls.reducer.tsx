@@ -4,15 +4,12 @@ import {
   ControlsActionTypes,
   RemoveTimerAction,
   SetCurrentDistanceAction,
-  // SetLinePointsAction,
-  // XYCoordinate,
 } from '../types';
 
 export type ControlsInfo = {
   currentDistance: number;
   isLineVisible: boolean;
   timers: Array<number>;
-  // savedPointsLocation: { p1: XYCoordinate; p2: XYCoordinate };
 };
 
 function initState(): ControlsInfo {
@@ -20,7 +17,6 @@ function initState(): ControlsInfo {
     currentDistance: 0,
     isLineVisible: false,
     timers: [],
-    // savedPointsLocation: { p1: { x: 100, y: 100 }, p2: { x: 150, y: 150 } },
   };
 }
 

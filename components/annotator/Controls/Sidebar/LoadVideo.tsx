@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
 import { Button, Text } from 'native-base';
-import * as ImagePicker from 'expo-image-picker';
 
 import * as VideoService from '../../../../state/VideoService';
 import { useAppDispatch } from '../../../../state/redux/hooks';
@@ -17,18 +15,25 @@ export default function LoadVideo() {
     useState<boolean>(false);
   const dispatch = useAppDispatch();
 
-  const onSelectVideo = (uri: string) => {
+  const onSelectVideo = async (uri: string) => {
     const { baseName } = FileHandler.breakUri(uri);
-    FileHandler.loadAnnotation(baseName).then(result => {
-      console.log(JSON.stringify(result));
-      if (result.isSuccessful) {
-        dispatch(reduxLoadAnnotation(result.annotation));
-      }
-      dispatch(clearVideoStatus());
-    });
+    const loadAnnResult = await FileHandler.loadAnnotation(baseName);
+    console.log(JSON.stringify(loadAnnResult));
+    if (loadAnnResult.isSuccessful) {
+      dispatch(reduxLoadAnnotation(loadAnnResult.annotation));
+    }
+    dispatch(clearVideoStatus());
+
     VideoService.loadVideo(uri).then(isSuccessful => {
       if (!isSuccessful) {
         console.log('LoadVideo: load unsuccessful');
+      } else {
+        if (loadAnnResult.isSuccessful) {
+          const toSeek = loadAnnResult.annotation.annotations[0];
+          if (toSeek !== undefined) {
+            VideoService.seek(toSeek);
+          }
+        }
       }
     });
   };

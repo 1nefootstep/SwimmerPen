@@ -33,8 +33,7 @@ export default function RecordButton(props: {
             '<RecordButton> No permission: not allowed to write to media library'
           );
           return;
-        }
-        dispatch(startRecording(Date.now()));
+        }        
         cameraRef!
           .recordAsync(props.recordOptions)
           .then(({ uri }) => {
@@ -43,6 +42,7 @@ export default function RecordButton(props: {
           .catch(e => {
             console.log(`<RecordButton> error: ${e}`);
           });
+        dispatch(startRecording(Date.now()));
       } else {
         cameraRef!.stopRecording();
         dispatch(stopRecording());
