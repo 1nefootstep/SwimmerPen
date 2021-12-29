@@ -25,13 +25,18 @@ export default function FilePickerScreen({
 
   useEffect(() => {
     getVideoNames().then(async names => {
-      const uris = names.sort().reverse().map((e, i) => getVideoUri(e));
-      const thumbnailResults = await Promise.all(
-        uris.map(
-          async (e, i) =>
-            await VideoThumbnails.getThumbnailAsync(e)
-        )
-      );
+      const uris = names
+        .sort()
+        .reverse()
+        .map((e, i) => getVideoUri(e));
+      let thumbnailResults: Array<VideoThumbnails.VideoThumbnailsResult> = [];
+      try {
+        thumbnailResults = await Promise.all(
+          uris.map(async (e, i) => await VideoThumbnails.getThumbnailAsync(e))
+        );
+      } catch (err) {
+        console.log(`filepicker: ${err}`);
+      }
       const imageSources = thumbnailResults.map((e, i) => {
         return { uri: e.uri };
       });
@@ -47,7 +52,16 @@ export default function FilePickerScreen({
 
   const footer = ({ imageIndex }: { imageIndex: number }) => (
     <Column alignItems="center" justifyContent="center">
-      <Text mb={2}>{getNameFromUri(videoUris[imageIndex] ?? '')}</Text>
+      <Box
+        bg="primary.50"
+        paddingX={8}
+        paddingY={2}
+        mb={2}
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Text>{getNameFromUri(videoUris[imageIndex] ?? '')}</Text>
+      </Box>
       <Button
         variant="solid"
         size="sm"

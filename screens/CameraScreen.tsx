@@ -13,6 +13,7 @@ import MuteButton from '../components/camera/MuteButton';
 import CheckpointButton from '../components/camera/CheckpointButton';
 import LoadingScreen from './LoadingScreen';
 import ErrorScreen from './ErrorScreen';
+import { createDirs } from '../FileHandler';
 
 export default function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
@@ -33,6 +34,7 @@ export default function CameraScreen({ navigation }) {
       setHasPermission(
         status === 'granted' && micPermissionResponse.status === 'granted'
       );
+      createDirs();
     })();
   }, []);
 

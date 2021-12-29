@@ -37,17 +37,10 @@ export async function createDirIfDontExist(dir: string): Promise<boolean> {
   }
 }
 
-// export async function makeDirIfNotPresent(uri: string): Promise<string> {
-//   const dir = await FS.getInfoAsync(uri, {
-//     md5: false,
-//     size: false,
-//   });
-//   if (dir.exists && dir.isDirectory) {
-//     return uri;
-//   }
-//   await FS.makeDirectoryAsync(APP_DIRECTORY_PATH, { intermediates: true });
-//   return uri;
-// }
+export function createDirs() {
+  const createAnnDirResult = createDirIfDontExist(APP_ANNOTATION_DIR_PATH);
+  const createVidDirResult = createDirIfDontExist(APP_VIDEO_DIR_PATH);
+}
 
 interface BrokenUpUri {
   directory: string;
@@ -106,7 +99,7 @@ export async function renameVideoAndAnnotation(
   newBaseName: string
 ): Promise<boolean> {
   const currVideoUri = `${APP_VIDEO_DIR_PATH}/${currBaseName}`;
-  const currAnnotationUri = `${APP_ANNOTATION_DIR_PATH}/${currBaseName}.txt`;
+  const currAnnotationUri = `${APP_ANNOTATION_DIR_PATH}/${currBaseName}`;
   const videoUriSplit = breakUri(currVideoUri);
   const annotationUriSplit = breakUri(currAnnotationUri);
   const replacedVideoName = new String(videoUriSplit.baseNameWithExt).replace(
@@ -208,13 +201,19 @@ export type SaveVideoResult =
 
 export async function saveVideo(uri: string): Promise<SaveVideoResult> {
   try {
-    const createDirResult = createDirIfDontExist(APP_VIDEO_DIR_PATH);
+    const createDirResult = await createDirIfDontExist(APP_VIDEO_DIR_PATH);
     if (!createDirResult) {
       console.log('create video dir failed');
     }
     const nextNum = await getNextNumberInVideoFolder();
-    const toUri = `${APP_VIDEO_DIR_PATH}/${NAME_PREFIX}${nextNum}`;
+    let toUri: string;
+    if (Platform.OS === 'ios') {
+      toUri = `${APP_VIDEO_DIR_PATH}/${NAME_PREFIX}${nextNum}.mov`;
+    } else {
+      toUri = `${APP_VIDEO_DIR_PATH}/${NAME_PREFIX}${nextNum}`;
+    }
     await FS.moveAsync({ from: uri, to: toUri });
+    console.log(`<FileHandler> save video to ${toUri}`);
     return {
       isSuccessful: true,
       filename: `${NAME_PREFIX}${nextNum}`,
@@ -243,12 +242,12 @@ export async function saveAnnotation(
   annotationInfo: AnnotationInformation
 ): Promise<boolean> {
   try {
-    const createDirResult = createDirIfDontExist(APP_ANNOTATION_DIR_PATH);
+    const createDirResult = await createDirIfDontExist(APP_ANNOTATION_DIR_PATH);
     if (!createDirResult) {
       console.log('create annotation dir failed');
     }
     await FS.writeAsStringAsync(
-      `${APP_ANNOTATION_DIR_PATH}/${basename}.txt`,
+      `${APP_ANNOTATION_DIR_PATH}/${basename}`,
       JSON.stringify(annotationInfo)
     );
     return true;
@@ -272,7 +271,7 @@ export async function loadAnnotation(
 ): Promise<LoadAnnotationResult> {
   try {
     const result = await FS.readAsStringAsync(
-      `${APP_ANNOTATION_DIR_PATH}/${basename}.txt`
+      `${APP_ANNOTATION_DIR_PATH}/${basename}`
     );
     const annotationInfo: AnnotationInformation = JSON.parse(result);
     return { isSuccessful: true, annotation: annotationInfo };
