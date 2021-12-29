@@ -34,7 +34,7 @@ export default function RecordButton(props: {
           );
           return;
         }
-
+        dispatch(startRecording(Date.now()));
         cameraRef!
           .recordAsync(props.recordOptions)
           .then(({ uri }) => {
@@ -43,7 +43,6 @@ export default function RecordButton(props: {
           .catch(e => {
             console.log(`<RecordButton> error: ${e}`);
           });
-        dispatch(startRecording(Date.now()));
       } else {
         cameraRef!.stopRecording();
         dispatch(stopRecording());
