@@ -125,34 +125,6 @@ export async function renameVideoAndAnnotation(
   return true;
 }
 
-// async function renameFile(uri: string, newBaseName: string): Promise<string> {
-//   const { directory, baseName, baseNameWithExt } = breakUri(uri);
-//   let replacedName = new String(baseNameWithExt).replace(baseName, newBaseName);
-//   let renamedUri = `${directory}${replacedName}`;
-//   await FS.moveAsync({ from: uri, to: renamedUri });
-//   return renamedUri;
-// }
-
-// async function getNextNumberInAlbum(
-//   album: MediaLibrary.Album,
-//   withEndCursor?: string
-// ): Promise<number> {
-//   const assets = await MediaLibrary.getAssetsAsync({
-//     album: album,
-//     mediaType: ['video'],
-//     after: withEndCursor,
-//   });
-//   let names = assets.assets.map((e, i) => e.filename);
-//   let nextNum = getNextNumber(names);
-//   if (assets.hasNextPage) {
-//     nextNum = Math.max(
-//       nextNum,
-//       await getNextNumberInAlbum(album, assets.endCursor)
-//     );
-//   }
-//   return nextNum;
-// }
-
 async function getNextNumberInVideoFolder(): Promise<number> {
   const names = await FS.readDirectoryAsync(APP_VIDEO_DIR_PATH);
   return getNextNumber(names);
@@ -168,37 +140,6 @@ export type SaveVideoResult =
       isSuccessful: false;
     };
 
-// export async function saveVideoDeprecated(uri: string): Promise<SaveVideoResult> {
-//   let assetUri: string = uri;
-//   const albumRef = await MediaLibrary.getAlbumAsync(ALBUM_NAME);
-//   if (Platform.OS === 'android') {
-//     let nextNum: number;
-//     if (albumRef === null) {
-//       nextNum = 1;
-//     } else {
-//       nextNum = await getNextNumberInAlbum(albumRef);
-//     }
-//     assetUri = await renameFile(uri, `${NAME_PREFIX}${nextNum}`);
-//   }
-//   try {
-//     const asset = await MediaLibrary.createAssetAsync(assetUri);
-//     if (albumRef === null) {
-//       await MediaLibrary.createAlbumAsync(ALBUM_NAME, asset, false);
-//     } else {
-//       await MediaLibrary.addAssetsToAlbumAsync([asset], albumRef, false);
-//     }
-//     // const assetInfo = await MediaLibrary.getAssetInfoAsync(asset);
-//     // return { isSuccessful: true, filename: assetInfo.filename, uri: assetInfo.uri };
-//     // for ANDROID ONLY
-//     const {baseName} = breakUri(assetUri);
-//     return { isSuccessful: true, filename: baseName };
-//     // return {isSuccessful}
-//   } catch (e) {
-//     console.log(`<FileHandler> Failed to save video: ${e}`);
-//     return { isSuccessful: false };
-//   }
-// }
-
 export async function saveVideo(uri: string): Promise<SaveVideoResult> {
   try {
     const createDirResult = await createDirIfDontExist(APP_VIDEO_DIR_PATH);
@@ -206,13 +147,9 @@ export async function saveVideo(uri: string): Promise<SaveVideoResult> {
       console.log('create video dir failed');
     }
     const nextNum = await getNextNumberInVideoFolder();
-    let toUri: string;
-    if (Platform.OS === 'ios') {
-      toUri = `${APP_VIDEO_DIR_PATH}/${NAME_PREFIX}${nextNum}.mov`;
-    } else {
-      toUri = `${APP_VIDEO_DIR_PATH}/${NAME_PREFIX}${nextNum}`;
-    }
-    await FS.moveAsync({ from: uri, to: toUri });
+
+    const toUri = getVideoUri(`${NAME_PREFIX}${nextNum}`);
+    await FS.copyAsync({ from: uri, to: toUri });
     console.log(`<FileHandler> save video to ${toUri}`);
     return {
       isSuccessful: true,
@@ -224,8 +161,25 @@ export async function saveVideo(uri: string): Promise<SaveVideoResult> {
   }
 }
 
-export function getVideoUri(baseName: string): string {
-  return `${APP_VIDEO_DIR_PATH}/${baseName}`;
+export async function deleteVideoandAnnotation(
+  basename: string
+): Promise<void> {
+  const videoUri = getVideoUri(basename);
+  const annotationUri = getAnnotationUri(basename);
+  await FS.deleteAsync(videoUri);
+  await FS.deleteAsync(annotationUri);
+}
+
+export function getVideoUri(basename: string): string {
+  if (Platform.OS === 'ios') {
+    return `${APP_VIDEO_DIR_PATH}/${basename}.mov`;
+  } else {
+    return `${APP_VIDEO_DIR_PATH}/${basename}.mp4`;
+  }
+}
+
+export function getAnnotationUri(basename: string): string {
+  return `${APP_ANNOTATION_DIR_PATH}/${basename}`;
 }
 
 export async function getVideoNames(): Promise<Array<string>> {
@@ -247,7 +201,7 @@ export async function saveAnnotation(
       console.log('create annotation dir failed');
     }
     await FS.writeAsStringAsync(
-      `${APP_ANNOTATION_DIR_PATH}/${basename}`,
+      getAnnotationUri(basename),
       JSON.stringify(annotationInfo)
     );
     return true;

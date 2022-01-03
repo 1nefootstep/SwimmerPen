@@ -4,6 +4,7 @@ import { IconButton } from 'native-base';
 import { Entypo } from '@expo/vector-icons';
 import { Camera, CameraRecordingOptions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
+import * as FileHandler from '../../FileHandler';
 
 import { useAppDispatch } from '../../state/redux/hooks';
 import {
@@ -11,6 +12,7 @@ import {
   startRecording,
   stopRecording,
 } from '../../state/redux';
+import { SaveVideoResult } from '../../FileHandler';
 
 export default function RecordButton(props: {
   isRecording: boolean;
@@ -33,11 +35,13 @@ export default function RecordButton(props: {
             '<RecordButton> No permission: not allowed to write to media library'
           );
           return;
-        }        
+        }
         cameraRef!
           .recordAsync(props.recordOptions)
-          .then(({ uri }) => {
-            dispatch(saveVideoAndAnnotation(uri));
+          .then(async ({ uri }) => {
+            const saveVideoResult: SaveVideoResult =
+              await FileHandler.saveVideo(uri);
+            dispatch(saveVideoAndAnnotation(saveVideoResult, uri));
           })
           .catch(e => {
             console.log(`<RecordButton> error: ${e}`);

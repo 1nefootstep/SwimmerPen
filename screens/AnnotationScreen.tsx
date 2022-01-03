@@ -85,9 +85,6 @@ export default function AnnotationScreen({ navigation }) {
             <Video
               ref={video}
               style={{ height: '100%', aspectRatio: 1.77, maxWidth: '100%' }}
-              source={{
-                uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-              }}
               useNativeControls={false}
               onLoad={updateStatus}
               isLooping={false}

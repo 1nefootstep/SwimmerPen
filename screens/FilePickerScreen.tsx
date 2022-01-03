@@ -13,7 +13,12 @@ import { AntDesign } from '@expo/vector-icons';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import ImageView from 'react-native-image-viewing';
 import { ImageSource } from 'react-native-image-viewing/dist/@types';
-import { breakUri, getVideoNames, getVideoUri } from '../FileHandler';
+import {
+  breakUri,
+  deleteVideoandAnnotation,
+  getVideoNames,
+  getVideoUri,
+} from '../FileHandler';
 
 export default function FilePickerScreen({
   onSelect,
@@ -23,12 +28,18 @@ export default function FilePickerScreen({
   const [videoUris, setVideoUris] = useState<Array<string>>([]);
   const [thumbnailUris, setThumbnailUris] = useState<Array<ImageSource>>([]);
 
-  useEffect(() => {
+  const updateVideoUris = () => {
     getVideoNames().then(async names => {
+      console.log(`video names: ${names}`);
       const uris = names
         .sort()
         .reverse()
-        .map((e, i) => getVideoUri(e));
+        .map((e, i) => {
+          const { baseName } = breakUri(e);
+          const uri = getVideoUri(baseName);
+          console.log(uri);
+          return getVideoUri(baseName);
+        });
       let thumbnailResults: Array<VideoThumbnails.VideoThumbnailsResult> = [];
       try {
         thumbnailResults = await Promise.all(
@@ -43,6 +54,10 @@ export default function FilePickerScreen({
       setVideoUris(uris);
       setThumbnailUris(imageSources);
     });
+  };
+
+  useEffect(() => {
+    updateVideoUris();
   }, []);
 
   const getNameFromUri = (uri: string) => {
@@ -65,6 +80,7 @@ export default function FilePickerScreen({
       <Button
         variant="solid"
         size="sm"
+        mr={4}
         onPress={() => {
           onSelect(videoUris[imageIndex]);
           setIsVisible(false);
@@ -72,6 +88,19 @@ export default function FilePickerScreen({
         colorScheme="tertiary"
       >
         Select
+      </Button>
+      <Button
+        variant="solid"
+        size="sm"
+        onPress={async () => {
+          const { baseName } = breakUri(videoUris[imageIndex]);
+          console.log(`uri: ${videoUris[imageIndex]}, basename: ${baseName}`);
+          await deleteVideoandAnnotation(baseName);
+          updateVideoUris();
+        }}
+        colorScheme="tertiary"
+      >
+        Delete
       </Button>
     </Column>
   );

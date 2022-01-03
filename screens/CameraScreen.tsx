@@ -34,7 +34,7 @@ export default function CameraScreen({ navigation }) {
       setHasPermission(
         status === 'granted' && micPermissionResponse.status === 'granted'
       );
-      createDirs();
+      await createDirs();
     })();
   }, []);
 

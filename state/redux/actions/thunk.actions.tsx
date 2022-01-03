@@ -10,10 +10,16 @@ import { findNextDistance } from '../../AnnotationMode';
 import { RootState } from '../reducers';
 import * as FileHandler from '../../../FileHandler';
 import { AppActionTypes } from '../types';
-import { addAnnotation, updatePoolConfig } from './annotation.actions';
-import { updateDistance } from './recording.actions';
+import {
+  addAnnotation,
+  updatePoolConfig,
+  clearAnnotation,
+} from './annotation.actions';
+import { updateDistance, stopRecording } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
 import { UnixTime } from '../../UnixTime';
+import { batch } from 'react-redux';
+import { SaveVideoResult } from '../../../FileHandler';
 
 export type AppThunkAction = ThunkAction<
   void,
@@ -22,7 +28,9 @@ export type AppThunkAction = ThunkAction<
   AppActionTypes
 >;
 
-export function addAnnotationWhileRecording(currentTime: UnixTime): AppThunkAction {
+export function addAnnotationWhileRecording(
+  currentTime: UnixTime
+): AppThunkAction {
   return (dispatch, getState) => {
     const { annotation, recording } = getState();
     // simply do nothing if we aren't recording
@@ -47,14 +55,16 @@ export function saveAnnotation(basename: string): AppThunkAction {
   };
 }
 
-export function saveVideoAndAnnotation(uri: string): AppThunkAction {
+export function saveVideoAndAnnotation(
+  saveVideoResult: SaveVideoResult,
+  uri: string
+): AppThunkAction {
   return async (dispatch, getState) => {
     const { annotation } = getState();
-    const saveVideoResult = await FileHandler.saveVideo(uri);
     if (saveVideoResult.isSuccessful) {
       const { baseName } = FileHandler.breakUri(saveVideoResult.filename);
       FileHandler.saveAnnotation(baseName, annotation);
-      // dispatch(updateLastRecordedUri(saveVideoResult.uri));
+      dispatch(clearAnnotation());
     }
   };
 }
@@ -64,7 +74,9 @@ export function updatePoolConfigAndResetCurrentDistance(
   raceDistance: RaceDistance
 ): AppThunkAction {
   return (dispatch, getState) => {
-    dispatch(updatePoolConfig(poolDistance, raceDistance));
-    dispatch(setCurrentDistance(0));
+    batch(() => {
+      dispatch(updatePoolConfig(poolDistance, raceDistance));
+      dispatch(setCurrentDistance(0));
+    });
   };
 }
