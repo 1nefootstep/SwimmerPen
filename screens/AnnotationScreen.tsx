@@ -95,11 +95,11 @@ export default function AnnotationScreen({ navigation }) {
           <Hidden isHidden={!isLineVisible}>
             <LineTool />
           </Hidden>
-          <Hidden isHidden={!isControlActive}>
-            <AnnotationControls />
-          </Hidden>
           <TimerTool />
         </Center>
+        <Hidden isHidden={!isControlActive}>
+          <AnnotationControls />
+        </Hidden>
       </VideoBoundContext.Provider>
     </LineContext.Provider>
   );

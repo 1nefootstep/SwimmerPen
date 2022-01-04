@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Button, Icon } from 'native-base';
+import { Button, Icon, Center } from 'native-base';
 import { Entypo } from '@expo/vector-icons';
 
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
@@ -19,16 +19,19 @@ export default function ToggleLineTool() {
   };
 
   return (
-    <Button
-      variant="subtle"
-      size="sm"
-      onPress={onPress}
-      colorScheme={isLineVisible ? 'tertiary' : 'secondary'}
-      leftIcon={
-        <Icon as={Entypo} name="flow-line" size={{ md: 'sm', lg: 'md' }} />
-      }
-    >
-      Line
-    </Button>
+    <Center>
+      <Button
+        variant="subtle"
+        size="sm"
+        w={24}
+        onPress={onPress}
+        colorScheme={isLineVisible ? 'tertiary' : 'secondary'}
+        leftIcon={
+          <Icon as={Entypo} name="flow-line" size={{ md: 'sm', lg: 'md' }} />
+        }
+      >
+        Line
+      </Button>
+    </Center>
   );
 }

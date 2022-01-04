@@ -85,11 +85,13 @@ export default function SelectDistance() {
       <Box
         maxH={10}
         maxW={24}
+        mt={1}
         mr={1}
       >
       <DropDownPicker
         items={items}
-        style={{maxHeight: 42}}
+        style={{maxHeight: 36, width: 86}}
+        textStyle={{fontSize: 12}}
         placeholder={`${currentDistance}m`}
         value={currentDistance}
         dropDownContainerStyle={{zIndex: 20, elevation: 999}}
@@ -106,10 +108,10 @@ export default function SelectDistance() {
       </Box>
       <Button
         variant="solid"
-        ml={1}
+        mr={1}
         size='sm'
-        w={10}
-        h={10}
+        w={8}
+        h={8}
         onPress={onPressCheckpoint}
         isDisabled={videoStatus === null || !videoStatus.isLoaded}
         leftIcon={

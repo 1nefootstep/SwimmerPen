@@ -1,10 +1,9 @@
 import React from 'react';
-import { Row, Button, Icon } from 'native-base';
-import { Entypo } from '@expo/vector-icons';
+import { Button, Center } from 'native-base';
 
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 
-import { addTimer, hideLine, showLine } from '../../../../state/redux';
+import { addTimer } from '../../../../state/redux';
 
 export default function AddTimerButton() {
   const dispatch = useAppDispatch();
@@ -18,14 +17,16 @@ export default function AddTimerButton() {
   };
 
   return (
-    <Button
-      variant="subtle"
-      ml={1}
-      size="sm"
-      onPress={onPress}
-      colorScheme="warning"
-    >
-      Add Timer
-    </Button>
+    <Center>
+      <Button
+        variant="subtle"
+        w={24}
+        size="sm"
+        onPress={onPress}
+        colorScheme="warning"
+      >
+        Add Timer
+      </Button>
+    </Center>
   );
 }

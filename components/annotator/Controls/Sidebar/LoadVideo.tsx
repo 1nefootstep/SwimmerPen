@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Text } from 'native-base';
+import React, { useState } from 'react';
+import { Button, Center } from 'native-base';
 
 import * as VideoService from '../../../../state/VideoService';
 import { useAppDispatch } from '../../../../state/redux/hooks';
@@ -45,14 +45,17 @@ export default function LoadVideo() {
         setIsVisible={setIsFilePickerVisible}
         onSelect={onSelectVideo}
       />
-      <Button
-        size={{ md: 'sm', lg: 'md' }}
-        colorScheme="info"
-        variant="subtle"
-        onPress={() => setIsFilePickerVisible(true)}
-      >
-        Load Video
-      </Button>
+      <Center>
+        <Button
+          size={{ md: 'sm', lg: 'md' }}
+          w={24}
+          colorScheme="info"
+          variant="subtle"
+          onPress={() => setIsFilePickerVisible(true)}
+        >
+          Load Video
+        </Button>
+      </Center>
     </>
   );
 }

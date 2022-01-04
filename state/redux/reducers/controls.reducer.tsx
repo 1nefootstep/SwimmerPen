@@ -4,10 +4,12 @@ import {
   ControlsActionTypes,
   RemoveTimerAction,
   SetCurrentDistanceAction,
+  SetCurrentStrokeRangeAction,
 } from '../types';
 
 export type ControlsInfo = {
   currentDistance: number;
+  currentSr: string;
   isLineVisible: boolean;
   timers: Array<number>;
 };
@@ -15,6 +17,7 @@ export type ControlsInfo = {
 function initState(): ControlsInfo {
   return {
     currentDistance: 0,
+    currentSr: '',
     isLineVisible: false,
     timers: [],
   };
@@ -71,14 +74,11 @@ export function controlsReducer(
         ...state,
       };
     }
-    // case CONTROLS_ACTION_TYPES.SET_LINE_POINTS: {
-    //   const { payload } = action as SetLinePointsAction;
-    //   const { points } = payload;
-    //   return {
-    //     ...state,
-    //     savedPointsLocation: { p1: points.p1, p2: points.p2 },
-    //   };
-    // }
+    case CONTROLS_ACTION_TYPES.SET_CURRENT_STROKE_RANGE: {
+      const { payload } = action as SetCurrentStrokeRangeAction;
+      const { sr } = payload;
+      return { ...state, currentSr: sr };
+    }
     default:
       return state;
   }

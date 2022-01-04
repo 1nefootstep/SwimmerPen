@@ -1,11 +1,11 @@
-// export type XYCoordinate = {
-//   x: number;
-//   y: number;
-// };
-
 export type SetCurrentDistanceAction = {
   type: string;
   payload: { currentDistance: number };
+};
+
+export type SetCurrentStrokeRangeAction = {
+  type: string;
+  payload: { sr: string };
 };
 
 export type ShowLineAction = {
@@ -26,15 +26,10 @@ export type RemoveTimerAction = {
   payload: { startTime: number };
 };
 
-// export type SetLinePointsAction = {
-//   type: string;
-//   payload: { points: { p1: XYCoordinate; p2: XYCoordinate } };
-// };
-
 export type ControlsActionTypes =
   | SetCurrentDistanceAction
   | ShowLineAction
   | HideLineAction
   | AddTimerAction
-  | RemoveTimerAction;
-// | SetLinePointsAction;
+  | RemoveTimerAction
+  | SetCurrentStrokeRangeAction;

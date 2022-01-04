@@ -27,8 +27,8 @@ export default function AnnotationControls() {
       <Box
         position="absolute"
         bottom={0}
-        mb={2}
-        style={{ width: width - 48 }}
+        mb={0}
+        style={{ width: width - 117 }}
         onLayout={({ nativeEvent }) => {
           console.log(`bottomHeight: ${nativeEvent.layout.height}`);
           setBottomBarHeight(nativeEvent.layout.height);
@@ -40,25 +40,29 @@ export default function AnnotationControls() {
       </Box>
       <Box
         position="absolute"
-        top={{ sm: 4, md: 6, lg: 8 }}
-        right={0}
-        w={48}
-        mr={2}
+        style={{
+          position: 'absolute',
+          top: 0,
+          right: 0,
+          paddingRight: 16,
+          paddingTop: 16,
+          width: 164,
+          height: '100%',
+        }}
         bg={`rgba(55, 55, 55, 0.33)`}
         onLayout={({ nativeEvent }) => {
           console.log(`sideHeight: ${nativeEvent.layout.height}`);
         }}
-        style={{ height: height - bottomBarHeight - 10 }}
       >
         <SelectDistance />
         <Box zIndex={-5}>
           <Spacer />
-          <Row justifyContent='flex-end' mr={4}>
-            <ToggleLineTool />
-            <AddTimerButton />
-          </Row>
+          <ToggleLineTool />
+          <Spacer />
+          <AddTimerButton />
           <Spacer />
           <LoadVideo />
+          <Spacer />
           <Spacer />
           <StrokeCounter />
         </Box>

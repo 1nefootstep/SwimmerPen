@@ -1,85 +1,48 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Row, Factory, Button, Icon, Column, Box } from 'native-base';
-import { Ionicons } from '@expo/vector-icons';
-import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
+import React, { useEffect, useState } from 'react';
+import { Row } from 'native-base';
 
-import { useAppDispatch, useAppSelector } from '../../../../../state/redux/hooks';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../../../state/redux/hooks';
 
-import { maxHeight, zIndex } from 'styled-system';
+import { addStrokeCount } from '../../../../../state/redux';
+import { StrokeRange } from '../../../../../state/AKB';
+import NumericInput from 'react-native-numeric-input';
 
-export default function SelectDistance() {
+export default function Select() {
   const dispatch = useAppDispatch();
-  const videoStatus = useAppSelector(state => state.video.status);
-  const annotations = useAppSelector(state => state.annotation.annotations);
-
-  const { poolDistance, raceDistance } = useAppSelector(
-    state => state.annotation.poolConfig
-  );
-  const currentDistance = useAppSelector(
-    state => state.controls.currentDistance
-  );
-  const [isOpen, setIsOpen] = useState<boolean>(false);
-
-  const [modes, setModes] = useState<Modes | null>(null);
-  useEffect(() => {
-    (() => {
-      const modes: Modes = getModes();
-      setModes(modes);
-    })();
-  }, []);
-
-  const mode =
-    modes !== null ? modes[poolDistance][raceDistance] : getDefaultMode();
-
-  const items = useMemo(
-    () =>
-      mode.checkpoints.map((e, i) => {
-        return { label: e.name, value: e.distanceMeter };
-      }),
-    [poolDistance, raceDistance]
-  );
-
-  // const items = [{label: '0m', value: 0}];
-
-  const onChangeValue = () => {};
-
-  const onPressCheckpoint = () => {};
-
+  const currentSr = useAppSelector(state => state.controls.currentSr);
+  const strokeCounts = useAppSelector(state => state.annotation.strokeCounts);
+  const { startTime, endTime, strokeCount } =
+    currentSr in strokeCounts
+      ? strokeCounts[currentSr]
+      : { strokeCount: 0, startTime: 0, endTime: 0 };
   return (
-    <Row alignItems='center' justifyContent='flex-end' mr={4}>
-      <Box
-        maxH={10}
-        maxW={24}
-        mr={1}
-      >
-      <DropDownPicker
-        items={items}
-        style={{maxHeight: 42}}
-        placeholder={`${currentDistance}m`}
-        value={currentDistance}
-        dropDownContainerStyle={{zIndex: 20, elevation: 999}}
-        open={isOpen}
-        setOpen={b => {
-          if (videoStatus !== null && videoStatus.isLoaded) {
-            setIsOpen(b);
+    <Row justifyContent="center" mb={2}>
+      <NumericInput
+        initValue={strokeCount}
+        value={strokeCount}
+        minValue={0}
+        onChange={value => {
+          if (currentSr !== '') {
+            const { startRange, endRange } = StrokeRange.fromString(currentSr);
+            dispatch(
+              addStrokeCount(startRange, endRange, startTime, endTime, value) // this seems to be failing
+            );
           }
         }}
-        setValue={value => dispatch(setCurrentDistance(value()))}
-        autoScroll={true}
-        onChangeValue={onChangeValue}
-      />
-      </Box>
-      <Button
-        variant="solid"
-        ml={1}
-        size='sm'
-        w={10}
-        h={10}
-        onPress={onPressCheckpoint}
-        isDisabled={videoStatus === null || !videoStatus.isLoaded}
-        leftIcon={
-          <Icon as={Ionicons} name="checkmark" size='sm' />
-        }
+        type="plus-minus"
+        totalWidth={120}
+        totalHeight={30}
+        iconSize={12}
+        inputStyle={{backgroundColor: 'white'}}
+        leftButtonBackgroundColor="#f43f5e"
+        rightButtonBackgroundColor="#10b981"
+        step={1}
+        iconStyle={{ color: 'white' }}
+        valueType="integer"
+        rounded
       />
     </Row>
   );

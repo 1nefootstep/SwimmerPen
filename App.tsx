@@ -11,7 +11,7 @@ import {
   extendTheme,
 } from 'native-base';
 
-import { config } from './constants/Config';
+import { config, spacing } from './constants/Config';
 import { store } from './state/redux';
 import RootNavigator from './router';
 

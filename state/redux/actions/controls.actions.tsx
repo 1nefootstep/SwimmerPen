@@ -3,24 +3,30 @@ import {
   HideLineAction,
   RemoveTimerAction,
   SetCurrentDistanceAction,
-  // SetLinePointsAction,
+  SetCurrentStrokeRangeAction,
   ShowLineAction,
-  // XYCoordinate,
 } from '../types';
 
 export enum CONTROLS_ACTION_TYPES {
   SET_CURRENT_DISTANCE = 'CONTROLS/SET_CURRENT_DISTANCE',
+  SET_CURRENT_STROKE_RANGE = 'CONTROLS/SET_CURRENT_STROKE_RANGE',
   SHOW_LINE = 'CONTROLS/SHOW_LINE',
   HIDE_LINE = 'CONTROLS/HIDE_LINE',
   ADD_TIMER = 'CONTROLS/ADD_TIMER',
   REMOVE_TIMER = 'CONTROLS/REMOVE_TIMER',
-  // SET_LINE_POINTS = 'CONTROLS/SET_LINE_POINTS',
 }
 
 export function setCurrentDistance(distance: number): SetCurrentDistanceAction {
   return {
     type: CONTROLS_ACTION_TYPES.SET_CURRENT_DISTANCE,
     payload: { currentDistance: distance },
+  };
+}
+
+export function setCurrentStrokeRange(sr: string): SetCurrentStrokeRangeAction {
+  return {
+    type: CONTROLS_ACTION_TYPES.SET_CURRENT_STROKE_RANGE,
+    payload: { sr: sr },
   };
 }
 
@@ -49,13 +55,3 @@ export function removeTimer(startTime: number): RemoveTimerAction {
     payload: { startTime: startTime },
   };
 }
-
-// export function setLinePoints(
-//   p1: XYCoordinate,
-//   p2: XYCoordinate
-// ): SetLinePointsAction {
-//   return {
-//     type: CONTROLS_ACTION_TYPES.HIDE_LINE,
-//     payload: { points: { p1: p1, p2: p2 } },
-//   };
-// }
