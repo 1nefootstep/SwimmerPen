@@ -21,7 +21,6 @@ export default function SelectStrokeRange() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const [modes, setModes] = useState<Modes | null>(null);
-  const [currSr, setCurrentSr] = useState('');
   useEffect(() => {
     (() => {
       const modes: Modes = getModes();
@@ -54,7 +53,6 @@ export default function SelectStrokeRange() {
     } else {
       sr = '';
     }
-    console.log(sr);
     dispatch(setCurrentStrokeRange(sr));
   };
 

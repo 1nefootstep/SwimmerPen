@@ -1,31 +1,5 @@
-import {
-  isNotNullNotUndefined,
-  isNullOrUndefined,
-  numbersToStringRange,
-} from "../components/Util";
-import { default as AKB } from "./AKB/AnnotationKnowledgeBank";
-import { StrokeRange } from "./AKB/StrokeCounts";
-
-// Metres per second
-export interface VelocityStatistic {
-  velocity: number;
-  startDist: number;
-  endDist: number;
-}
-
-// Strokes
-export interface SCStatistic {
-  strokeCount: number;
-  startDist: number;
-  endDist: number;
-}
-
-// Strokes per minute
-export interface SRStatistic {
-  strokeRate: number;
-  startDist: number;
-  endDist: number;
-}
+import { AnnotationInformation, Annotations } from './AKB';
+import { StrokeCounts, StrokeRange } from './AKB/StrokeCounts';
 
 // Distance(m) per stroke
 export interface DPSStatistic {
@@ -34,134 +8,143 @@ export interface DPSStatistic {
   endDist: number;
 }
 
-type DistanceToTime = Map<number, number>;
-
-function getDistanceTimeMap(): DistanceToTime {
-  const annotationInfo = AKB.getAnnotationInfo();
-  const annMap = annotationInfo.annotations.annotations;
-  const dttMap = new Map();
-  const arr = Array.from(annMap.entries());
-  const first = arr.find(e=>e[0] === 0);
-  const firstTime = isNotNullNotUndefined(first) ? first![1] : 0; 
-  arr.forEach((e) => {
-    dttMap.set(e[0], e[1] - firstTime);
-  });
-  return dttMap;
+// Time(s) at Distance(m)
+export interface TimeDistStatistic {
+  time: number;
+  distance: number;
 }
 
-type VelocityMap = Map<string, number>;
-
-function computeAverageVelocities(
-  distanceToTime?: DistanceToTime
-): VelocityMap {
-  let dttMap: DistanceToTime;
-  if (isNotNullNotUndefined(distanceToTime)) {
-    dttMap = distanceToTime!;
-  } else {
-    dttMap = getDistanceTimeMap();
+/**
+ * Gives a sorted (ascending order) of time distance statistics.
+ */
+function getTimeAtDistance(annotations: Annotations): Array<TimeDistStatistic> {
+  const timeDistStatistics: Array<TimeDistStatistic> = [];
+  for (const [key, value] of Object.entries(annotations)) {
+    console.log(`getTimeAtDistance: annotations[${key}] = ${value}`);
+    timeDistStatistics.push({ time: value / 1000, distance: parseInt(key) });
   }
-  const ranges = AKB.getCurrentMode().strokeRanges;
-  const vMap: VelocityMap = new Map();
+  timeDistStatistics.sort((a, b) => a.distance - b.distance);
+  return timeDistStatistics;
+}
 
-  ranges.forEach((e) => {
-    const start = e.startRange;
-    const end = e.endRange;
-    console.log(`velocity compute: start: ${start}, end: ${end}`);
-    const t1 = dttMap.get(start);
-    const t2 = dttMap.get(end);
-    const key = numbersToStringRange([start, end]);
-    if (isNullOrUndefined(t1) || isNullOrUndefined(t2)) {
-      vMap.set(key, 0);
-    } else {
-      console.log(`Velocity for ${start}-${end}: ${(end - start) / ((t2! - t1!) / 1000)}`);
-      vMap.set(key, (end - start) / ((t2! - t1!) / 1000)); // convert from ms to s
+// metres per second
+export interface VelocityAtRangeStatistic {
+  startRange: number;
+  endRange: number;
+  velocity: number;
+}
+
+/**
+ * Computes the average velocities between adjacent time points.
+ */
+function computeAverageVelocities(
+  timeDistStatistics: Array<TimeDistStatistic>
+): Array<VelocityAtRangeStatistic> {
+  if (timeDistStatistics.length < 2) {
+    return [];
+  }
+  const velocities = [];
+  // find velocity between each adjacent pair of time distance
+  for (let i = 0; i + 1 < timeDistStatistics.length; i++) {
+    const td1 = timeDistStatistics[i];
+    const td2 = timeDistStatistics[i + 1];
+    const distTravelled = td2.distance - td1.distance;
+    const timeTaken = td2.time - td1.time;
+    console.log(
+      `computeAverageVelocities: velocity at ${td1.distance}m-${
+        td2.distance
+      }m is ${distTravelled / timeTaken}m/s`
+    );
+    velocities.push({
+      startRange: td1.distance,
+      endRange: td2.distance,
+      velocity: distTravelled / timeTaken,
+    });
+  }
+  return velocities;
+}
+
+// strokeRate: strokes per minute
+export interface StrokeRateStatistic {
+  startRange: number;
+  endRange: number;
+  strokeRate: number;
+}
+
+function computeStrokeRate(
+  strokeCounts: StrokeCounts
+): Array<StrokeRateStatistic> {
+  const strokeRates: Array<StrokeRateStatistic> = [];
+  for (const [key, scWithTime] of Object.entries(strokeCounts)) {
+    const strokeRange = StrokeRange.fromString(key);
+    // converted to minutes
+    const timeTaken = (scWithTime.endTime - scWithTime.startTime) / 60000;
+    if (timeTaken === 0 || strokeRange.startRange === strokeRange.endRange) {
+      continue;
     }
-  });
-  return vMap;
+    console.log(
+      `computeStrokeRate: ${strokeRange.toString()} ${
+        scWithTime.strokeCount / timeTaken
+      } strokes/min`
+    );
+    strokeRates.push({
+      startRange: strokeRange.startRange,
+      endRange: strokeRange.endRange,
+      strokeRate: scWithTime.strokeCount / timeTaken,
+    });
+  }
+  return strokeRates;
 }
 
-type SrMap = Map<string, number>;
-
-function computeStrokeRate(): SrMap {
-  const annotationInfo = AKB.getAnnotationInfo();
-  const sc = annotationInfo.strokeCounts.entries();
-  const srMap: SrMap = new Map();
-  sc.forEach((e) => {
-    const { strokeCount: sc, startTime: t1, endTime: t2 } = e[1];
-    const time = (t2 - t1) / 60000; // in minutes
-    srMap.set(e[0].toHashString(), sc / time);
-  });
-  return srMap;
+export interface StrokeCountStatistic {
+  startRange: number;
+  endRange: number;
+  strokeCount: number;
 }
-
-type ScMap = Map<string, number>;
 
 function computeStrokeCounts(
-  distanceToTime?: DistanceToTime,
-  strokeRateMap?: SrMap
-): ScMap {
-  const scMap: ScMap = new Map();
-
-  let dttMap: DistanceToTime;
-  if (isNotNullNotUndefined(distanceToTime)) {
-    dttMap = distanceToTime!;
-  } else {
-    dttMap = getDistanceTimeMap();
-  }
-  let srMap: SrMap;
-  if (isNotNullNotUndefined(strokeRateMap)) {
-    srMap = strokeRateMap!;
-  } else {
-    srMap = computeStrokeRate();
-  }
-  Array.from(srMap.entries()).forEach((e) => {
-    const key = e[0];
-    const sr = e[1];
-    const splitted = key.split("-");
-    if (splitted.length !== 2) {
-      console.log(`computeStrokeCounts - splitted has length of ${splitted.length}`);
-      return;
+  annotations: Annotations,
+  strokeRates: Array<StrokeRateStatistic>
+): Array<StrokeCountStatistic> {
+  const strokeCounts: Array<StrokeCountStatistic> = [];
+  strokeRates.forEach(sr => {
+    const { startRange, endRange, strokeRate } = sr;
+    if (startRange in annotations && endRange in annotations) {
+      // convert to minutes
+      const timeTaken =
+        (annotations[startRange] - annotations[endRange]) / 60000;
+      if (timeTaken === 0) {
+        return;
+      }
+      strokeCounts.push({
+        startRange: startRange,
+        endRange: endRange,
+        strokeCount: strokeRate * timeTaken,
+      });
     }
-    const d1 = parseInt(splitted[0]);
-    const d2 = parseInt(splitted[1]);
-    if (
-      isNullOrUndefined(sr) ||
-      isNullOrUndefined(d1) ||
-      isNullOrUndefined(d2)
-    ) {
-      console.log(`computeStrokeCounts - sr: ${sr} d1: ${d1} d2: ${d2}`);
-      return;
-    }
-    const t1 = dttMap.get(d1);
-    const t2 = dttMap.get(d2);
-
-    if (isNullOrUndefined(t1) || isNullOrUndefined(t2)) {
-      console.log(`computeStrokeCounts - t1: ${t1} t2: ${t2}`);
-      return;
-    }
-    const timeTaken = (t2! - t1!) / 60000; // to minutes
-
-    scMap.set(key, sr * timeTaken);
   });
-  return scMap;
+  return strokeCounts;
 }
 
 export interface ComputedResult {
-  distanceToTimeMap: DistanceToTime;
-  strokeCounts: ScMap;
-  strokeRates: SrMap;
-  averageVelocities: VelocityMap;
+  distanceToTimeMap: Array<TimeDistStatistic>;
+  strokeCounts: Array<StrokeCountStatistic>;
+  strokeRates: Array<StrokeRateStatistic>;
+  averageVelocities: Array<VelocityAtRangeStatistic>;
 }
 
-export function computeResult(): ComputedResult {
-  const dttMap = getDistanceTimeMap();
-  const vMap = computeAverageVelocities(dttMap);
-  const srMap = computeStrokeRate();
-  const scMap = computeStrokeCounts(dttMap, srMap);
+export function computeResult(
+  annotationsInfo: AnnotationInformation
+): ComputedResult {
+  const { annotations, strokeCounts } = annotationsInfo;
+  const timeDists = getTimeAtDistance(annotations);
+  const velocities = computeAverageVelocities(timeDists);
+  const sr = computeStrokeRate(strokeCounts);
+  const scAtRange = computeStrokeCounts(annotations, sr);
   return {
-    distanceToTimeMap: dttMap,
-    strokeCounts: scMap,
-    strokeRates: srMap,
-    averageVelocities: vMap,
+    distanceToTimeMap: timeDists,
+    strokeCounts: scAtRange,
+    strokeRates: sr,
+    averageVelocities: velocities,
   };
 }

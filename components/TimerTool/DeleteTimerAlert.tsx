@@ -23,20 +23,26 @@ export interface DeleteTimerProps {
   startTime: number;
 }
 
-export default function SingleTimer({ isOpen, setIsOpen, startTime }: DeleteTimerProps) {
+export default function SingleTimer({
+  isOpen,
+  setIsOpen,
+  startTime,
+}: DeleteTimerProps) {
   const dispatch = useAppDispatch();
 
   const cancelRef = useRef(null);
   const onClose = () => setIsOpen(false);
-  
+
   return (
     <AlertDialog
       leastDestructiveRef={cancelRef}
       isOpen={isOpen}
       onClose={onClose}
     >
-      <AlertDialog.Content>
-        <AlertDialog.Header alignItems='center'>Delete this timer?</AlertDialog.Header>
+      <AlertDialog.Content w={48}>
+        <AlertDialog.Header alignItems="center">
+          Delete this timer?
+        </AlertDialog.Header>
         <AlertDialog.Footer>
           <Button.Group space={2}>
             <Button
@@ -51,7 +57,7 @@ export default function SingleTimer({ isOpen, setIsOpen, startTime }: DeleteTime
               colorScheme="danger"
               onPress={() => {
                 onClose();
-                dispatch(removeTimer(startTime));                
+                dispatch(removeTimer(startTime));
               }}
             >
               Delete

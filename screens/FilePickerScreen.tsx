@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  Text,
-  Icon,
-  Box,
-  Row,
-  Center,
-  Column,
-  Container,
-} from 'native-base';
-import { AntDesign } from '@expo/vector-icons';
+import { Button, Text, Box, Column } from 'native-base';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import ImageView from 'react-native-image-viewing';
 import { ImageSource } from 'react-native-image-viewing/dist/@types';

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Row } from 'native-base';
 
 import {
@@ -28,7 +28,7 @@ export default function Select() {
           if (currentSr !== '') {
             const { startRange, endRange } = StrokeRange.fromString(currentSr);
             dispatch(
-              addStrokeCount(startRange, endRange, startTime, endTime, value) // this seems to be failing
+              addStrokeCount(startRange, endRange, startTime, endTime, value)
             );
           }
         }}
