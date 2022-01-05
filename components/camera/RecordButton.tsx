@@ -8,6 +8,7 @@ import * as FileHandler from '../../FileHandler';
 
 import { useAppDispatch } from '../../state/redux/hooks';
 import {
+  clearAnnotation,
   saveVideoAndAnnotation,
   startRecording,
   stopRecording,
@@ -36,6 +37,7 @@ export default function RecordButton(props: {
           );
           return;
         }
+        dispatch(clearAnnotation());
         cameraRef!
           .recordAsync(props.recordOptions)
           .then(async ({ uri }) => {

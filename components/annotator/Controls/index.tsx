@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Dimensions } from 'react-native';
-import { Box, Row } from 'native-base';
+import { Box } from 'native-base';
 import VideoProgressBar from './VideoProgressBar';
 import FineControlBar from './FineControlBar';
 import SelectDistance from './Sidebar/SelectDistance';
@@ -14,13 +14,17 @@ function Spacer() {
 }
 
 export default function AnnotationControls() {
-  const [width, setWidth] = useState<number>(0);
-  const [height, setHeight] = useState<number>(0);
+  // const [width, setWidth] = useState<number>(0);
+  // const [height, setHeight] = useState<number>(0);
   const [bottomBarHeight, setBottomBarHeight] = useState<number>(0);
-  useEffect(() => {
-    setHeight(Dimensions.get('window').height);
-    setWidth(Dimensions.get('window').width);
-  }, []);
+
+  const width = Dimensions.get('window').width;
+  const height = Dimensions.get('window').height;
+
+  // useEffect(() => {
+  //   setHeight(Dimensions.get('window').height);
+  //   setWidth(Dimensions.get('window').width);
+  // }, []);
 
   return (
     <>
@@ -33,7 +37,7 @@ export default function AnnotationControls() {
           console.log(`bottomHeight: ${nativeEvent.layout.height}`);
           setBottomBarHeight(nativeEvent.layout.height);
         }}
-        bg={`rgba(55, 55, 55, 0.33)`}
+        bg={`rgba(255, 255, 255, 0.20)`}
       >
         <VideoProgressBar />
         <FineControlBar />
@@ -49,7 +53,7 @@ export default function AnnotationControls() {
           width: 164,
           height: '100%',
         }}
-        bg={`rgba(55, 55, 55, 0.33)`}
+        bg={`rgba(255, 255, 255, 0.20)`}
         onLayout={({ nativeEvent }) => {
           console.log(`sideHeight: ${nativeEvent.layout.height}`);
         }}

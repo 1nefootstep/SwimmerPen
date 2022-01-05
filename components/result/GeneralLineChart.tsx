@@ -14,12 +14,22 @@ export interface GeneralLineChartProps {
 export default function GeneralLineChart({ data, precision, unit }: GeneralLineChartProps) {
   const screenWidth = Dimensions.get('window').width;
   const numXLabels = data.labels.length;
+
   const fontSize = () => {
     if (numXLabels < 10) {
       return 10;
     }
     return 6;
   };
+  const verticalLabelFontSize = () => {
+    if (unit !== undefined) {
+      if (unit.length < 4) {
+        return 10;
+      }
+      return 8;
+    }
+    return 10;
+  }
   const rotation = () => {
     if (numXLabels < 10) {
       return 0;
@@ -40,7 +50,8 @@ export default function GeneralLineChart({ data, precision, unit }: GeneralLineC
     fillShadowGradientOpacity: 0,
     color: (opacity = 1) => `#023047`,
     labelColor: (opacity = 1) => `#333`,
-    propsForLabels: { fontSize: fontSize() },
+    propsForVerticalLabels: { fontSize: fontSize() },
+    propsForHorizontalLabels: { fontSize: verticalLabelFontSize() },
     strokeWidth: 2,
     useShadowColorFromDataset: false,
     decimalPlaces: 1,

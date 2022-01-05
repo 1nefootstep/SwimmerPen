@@ -1,29 +1,12 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Box, Text } from 'native-base';
 import CameraScreen from '../screens/CameraScreen';
 import Home from '../screens/Home';
 import AnnotationScreen from '../screens/AnnotationScreen';
 import ResultScreen from '../screens/ResultScreen';
 
 const Stack = createNativeStackNavigator();
-
-function PlaceholderScreen() {
-  return (
-    <Box flex={1} justifyContent="center" alignItems="center">
-      <Text>Placeholder</Text>
-    </Box>
-  );
-}
-
-function PlaceholderScreen2() {
-  return (
-    <Box flex={1} justifyContent="center" alignItems="center">
-      <Text>Placeholder</Text>
-    </Box>
-  );
-}
 
 export default function RootNavigator() {
   return (
@@ -47,7 +30,7 @@ export default function RootNavigator() {
           <Stack.Screen name="AnnotationScreen" component={AnnotationScreen} />
         </Stack.Group>
 
-        <Stack.Screen name="ResultScreen" component={ResultScreen} />
+        <Stack.Screen name="Statistics" component={ResultScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

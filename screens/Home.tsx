@@ -24,7 +24,7 @@ export default function Home({ navigation }) {
       </Button>
       <Button
         onPress={() => {
-          navigation.navigate('ResultScreen');
+          navigation.navigate('Statistics');
         }}
         leftIcon={<Icon as={AntDesign} name="camera" size="sm" />}
       >

@@ -4,7 +4,6 @@ import { Center, Box, Divider, ScrollView } from 'native-base';
 import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
 
 import { computeResult } from '../state/StatisticsCalculator';
-import { saveAnnotation } from '../state/redux';
 import VelocityChart from '../components/result/VelocityChart';
 import StrokeCountChart from '../components/result/StrokeCountChart';
 import StrokeRateChart from '../components/result/StrokeRateChart';

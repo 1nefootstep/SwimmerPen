@@ -23,5 +23,5 @@ export default function StrokeRateChart({ strokeRates }: StrokeRateChartProps) {
     };
   }, [strokeRates]);
 
-  return <GeneralLineChart data={data} unit="stroke/min" />;
+  return <GeneralLineChart data={data} unit="st/min" />;
 }
