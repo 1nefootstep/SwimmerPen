@@ -25,5 +25,5 @@ export default function StrokeCountChart({
     };
   }, [strokeCounts]);
 
-  return <GeneralLineChart data={data} precision={3} />;
+  return <GeneralLineChart data={data} />;
 }

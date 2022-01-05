@@ -80,7 +80,7 @@ export default function GeneralLineChart({ data, precision, unit }: GeneralLineC
             }}
             bg="purple.50"
           >
-            <Text fontSize={fontSize()}>{indexData.toFixed(precision !== undefined ? precision : 2)}</Text>
+            <Text fontSize={fontSize()}>{indexData.toFixed(precision !== undefined ? precision : 1)}</Text>
           </Box>
         );
       }}
