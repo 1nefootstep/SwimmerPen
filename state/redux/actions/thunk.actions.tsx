@@ -19,7 +19,7 @@ import { updateDistance, stopRecording } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
 import { UnixTime } from '../../UnixTime';
 import { batch } from 'react-redux';
-import { SaveVideoResult } from '../../../FileHandler';
+import { breakUri, SaveVideoResult } from '../../../FileHandler';
 
 export type AppThunkAction = ThunkAction<
   void,
@@ -48,21 +48,35 @@ export function addAnnotationWhileRecording(
   };
 }
 
-export function saveAnnotation(basename: string): AppThunkAction {
+export function saveAnnotation(basename?: string): AppThunkAction {
   return async (dispatch, getState) => {
-    const { annotation } = getState();
-    FileHandler.saveAnnotation(basename, annotation);
+    const { video, annotation } = getState();
+    if (basename !== undefined) {
+      FileHandler.saveAnnotation(basename, annotation);
+    } else {
+      const videoStatus = video.status;
+      if (videoStatus === null || !videoStatus.isLoaded) {
+        console.log(
+          "Cannot save annotation because don't have base name nor video loaded."
+        );
+        return;
+      }
+      const { baseName } = breakUri(videoStatus.uri);
+      FileHandler.saveAnnotation(baseName, annotation);
+    }
   };
 }
 
 export function saveVideoAndAnnotation(
-  saveVideoResult: SaveVideoResult,
+  // saveVideoResult: SaveVideoResult,
   uri: string
 ): AppThunkAction {
   return async (dispatch, getState) => {
     const { annotation } = getState();
+    const saveVideoResult: SaveVideoResult = await FileHandler.saveVideo(uri);
     if (saveVideoResult.isSuccessful) {
       const { baseName } = FileHandler.breakUri(saveVideoResult.filename);
+      annotation.name = baseName;
       FileHandler.saveAnnotation(baseName, annotation);
       dispatch(clearAnnotation());
     }

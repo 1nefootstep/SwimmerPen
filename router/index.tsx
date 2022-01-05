@@ -5,6 +5,7 @@ import { Box, Text } from 'native-base';
 import CameraScreen from '../screens/CameraScreen';
 import Home from '../screens/Home';
 import AnnotationScreen from '../screens/AnnotationScreen';
+import ResultScreen from '../screens/ResultScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,7 +47,7 @@ export default function RootNavigator() {
           <Stack.Screen name="AnnotationScreen" component={AnnotationScreen} />
         </Stack.Group>
 
-        <Stack.Screen name="ResultScreen" component={PlaceholderScreen2} />
+        <Stack.Screen name="ResultScreen" component={ResultScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

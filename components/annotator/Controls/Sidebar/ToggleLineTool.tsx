@@ -25,7 +25,7 @@ export default function ToggleLineTool() {
         size="sm"
         w={24}
         onPress={onPress}
-        colorScheme={isLineVisible ? 'tertiary' : 'secondary'}
+        colorScheme={isLineVisible ? 'secondary' : 'tertiary'}
         leftIcon={
           <Icon as={Entypo} name="flow-line" size={{ md: 'sm', lg: 'md' }} />
         }

@@ -16,7 +16,7 @@ export default function SelectResolution(props: SelectResolutionProps) {
     <>
       <Box flex={1} justifyContent="center">
         <Button w={[12,16,20,32,40]} variant="subtle" isDisabled={isRecording} onPress={() => setShowModal(true)}>
-          <Text fontSize={[6,8,10,14,18]}>Resolution</Text>
+          <Text fontSize={[6,8,10,14,18]}>{quality}p</Text>
         </Button>
       </Box>
 

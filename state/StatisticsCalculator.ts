@@ -1,13 +1,6 @@
 import { AnnotationInformation, Annotations } from './AKB';
 import { StrokeCounts, StrokeRange } from './AKB/StrokeCounts';
 
-// Distance(m) per stroke
-export interface DPSStatistic {
-  strokeRate: number;
-  startDist: number;
-  endDist: number;
-}
-
 // Time(s) at Distance(m)
 export interface TimeDistStatistic {
   time: number;
@@ -112,10 +105,15 @@ function computeStrokeCounts(
     if (startRange in annotations && endRange in annotations) {
       // convert to minutes
       const timeTaken =
-        (annotations[startRange] - annotations[endRange]) / 60000;
+        (annotations[endRange] - annotations[startRange]) / 60000;
       if (timeTaken === 0) {
         return;
       }
+      console.log(
+        `computeStrokeCount: ${startRange}m-${endRange}m is ${
+          strokeRate * timeTaken
+        } `
+      );
       strokeCounts.push({
         startRange: startRange,
         endRange: endRange,
@@ -126,25 +124,70 @@ function computeStrokeCounts(
   return strokeCounts;
 }
 
+// Distance(m) per stroke
+export interface DPSStatistic {
+  startRange: number;
+  endRange: number;
+  distancePerStroke: number;
+}
+
+function computeDPS(
+  strokeCounts: Array<StrokeCountStatistic>
+): Array<DPSStatistic> {
+  const dps: Array<DPSStatistic> = [];
+  strokeCounts.forEach(sc => {
+    const { startRange, endRange, strokeCount } = sc;
+    if (startRange === endRange) {
+      return;
+    }
+    console.log(
+      `computeDPS: ${startRange}m-${endRange}m is ${
+        (endRange - startRange) / strokeCount
+      } `
+    );
+    dps.push({
+      startRange: startRange,
+      endRange: endRange,
+      distancePerStroke: (endRange - startRange) / strokeCount,
+    });
+  });
+  return dps;
+}
+
 export interface ComputedResult {
-  distanceToTimeMap: Array<TimeDistStatistic>;
+  timeAndDistances: Array<TimeDistStatistic>;
   strokeCounts: Array<StrokeCountStatistic>;
   strokeRates: Array<StrokeRateStatistic>;
   averageVelocities: Array<VelocityAtRangeStatistic>;
+  distancePerStroke: Array<DPSStatistic>;
 }
 
 export function computeResult(
   annotationsInfo: AnnotationInformation
 ): ComputedResult {
   const { annotations, strokeCounts } = annotationsInfo;
+  if (
+    Object.entries(annotations).length === 0 ||
+    Object.entries(strokeCounts).length === 0
+  ) {
+    return {
+      timeAndDistances: [],
+      strokeCounts: [],
+      strokeRates: [],
+      averageVelocities: [],
+      distancePerStroke: [],
+    };
+  }
   const timeDists = getTimeAtDistance(annotations);
   const velocities = computeAverageVelocities(timeDists);
   const sr = computeStrokeRate(strokeCounts);
   const scAtRange = computeStrokeCounts(annotations, sr);
+  const dps = computeDPS(scAtRange);
   return {
-    distanceToTimeMap: timeDists,
+    timeAndDistances: timeDists,
     strokeCounts: scAtRange,
     strokeRates: sr,
     averageVelocities: velocities,
+    distancePerStroke: dps,
   };
 }

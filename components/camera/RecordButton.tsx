@@ -39,9 +39,9 @@ export default function RecordButton(props: {
         cameraRef!
           .recordAsync(props.recordOptions)
           .then(async ({ uri }) => {
-            const saveVideoResult: SaveVideoResult =
-              await FileHandler.saveVideo(uri);
-            dispatch(saveVideoAndAnnotation(saveVideoResult, uri));
+            // const saveVideoResult: SaveVideoResult =
+            //   await FileHandler.saveVideo(uri);
+            dispatch(saveVideoAndAnnotation(uri));
           })
           .catch(e => {
             console.log(`<RecordButton> error: ${e}`);

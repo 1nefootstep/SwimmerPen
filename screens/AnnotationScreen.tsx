@@ -6,7 +6,7 @@ import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/s
 
 import * as VideoService from '../state/VideoService';
 import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
-import { updateVideoStatus } from '../state/redux';
+import { clearAnnotation, saveAnnotation, updateVideoStatus } from '../state/redux';
 import AnnotationControls from '../components/annotator/Controls';
 import Hidden from '../components/Hidden';
 import BackButton from '../components/BackButton';
@@ -65,7 +65,10 @@ export default function AnnotationScreen({ navigation }) {
       >
         <Center flex={1} bg="black" safeArea>
           <BackButton
-            goBack={navigation.goBack}
+            goBack={() => {
+              dispatch(saveAnnotation());
+              navigation.goBack();
+            }}
             style={{
               zIndex: 1,
               position: 'absolute',
