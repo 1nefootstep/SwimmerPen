@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Dimensions } from 'react-native';
-import { Box, Center } from 'native-base';
+import { Center } from 'native-base';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
 
 import * as VideoService from '../state/VideoService';
 import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
-import { clearAnnotation, saveAnnotation, updateVideoStatus } from '../state/redux';
+import { saveAnnotation, updateVideoStatus } from '../state/redux';
 import AnnotationControls from '../components/annotator/Controls';
 import Hidden from '../components/Hidden';
 import BackButton from '../components/BackButton';
-import LineTool, {
-  LineContext,
-  LineContextInterface,
-} from '../components/LineTool';
+import LineTool, { LineContext } from '../components/LineTool';
 import { VideoBoundContext } from '../components/VideoBoundContext';
 import TimerTool from '../components/TimerTool';
 
 export default function AnnotationScreen({ navigation }) {
   const dispatch = useAppDispatch();
   const updateStatus = (status: AVPlaybackStatus) => {
+    if (status.isLoaded) {
+      console.log(`duration: ${status.durationMillis}`);
+    }
     dispatch(updateVideoStatus(status));
   };
   const isLineVisible = useAppSelector(state => state.controls.isLineVisible);

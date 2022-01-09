@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Text, Box, Column } from 'native-base';
+import { Heading, Spinner, Row, Button, Text, Box, Column } from 'native-base';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import ImageView from 'react-native-image-viewing';
 import { ImageSource } from 'react-native-image-viewing/dist/@types';
+import * as FS from 'expo-file-system';
+
 import {
   breakUri,
   deleteVideoandAnnotation,
@@ -10,26 +12,43 @@ import {
   getVideoUri,
 } from '../FileHandler';
 
+interface FilePickerScreenProps {
+  onSelect: (uri: string) => Promise<void>;
+  isVisible: boolean;
+  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 export default function FilePickerScreen({
   onSelect,
   isVisible,
   setIsVisible,
-}) {
+}: FilePickerScreenProps) {
   const [videoUris, setVideoUris] = useState<Array<string>>([]);
   const [thumbnailUris, setThumbnailUris] = useState<Array<ImageSource>>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const updateVideoUris = () => {
+    setIsLoading(true);
     getVideoNames().then(async names => {
       console.log(`video names: ${names}`);
-      const uris = names
-        .sort()
-        .reverse()
-        .map((e, i) => {
+      const urisAndModificationTime = await Promise.all(
+        names.map(async e => {
           const { baseName } = breakUri(e);
           const uri = getVideoUri(baseName);
-          console.log(uri);
-          return getVideoUri(baseName);
-        });
+          const result = await FS.getInfoAsync(uri);
+          if (result.exists) {
+            return { uri: uri, modTime: result.modificationTime };
+          } else {
+            return { uri: uri, modTime: 0 };
+          }
+        })
+      );
+
+      const uris = urisAndModificationTime
+        .filter(e => e.modTime !== 0)
+        .sort((a, b) => b.modTime - a.modTime)
+        .map(e => e.uri);
+
       let thumbnailResults: Array<VideoThumbnails.VideoThumbnailsResult> = [];
       try {
         thumbnailResults = await Promise.all(
@@ -44,6 +63,7 @@ export default function FilePickerScreen({
       setVideoUris(uris);
       setThumbnailUris(imageSources);
     });
+    setIsLoading(false);
   };
 
   useEffect(() => {
@@ -94,7 +114,16 @@ export default function FilePickerScreen({
       </Button>
     </Column>
   );
-
+  if (isLoading) {
+    return (
+      <Row space={2} alignItems="center">
+        <Spinner accessibilityLabel="Loading posts" />
+        <Heading color="primary.500" fontSize="md">
+          Loading
+        </Heading>
+      </Row>
+    );
+  }
   return (
     <ImageView
       images={thumbnailUris}

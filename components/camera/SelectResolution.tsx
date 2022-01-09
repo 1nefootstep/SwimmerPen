@@ -1,22 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Button, Modal, Column, Radio, Box, Text } from 'native-base';
 import { useAppSelector } from '../../state/redux/hooks';
 
 interface SelectResolutionProps {
-  resolutions: Array<string>;
-  setVideoQuality: React.Dispatch<React.SetStateAction<string>>;
+  currentResolution: '480' | '720' | '1080' | '2160';
+  resolutions: Array<'480' | '720' | '1080' | '2160'>;
+  setVideoQuality: React.Dispatch<
+    React.SetStateAction<'480' | '720' | '1080' | '2160'>
+  >;
 }
 
-export default function SelectResolution(props: SelectResolutionProps) {
+export default function SelectResolution({
+  currentResolution,
+  resolutions,
+  setVideoQuality,
+}: SelectResolutionProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [quality, setQuality] = useState<string>(props.resolutions[0]);
-  const isRecording = useAppSelector((state) => state?.recording.isRecording);
+  const [quality, setQuality] = useState<'480' | '720' | '1080' | '2160'>(
+    '720'
+  );
+  const isRecording = useAppSelector(state => state?.recording.isRecording);
+
+  useEffect(() => {
+    setQuality(currentResolution);
+  }, [setQuality]);
+
   return (
     <>
       <Box flex={1} justifyContent="center">
-        <Button w={[12,16,20,32,40]} variant="subtle" isDisabled={isRecording} onPress={() => setShowModal(true)}>
-          <Text fontSize={[6,8,10,14,18]}>{quality}p</Text>
+        <Button
+          w={[12, 16, 20, 32, 40]}
+          variant="subtle"
+          isDisabled={isRecording}
+          onPress={() => setShowModal(true)}
+        >
+          <Text fontSize={[6, 8, 10, 14, 18]}>{quality}p</Text>
         </Button>
       </Box>
 
@@ -30,11 +49,19 @@ export default function SelectResolution(props: SelectResolutionProps) {
               name="videoQuality"
               size="sm"
               onChange={(quality: string) => {
+                if (
+                  quality !== '480' &&
+                  quality !== '720' &&
+                  quality !== '1080' &&
+                  quality !== '2160'
+                ) {
+                  return;
+                }
                 setQuality(quality);
               }}
             >
               <Column space={3}>
-                {Array.from(props.resolutions).map((e, i) => {
+                {Array.from(resolutions).map((e, i) => {
                   return (
                     <Radio
                       key={i}
@@ -58,7 +85,7 @@ export default function SelectResolution(props: SelectResolutionProps) {
               flex="1"
               onPress={() => {
                 setShowModal(false);
-                props.setVideoQuality(quality);
+                setVideoQuality(quality);
               }}
             >
               Continue

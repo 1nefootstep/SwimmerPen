@@ -37,21 +37,25 @@ export default function RecordButton(props: {
           );
           return;
         }
-        dispatch(clearAnnotation());
         cameraRef!
           .recordAsync(props.recordOptions)
           .then(async ({ uri }) => {
             // const saveVideoResult: SaveVideoResult =
             //   await FileHandler.saveVideo(uri);
+            console.log('saving video and annotations and clearing annotation');
             dispatch(saveVideoAndAnnotation(uri));
           })
           .catch(e => {
             console.log(`<RecordButton> error: ${e}`);
           });
-        dispatch(startRecording(Date.now()));
+        const tStart = Date.now();
+        
+        dispatch(startRecording(tStart));
+        console.log(`start record time: ${tStart}`);
       } else {
         cameraRef!.stopRecording();
         dispatch(stopRecording());
+        console.log(`end record time: ${Date.now()}`);
       }
       props.setIsRecording(b => !b);
     }

@@ -26,7 +26,7 @@ export function annotationReducer(
 ): AnnotationInformation {
   switch (action.type) {
     case ANNOTATION_ACTION_TYPES.CLEAR_ANNOTATION: {
-      return initState();
+      return state;
     }
     case ANNOTATION_ACTION_TYPES.ADD_ANNOTATION: {
       const { payload } = action as AddAnnotationAction;

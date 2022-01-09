@@ -15,12 +15,15 @@ import {
   strToPoolDistance,
   strToRaceDistance,
 } from '../state/AKB/PoolConfig';
-import { updatePoolConfigAndResetCurrentDistance } from '../state/redux';
+import {
+  updatePoolConfig,
+  updatePoolConfigAndResetCurrentDistance,
+} from '../state/redux';
 
 export default function SelectMode() {
   const dispatch = useAppDispatch();
-  const poolConfig = useAppSelector((state) => state?.annotation.poolConfig);
-  const isRecording = useAppSelector((state) => state?.recording.isRecording);
+  const poolConfig = useAppSelector(state => state?.annotation.poolConfig);
+  const isRecording = useAppSelector(state => state?.recording.isRecording);
 
   const [modes, setModes] = useState<Modes | null>(null);
 
@@ -36,7 +39,7 @@ export default function SelectMode() {
       setPoolDistance(poolConfig.poolDistance);
       setRaceDistance(poolConfig.raceDistance);
     })();
-  }, []);
+  }, [setModes, setPoolDistance, setRaceDistance]);
 
   if (modes === null) {
     return <></>;
@@ -156,7 +159,8 @@ export default function SelectMode() {
               onPress={() => {
                 setShowModal(false);
                 setShowModal2(false);
-                dispatch(updatePoolConfigAndResetCurrentDistance(poolDistance, raceDistance));
+                dispatch(updatePoolConfig(poolDistance, raceDistance));
+                console.log(`updating to ${poolDistance} ${raceDistance}`);
               }}
             >
               Continue

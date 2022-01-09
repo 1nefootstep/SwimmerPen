@@ -14,14 +14,19 @@ import CheckpointButton from '../components/camera/CheckpointButton';
 import LoadingScreen from './LoadingScreen';
 import ErrorScreen from './ErrorScreen';
 import { createDirs } from '../FileHandler';
+import { clearAnnotation } from '../state/redux';
+import { useAppDispatch } from '../state/redux/hooks';
 
 export default function CameraScreen({ navigation }) {
+  const dispatch = useAppDispatch();
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const cameraRef = useRef<Camera>(null);
   const [ratio, setRatio] = useState('4:3');
   const [isRatioSet, setIsRatioSet] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [videoQuality, setVideoQuality] = useState<string>('720');
+  const [videoQuality, setVideoQuality] = useState<
+    '480' | '720' | '1080' | '2160'
+  >('720');
   const [isMute, setIsMute] = useState<boolean>(false);
   const [zoom, setZoom] = useState<number>(0);
 
@@ -35,14 +40,15 @@ export default function CameraScreen({ navigation }) {
         status === 'granted' && micPermissionResponse.status === 'granted'
       );
       await createDirs();
+      dispatch(clearAnnotation());
     })();
-  }, []);
+  }, [setHasPermission]);
 
   const prepareRatio = async () => {
     let desiredRatio = '16:9';
     if (Platform.OS === 'android') {
       const ratios = await cameraRef.current!.getSupportedRatiosAsync();
-      if (ratios.some((r) => r === desiredRatio)) {
+      if (ratios.some(r => r === desiredRatio)) {
         setRatio(desiredRatio);
       }
     }
@@ -56,7 +62,9 @@ export default function CameraScreen({ navigation }) {
   };
 
   if (hasPermission === null) {
-    return <ErrorScreen failReason="Do not have camera permissions or microphone permission." />;
+    return (
+      <ErrorScreen failReason="Do not have camera permissions or microphone permission." />
+    );
   }
   if (hasPermission === false) {
     return <LoadingScreen itemThatIsLoading="camera" />;
@@ -81,6 +89,7 @@ export default function CameraScreen({ navigation }) {
                 <Column flex={2} />
                 <MuteButton isMute={isMute} setIsMute={setIsMute} />
                 <SelectResolution
+                  currentResolution={videoQuality}
                   resolutions={['480', '720', '1080', '2160']}
                   setVideoQuality={setVideoQuality}
                 />
@@ -98,7 +107,11 @@ export default function CameraScreen({ navigation }) {
                 cameraRef={cameraRef}
                 recordOptions={{ quality: videoQuality }}
               />
-              <Center position="absolute" bottom={0} mb={{ sm: 5, md: 8, lg: 16 }}>
+              <Center
+                position="absolute"
+                bottom={0}
+                mb={{ sm: 5, md: 8, lg: 16 }}
+              >
                 <CheckpointButton />
               </Center>
             </Column>

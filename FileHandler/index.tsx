@@ -1,9 +1,6 @@
 import { Platform } from 'react-native';
 
 import * as FS from 'expo-file-system';
-import * as MediaLibrary from 'expo-media-library';
-
-import { ALBUM_NAME } from '../constants/Constants';
 import { AnnotationInformation } from '../state/AKB/AnnotationKnowledgeBank';
 import { readDirectoryAsync } from 'expo-file-system';
 
