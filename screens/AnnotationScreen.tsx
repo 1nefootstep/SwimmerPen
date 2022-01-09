@@ -17,9 +17,6 @@ import TimerTool from '../components/TimerTool';
 export default function AnnotationScreen({ navigation }) {
   const dispatch = useAppDispatch();
   const updateStatus = (status: AVPlaybackStatus) => {
-    if (status.isLoaded) {
-      console.log(`duration: ${status.durationMillis}`);
-    }
     dispatch(updateVideoStatus(status));
   };
   const isLineVisible = useAppSelector(state => state.controls.isLineVisible);
