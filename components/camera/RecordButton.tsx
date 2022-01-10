@@ -1,19 +1,14 @@
 import React, { RefObject } from 'react';
-
 import { IconButton } from 'native-base';
 import { Entypo } from '@expo/vector-icons';
 import { Camera, CameraRecordingOptions } from 'expo-camera';
 import * as MediaLibrary from 'expo-media-library';
-import * as FileHandler from '../../FileHandler';
-
 import { useAppDispatch } from '../../state/redux/hooks';
 import {
-  clearAnnotation,
   saveVideoAndAnnotation,
   startRecording,
   stopRecording,
 } from '../../state/redux';
-import { SaveVideoResult } from '../../FileHandler';
 
 export default function RecordButton(props: {
   isRecording: boolean;
@@ -45,8 +40,8 @@ export default function RecordButton(props: {
           .catch(e => {
             console.log(`<RecordButton> error: ${e}`);
           });
-        const OFFSET_FOR_CAMERA_INIT = 1200;
-        dispatch(startRecording(Date.now() + OFFSET_FOR_CAMERA_INIT));
+        await cameraRef!.takePictureAsync({skipProcessing: true});
+        dispatch(startRecording(Date.now()));
       } else {
         cameraRef!.stopRecording();
         dispatch(stopRecording());

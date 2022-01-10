@@ -18,6 +18,9 @@ export default function AnnotationScreen({ navigation }) {
   const dispatch = useAppDispatch();
   const updateStatus = (status: AVPlaybackStatus) => {
     dispatch(updateVideoStatus(status));
+    if (status.isLoaded) {
+      console.log(status.durationMillis);
+    }
   };
   const isLineVisible = useAppSelector(state => state.controls.isLineVisible);
 
@@ -37,7 +40,7 @@ export default function AnnotationScreen({ navigation }) {
       setHeight(Dimensions.get('window').height);
       setWidth(Dimensions.get('window').width);
     })();
-  }, []);
+  }, [setHeight, setWidth]);
 
   return (
     <LineContext.Provider
