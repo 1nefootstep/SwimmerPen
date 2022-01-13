@@ -26,9 +26,9 @@ export default function SingleTimer({
   const translateY = useSharedValue(50);
 
   const {timerWidth, timerHeight} = useBreakpointValue({
-    base: {timerWidth: 80,timerHeight: 24},
-    md: {timerWidth: 84,timerHeight: 28},
-    lg: {timerWidth: 90,timerHeight: 36},
+    base: {timerWidth: 80,timerHeight: 32},
+    md: {timerWidth: 84,timerHeight: 36},
+    lg: {timerWidth: 90,timerHeight: 44},
   });
 
   console.log(`w: ${timerWidth} h: ${timerHeight}`);
