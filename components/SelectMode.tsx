@@ -31,7 +31,6 @@ export default function SelectMode() {
   const [showModal2, setShowModal2] = useState(false);
   const [poolDistance, setPoolDistance] = useState<PoolDistance>('50m');
   const [raceDistance, setRaceDistance] = useState<RaceDistance>('100m');
-
   useEffect(() => {
     (() => {
       const modes: Modes = getModes();
