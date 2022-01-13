@@ -37,6 +37,8 @@
       ]
     ],
     "android": {
+      "package": "com.swimmerpen.swimmerpen",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
@@ -46,7 +48,7 @@
       "hidden": true
     },
     "androidNavigationBar": {
-      "visible": "immersive",
+      "visible": "immersive"
     },
     "web": {
       "favicon": "./assets/favicon.png"
