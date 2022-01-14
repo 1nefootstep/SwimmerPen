@@ -81,42 +81,37 @@ export default function SelectDistance() {
   };
 
   return (
-    <Row alignItems='center' justifyContent='flex-end' mr={4}>
-      <Box
-        maxH={10}
-        maxW={24}
-        mt={1}
-        mr={1}
-      >
-      <DropDownPicker
-        items={items}
-        style={{maxHeight: 36, width: 86}}
-        textStyle={{fontSize: 12}}
-        placeholder={`${currentDistance}m`}
-        value={currentDistance}
-        dropDownContainerStyle={{zIndex: 20, elevation: 999}}
-        open={isOpen}
-        setOpen={b => {
-          if (videoStatus !== null && videoStatus.isLoaded) {
-            setIsOpen(b);
-          }
-        }}
-        setValue={value => dispatch(setCurrentDistance(value()))}
-        autoScroll={true}
-        onChangeValue={onChangeValue}
-      />
+    <Row alignItems="center" justifyContent="flex-end" mr={4}>
+      <Box maxH={10} maxW={24} mt={1} mr={1}>
+        <DropDownPicker
+          items={items}
+          style={{ maxHeight: 36, width: 86 }}
+          textStyle={{ fontSize: 12 }}
+          listMode="SCROLLVIEW"
+          scrollViewProps={{ nestedScrollEnabled: true }}
+          placeholder={`${currentDistance}m`}
+          value={currentDistance}
+          dropDownContainerStyle={{ zIndex: 20, elevation: 999 }}
+          open={isOpen}
+          setOpen={b => {
+            if (videoStatus !== null && videoStatus.isLoaded) {
+              setIsOpen(b);
+            }
+          }}
+          setValue={value => dispatch(setCurrentDistance(value()))}
+          autoScroll={true}
+          onChangeValue={onChangeValue}
+        />
       </Box>
       <Button
         variant="solid"
         mr={1}
-        size='sm'
+        size="sm"
         w={8}
         h={8}
         onPress={onPressCheckpoint}
         isDisabled={videoStatus === null || !videoStatus.isLoaded}
-        leftIcon={
-          <Icon as={Ionicons} name="checkmark" size='sm' />
-        }
+        leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
       />
     </Row>
   );

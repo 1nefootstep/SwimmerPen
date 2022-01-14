@@ -14,7 +14,7 @@ import { THEME_SIZE_RATIO } from '../../../../constants/Constants';
 
 export default function FineControlBar({
   dashGap = 2,
-  dashLength = 7,
+  dashLength = 6,
   dashThickness = 1 / 2,
 }: {
   dashGap?: number;
@@ -31,9 +31,9 @@ export default function FineControlBar({
   const [posAtStartDrag, setPosAtStartDrag] = useState<number>(0);
   const [timeToHideTime, setTimeToHideTime] = useState<number>(0);
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
-    const [length, setLength] = useState(0);
+  const [length, setLength] = useState(0);
   const numOfDashes = Math.ceil(length / (dashGap + dashThickness));
-  
+
   const MOVEMENT_TO_FRAME_RATIO = 8;
 
   const displacementShared = useSharedValue(0);
@@ -64,7 +64,7 @@ export default function FineControlBar({
     setTimeoutId(id);
   };
 
-   return (
+  return (
     <PanGestureHandler
       onGestureEvent={({ nativeEvent }) => {
         const invertedTranslation = -nativeEvent.translationX;
@@ -85,7 +85,7 @@ export default function FineControlBar({
           setLength(width / THEME_SIZE_RATIO);
         }}
         style={[
-          { flexDirection: 'row', height: 50, width: '100%' },
+          { flexDirection: 'row', height: 25, width: '100%' },
           animatedStyles,
         ]}
       >

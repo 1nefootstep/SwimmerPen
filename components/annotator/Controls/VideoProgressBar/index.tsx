@@ -42,7 +42,7 @@ export default function VideoProgressBar() {
   };
 
   return (
-    <Row w="100%" h="50">
+    <Row w="100%" style={{height: 44}}>
       <PlayPauseButton />
       <Slider
         value={isDragging ? v : positionMillis}

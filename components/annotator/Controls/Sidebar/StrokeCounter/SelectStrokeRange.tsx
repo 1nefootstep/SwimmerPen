@@ -63,10 +63,12 @@ export default function SelectStrokeRange() {
           items={items}
           min={0}
           max={3}
-          placeholder={''}
+          placeholder={items[0].value}
           style={{ maxHeight: 40, width: 126 }}
           textStyle={{ fontSize: 12 }}
           value={currentSr}
+          listMode="SCROLLVIEW"
+          scrollViewProps={{ nestedScrollEnabled: true }}
           dropDownContainerStyle={{
             maxHeight: 100,
             zIndex: 20,

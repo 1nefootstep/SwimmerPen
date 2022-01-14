@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Dimensions } from 'react-native';
-import { Box } from 'native-base';
+import { Box, ScrollView } from 'native-base';
 import VideoProgressBar from './VideoProgressBar';
 import FineControlBar from './FineControlBar';
 import SelectDistance from './Sidebar/SelectDistance';
@@ -8,24 +8,15 @@ import ToggleLineTool from './Sidebar/ToggleLineTool';
 import AddTimerButton from './Sidebar/AddTimerButton';
 import LoadVideo from './Sidebar/LoadVideo';
 import StrokeCounter from './Sidebar/StrokeCounter';
+import ToStatisticsButton from './Sidebar/ToStatisticsButton';
 
 function Spacer() {
   return <Box h={2} />;
 }
 
-export default function AnnotationControls() {
-  // const [width, setWidth] = useState<number>(0);
-  // const [height, setHeight] = useState<number>(0);
-  const [bottomBarHeight, setBottomBarHeight] = useState<number>(0);
-
+export default function AnnotationControls({ navigation }) {
   const width = Dimensions.get('window').width;
-  const height = Dimensions.get('window').height;
-
-  // useEffect(() => {
-  //   setHeight(Dimensions.get('window').height);
-  //   setWidth(Dimensions.get('window').width);
-  // }, []);
-
+  const translucentOverlayRgba = `rgba(255, 255, 255, 0.30)`;
   return (
     <>
       <Box
@@ -33,15 +24,14 @@ export default function AnnotationControls() {
         bottom={0}
         mb={0}
         style={{ width: width - 117 }}
-        onLayout={({ nativeEvent }) => {
-          console.log(`bottomHeight: ${nativeEvent.layout.height}`);
-          setBottomBarHeight(nativeEvent.layout.height);
-        }}
-        bg={`rgba(255, 255, 255, 0.20)`}
+        bg={translucentOverlayRgba}
       >
         <VideoProgressBar />
-        <FineControlBar />
+        <Box pl={4} pr={6} pb={3}>
+          <FineControlBar />
+        </Box>
       </Box>
+
       <Box
         position="absolute"
         style={{
@@ -53,23 +43,24 @@ export default function AnnotationControls() {
           width: 164,
           height: '100%',
         }}
-        bg={`rgba(255, 255, 255, 0.20)`}
-        onLayout={({ nativeEvent }) => {
-          console.log(`sideHeight: ${nativeEvent.layout.height}`);
-        }}
+        bg={translucentOverlayRgba}
       >
-        <SelectDistance />
-        <Box zIndex={-5}>
-          <Spacer />
-          <ToggleLineTool />
-          <Spacer />
-          <AddTimerButton />
-          <Spacer />
-          <LoadVideo />
-          <Spacer />
-          <Spacer />
-          <StrokeCounter />
-        </Box>
+        <ScrollView nestedScrollEnabled={true}>
+          <SelectDistance />
+          <Box zIndex={-5}>
+            <Spacer />
+            <ToggleLineTool />
+            <Spacer />
+            <AddTimerButton />
+            <Spacer />
+            <LoadVideo />
+            <Spacer />
+            <Spacer />
+            <StrokeCounter />
+            <Spacer />
+            <ToStatisticsButton navigation={navigation} />
+          </Box>
+        </ScrollView>
       </Box>
     </>
   );
