@@ -97,8 +97,8 @@ export default function CameraScreen({ navigation }) {
             </Column>
           </Column>
           <Row flex={1} justifyContent="flex-end" mr="3">
-            <Column justifyContent="center" marginY={'25%'} mr="4">
-              <Zoom zoom={zoom} setZoom={setZoom} />
+            <Column justifyContent="center" marginY={'25%'} w={16} >
+              <Zoom setZoom={setZoom} />
             </Column>
             <Column justifyContent="center" alignItems="center">
               <RecordButton

@@ -4,7 +4,6 @@ import { Box, Slider, ZStack } from 'native-base';
 import DashedLine from 'react-native-dashed-line';
 
 interface ZoomProps {
-  zoom: number;
   setZoom: React.Dispatch<React.SetStateAction<number>>;
 }
 
@@ -15,7 +14,7 @@ function sCurve(x: number) {
   return 1 / (1 + (x / (1 - x)) ** -2.5);
 }
 
-export default function Zoom(props: ZoomProps) {
+export default function Zoom({ setZoom }: ZoomProps) {
   const [x, setX] = useState<number>(0);
   return (
     <ZStack flex={1} alignItems="center" justifyContent="center">
@@ -26,18 +25,17 @@ export default function Zoom(props: ZoomProps) {
         maxValue={1}
         size="lg"
         orientation="vertical"
-        onChange={(x) => {
+        onChange={x => {
           setX(x);
-          props.setZoom(sCurve(x));
+          setZoom(sCurve(x));
         }}
       >
         <Slider.Track bgColor="transparent" />
-        <Slider.Thumb borderWidth="0" bg="transparent">
+        <Slider.Thumb zIndex={2} size={24} bg="transparent">
           <Box
             zIndex={2}
-            size="3"
-            w="100%"
-            h="2"
+            w={8}
+            h={1}
             _dark={{ bgColor: 'yellow.300' }}
             _light={{ bgColor: 'yellow.300' }}
           />

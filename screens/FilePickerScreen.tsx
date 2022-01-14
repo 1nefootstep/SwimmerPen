@@ -67,8 +67,10 @@ export default function FilePickerScreen({
   };
 
   useEffect(() => {
-    updateVideoUris();
-  }, []);
+    if (isVisible) {
+      updateVideoUris();
+    }
+  }, [isVisible]);
 
   const getNameFromUri = (uri: string) => {
     const { baseName } = breakUri(uri);
