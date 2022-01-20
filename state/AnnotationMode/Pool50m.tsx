@@ -25,29 +25,9 @@ function strokeRangePerLap(startDistance: number): Array<StrokeRange> {
   return [
     new StrokeRange(startDistance + 15, startDistance + 25),
     new StrokeRange(startDistance + 25, startDistance + 45),
+    new StrokeRange(startDistance, startDistance + 50),
   ];
 }
-
-// class Pool50m extends AnnotationMode {
-//   constructor(style: string, totalDistance: number) {
-//     let distanceLeft = totalDistance;
-//     let checkpoints: Array<Checkpoint> = [];
-//     let strokeRanges: Array<StrokeRange> = [];
-//     const POOL_DISTANCE = 50;
-//     let lastDistance = 0;
-//     while (distanceLeft > 0) {
-//       strokeRanges = strokeRanges.concat(strokeRangePerLap(lastDistance));
-//       if (checkpoints.length === 0) {
-//         checkpoints = checkpoints.concat(firstLapCheckpoint(0));
-//       } else {
-//         checkpoints = checkpoints.concat(subsequentLapCheckpoint(lastDistance));
-//       }
-//       lastDistance += POOL_DISTANCE;
-//       distanceLeft -= POOL_DISTANCE;
-//     }
-//     super(`${style}-${totalDistance}m`, checkpoints, strokeRanges);
-//   }
-// }
 
 export function createAnnotationMode50m(totalDistance: number): AnnotationMode {
   let distanceLeft = totalDistance;

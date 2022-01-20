@@ -19,11 +19,17 @@ function subsequentLapCheckpoint(startDistance: number): Array<Checkpoint> {
 }
 
 function firstStrokeRange(startDistance: number): Array<StrokeRange> {
-  return [new StrokeRange(startDistance + 15, startDistance + 20)];
+  return [
+    new StrokeRange(startDistance + 15, startDistance + 20),
+    new StrokeRange(startDistance, startDistance + 25),
+  ];
 }
 
 function subsequentStrokeRange(startDistance: number): Array<StrokeRange> {
-  return [new StrokeRange(startDistance + 10, startDistance + 20)];
+  return [
+    new StrokeRange(startDistance + 10, startDistance + 20),
+    new StrokeRange(startDistance, startDistance + 25),
+  ];
 }
 
 export function createAnnotationMode25m(totalDistance: number): AnnotationMode {

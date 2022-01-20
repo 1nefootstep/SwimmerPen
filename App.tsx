@@ -11,8 +11,9 @@ import {
   extendTheme,
 } from 'native-base';
 
-import { config, spacing } from './constants/Config';
+import { config } from './constants/Config';
 import { store } from './state/redux';
+import { StatusBar } from 'expo-status-bar';
 import RootNavigator from './router';
 
 // Define the config
@@ -25,6 +26,7 @@ export default function App() {
     <Provider store={store}>
       <NativeBaseProvider>
         <RootNavigator />
+        <StatusBar hidden={true}/>
       </NativeBaseProvider>
     </Provider>
   );

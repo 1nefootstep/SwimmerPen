@@ -32,7 +32,7 @@ export default function CameraScreen({ navigation }) {
 
   useEffect(() => {
     (async () => {
-      const { status } = await Camera.requestPermissionsAsync();
+      const { status } = await Camera.requestCameraPermissionsAsync();
       const micPermissionResponse =
         await Camera.requestMicrophonePermissionsAsync();
       console.log(`${JSON.stringify(micPermissionResponse)}`);

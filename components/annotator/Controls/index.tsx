@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform, StatusBar } from 'react-native';
 import { Box, ScrollView } from 'native-base';
 import VideoProgressBar from './VideoProgressBar';
 import FineControlBar from './FineControlBar';
@@ -15,25 +15,35 @@ function Spacer() {
 }
 
 export default function AnnotationControls({ navigation }) {
-  const width = Dimensions.get('window').width;
+  const width =
+    Platform.OS === 'android'
+      ? Dimensions.get('screen').width - (StatusBar.currentHeight ?? 0)
+      : Dimensions.get('window').width;
+
+  console.log(`width: ${width}`);
   const translucentOverlayRgba = `rgba(255, 255, 255, 0.30)`;
   return (
     <>
       <Box
         position="absolute"
         bottom={0}
-        mb={0}
-        style={{ width: width - 117 }}
+        left={0}
         bg={translucentOverlayRgba}
+        style={{
+          width: width - 164,
+        }}
       >
-        <VideoProgressBar />
-        <Box pl={4} pr={6} pb={3}>
-          <FineControlBar />
-        </Box>
+          <VideoProgressBar />
+          <Box pl={4} pr={6} pb={3}>
+            <FineControlBar />
+          </Box>
       </Box>
 
       <Box
         position="absolute"
+        onLayout={({ nativeEvent }) => {
+          console.log(JSON.stringify(nativeEvent.layout));
+        }}
         style={{
           position: 'absolute',
           top: 0,

@@ -100,7 +100,7 @@ export default function AnnotationScreen({ navigation }) {
           <TimerTool />
         </Center>
         <Hidden isHidden={!isControlActive}>
-          <AnnotationControls />
+          <AnnotationControls navigation={navigation}/>
         </Hidden>
       </VideoBoundContext.Provider>
     </LineContext.Provider>
