@@ -19,14 +19,7 @@ export default function SelectStrokeRange() {
   );
   const currentSr = useAppSelector(state => state.controls.currentSr);
   const [isOpen, setIsOpen] = useState<boolean>(false);
-
   const [modes, setModes] = useState<Modes | null>(null);
-  useEffect(() => {
-    (() => {
-      const modes: Modes = getModes();
-      setModes(modes);
-    })();
-  }, []);
 
   const mode =
     modes !== null ? modes[poolDistance][raceDistance] : getDefaultMode();
@@ -39,6 +32,16 @@ export default function SelectStrokeRange() {
       }),
     [poolDistance, raceDistance]
   );
+
+  useEffect(() => {
+    (() => {
+      const modes: Modes = getModes();
+      setModes(modes);
+      if (currentSr === '') {
+        dispatch(setCurrentStrokeRange(items[0].value));
+      }
+    })();
+  }, []);
 
   const onChangeValue = (newValue: ValueType | ValueType[] | null) => {
     if (videoStatus === null || !videoStatus.isLoaded) {

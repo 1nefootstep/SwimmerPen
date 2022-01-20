@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 
 import {
@@ -26,7 +26,7 @@ export default function App() {
     <Provider store={store}>
       <NativeBaseProvider>
         <RootNavigator />
-        <StatusBar hidden={true}/>
+        <StatusBar hidden={true} />
       </NativeBaseProvider>
     </Provider>
   );
