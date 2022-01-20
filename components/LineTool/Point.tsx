@@ -23,9 +23,9 @@ export interface PointProps {
 
 export default function Point({ pX, pY, setX, setY, bounds }: PointProps) {
   const RADIUS_OF_POINT = useBreakpointValue({
-    base: 16,
-    md: 16,
-    lg: 20,
+    base: 20,
+    md: 24,
+    lg: 28,
   });
   const DIAMETER_OF_POINT = RADIUS_OF_POINT * 2;
 

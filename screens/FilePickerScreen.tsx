@@ -89,31 +89,33 @@ export default function FilePickerScreen({
       >
         <Text>{getNameFromUri(videoUris[imageIndex] ?? '')}</Text>
       </Box>
-      <Button
-        variant="solid"
-        size="sm"
-        mr={4}
-        onPress={() => {
-          onSelect(videoUris[imageIndex]);
-          setIsVisible(false);
-        }}
-        colorScheme="tertiary"
-      >
-        Select
-      </Button>
-      <Button
-        variant="solid"
-        size="sm"
-        onPress={async () => {
-          const { baseName } = breakUri(videoUris[imageIndex]);
-          console.log(`uri: ${videoUris[imageIndex]}, basename: ${baseName}`);
-          await deleteVideoandAnnotation(baseName);
-          updateVideoUris();
-        }}
-        colorScheme="tertiary"
-      >
-        Delete
-      </Button>
+      <Row>
+        <Button
+          variant="solid"
+          size="sm"
+          mr={4}
+          onPress={() => {
+            onSelect(videoUris[imageIndex]);
+            setIsVisible(false);
+          }}
+          colorScheme="tertiary"
+        >
+          Select
+        </Button>
+        <Button
+          variant="solid"
+          size="sm"
+          onPress={async () => {
+            const { baseName } = breakUri(videoUris[imageIndex]);
+            console.log(`uri: ${videoUris[imageIndex]}, basename: ${baseName}`);
+            await deleteVideoandAnnotation(baseName);
+            updateVideoUris();
+          }}
+          colorScheme="tertiary"
+        >
+          Delete
+        </Button>
+      </Row>
     </Column>
   );
   if (isLoading) {

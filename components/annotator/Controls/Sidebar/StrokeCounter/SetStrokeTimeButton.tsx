@@ -1,7 +1,6 @@
 import React from 'react';
-import { Column, Row, Button, Icon } from 'native-base';
+import { Column, Row, Button } from 'native-base';
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { formatTimeFromPosition } from '../../../../../state/Util';
 import { useAppSelector } from '../../../../../state/redux/hooks';
 import { useDispatch } from 'react-redux';
@@ -28,6 +27,7 @@ export default function SetStrokeTimeButton() {
     if (currentSr === '') {
       return;
     }
+    console.log(positionMillis);
     const sr = StrokeRange.fromString(currentSr);
     dispatch(
       addStrokeCount(
@@ -62,7 +62,10 @@ export default function SetStrokeTimeButton() {
         <Button
           variant="subtle"
           size="sm"
-          onPress={onPressLeft}
+          onPress={() => {
+            onPressLeft();
+            console.log('test');
+          }}
           colorScheme={'primary'}
         >
           {'Start:'}

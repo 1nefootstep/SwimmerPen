@@ -70,6 +70,10 @@ function computeStrokeRate(
   const strokeRates: Array<StrokeRateStatistic> = [];
   for (const [key, scWithTime] of Object.entries(strokeCounts)) {
     const strokeRange = StrokeRange.fromString(key);
+    if (strokeRange.endRange - strokeRange.startRange >= 25) {
+      // this is a lap stroke count
+      continue;
+    }
     // converted to minutes
     const timeTaken = (scWithTime.endTime - scWithTime.startTime) / 60000;
     if (timeTaken === 0 || strokeRange.startRange === strokeRange.endRange) {
@@ -93,6 +97,25 @@ export interface StrokeCountStatistic {
   startRange: number;
   endRange: number;
   strokeCount: number;
+}
+
+function getLapStrokeCounts(
+  strokeCounts: StrokeCounts
+): Array<StrokeCountStatistic> {
+  const lapStrokeCounts: Array<StrokeCountStatistic> = [];
+  return Object.entries(strokeCounts)
+    .filter(([key, scWithTime]) => {
+      const strokeRange = StrokeRange.fromString(key);
+      return strokeRange.endRange - strokeRange.startRange >= 25;
+    })
+    .map(([key, scWithTime]) => {
+      const strokeRange = StrokeRange.fromString(key);
+      return {
+        startRange: strokeRange.startRange,
+        endRange: strokeRange.endRange,
+        strokeCount: scWithTime.strokeCount,
+      };
+    });
 }
 
 function computeStrokeCounts(
@@ -157,6 +180,7 @@ function computeDPS(
 export interface ComputedResult {
   timeAndDistances: Array<TimeDistStatistic>;
   strokeCounts: Array<StrokeCountStatistic>;
+  lapStrokeCounts: Array<StrokeCountStatistic>;
   strokeRates: Array<StrokeRateStatistic>;
   averageVelocities: Array<VelocityAtRangeStatistic>;
   distancePerStroke: Array<DPSStatistic>;
@@ -173,6 +197,7 @@ export function computeResult(
     return {
       timeAndDistances: [],
       strokeCounts: [],
+      lapStrokeCounts: [],
       strokeRates: [],
       averageVelocities: [],
       distancePerStroke: [],
@@ -181,6 +206,7 @@ export function computeResult(
   const timeDists = getTimeAtDistance(annotations);
   const velocities = computeAverageVelocities(timeDists);
   const sr = computeStrokeRate(strokeCounts);
+  const lapSc = getLapStrokeCounts(strokeCounts);
   const scAtRange = computeStrokeCounts(annotations, sr);
   const dps = computeDPS(scAtRange);
   return {
@@ -189,5 +215,6 @@ export function computeResult(
     strokeRates: sr,
     averageVelocities: velocities,
     distancePerStroke: dps,
+    lapStrokeCounts: lapSc,
   };
 }

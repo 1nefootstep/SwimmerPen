@@ -22,7 +22,7 @@ export default function PlayPauseButton() {
         <Icon
           as={FontAwesome}
           name={isPlaying ? 'stop' : 'play'}
-          size={5}
+          size={7}
           color="muted.50"
         />
       }

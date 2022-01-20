@@ -14,8 +14,13 @@ import DPSChart from '../components/result/DPSChart';
 
 export default function ResultScreen({ navigation }) {
   const annotationsInfo = useAppSelector(state => state.annotation);
-  const { averageVelocities, strokeRates, strokeCounts, distancePerStroke } =
-    useMemo(() => computeResult(annotationsInfo), [annotationsInfo]);
+  const {
+    averageVelocities,
+    strokeRates,
+    lapStrokeCounts,
+    strokeCounts,
+    distancePerStroke,
+  } = useMemo(() => computeResult(annotationsInfo), [annotationsInfo]);
   const viewShotRef = useRef<ViewShot | null>(null);
 
   const openShareDialogAsync = async (uri: string) => {
@@ -28,15 +33,6 @@ export default function ResultScreen({ navigation }) {
   };
 
   const takeScreenshot = async () => {
-    // const result = await captureRef(viewShotRef, {
-    //   snapshotContentContainer: true,
-    // }).catch(e => {
-    //   console.log(`Error: result screen ${e}`);
-    //   return null;
-    // });
-    // if (result === null) {
-    //   return;
-    // }
     if (
       viewShotRef.current !== null &&
       viewShotRef.current.capture !== undefined
@@ -58,7 +54,7 @@ export default function ResultScreen({ navigation }) {
   return (
     <>
       <ScrollView alwaysBounceVertical={true}>
-        <ViewShot style={{backgroundColor: '#fff'}} ref={viewShotRef}>
+        <ViewShot style={{ backgroundColor: '#fff' }} ref={viewShotRef}>
           <Center>
             <Hidden isHidden={averageVelocities.length === 0}>
               <>
@@ -72,6 +68,14 @@ export default function ResultScreen({ navigation }) {
               <>
                 <Box py={4}>
                   <StrokeCountChart strokeCounts={strokeCounts} />
+                </Box>
+                <Divider thickness={4} bg="muted.300" />
+              </>
+            </Hidden>
+            <Hidden isHidden={strokeCounts.length === 0}>
+              <>
+                <Box py={4}>
+                  <StrokeCountChart strokeCounts={lapStrokeCounts} />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
