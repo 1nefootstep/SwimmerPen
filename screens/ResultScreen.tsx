@@ -11,6 +11,7 @@ import StrokeCountChart from '../components/result/StrokeCountChart';
 import StrokeRateChart from '../components/result/StrokeRateChart';
 import Hidden from '../components/Hidden';
 import DPSChart from '../components/result/DPSChart';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 export default function ResultScreen({ navigation }) {
   const annotationsInfo = useAppSelector(state => state.annotation);
@@ -47,6 +48,7 @@ export default function ResultScreen({ navigation }) {
         .catch(e => console.log(`Error: result screen ${e}`))
         .finally(async () => {
           await ScreenOrientation.lockAsync(originalOrientation);
+          SystemNavigationBar.stickyImmersive();
         });
     }
   };

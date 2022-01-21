@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Row, Factory, Button, Icon, Column, Box } from 'native-base';
+import { Row, Button, Icon, Box } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
-import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 
 import { addAnnotation, setCurrentDistance } from '../../../../state/redux';
 import * as VideoService from '../../../../state/VideoService';
 import { getDefaultMode, getModes, Modes } from '../../../../state/AKB';
-import { maxHeight, zIndex } from 'styled-system';
 
 // const FactoryDropDown = Factory(DropDownPicker);
 
