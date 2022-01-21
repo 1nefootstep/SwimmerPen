@@ -15,6 +15,7 @@ import { config } from './constants/Config';
 import { store } from './state/redux';
 import { StatusBar } from 'expo-status-bar';
 import RootNavigator from './router';
+import SystemNavigationBar from 'react-native-system-navigation-bar';
 
 // Define the config
 
@@ -22,6 +23,7 @@ import RootNavigator from './router';
 export const theme = extendTheme({ config });
 
 export default function App() {
+  SystemNavigationBar.immersive();
   return (
     <Provider store={store}>
       <NativeBaseProvider>
