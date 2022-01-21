@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SwimmerPen",
-    "slug": "SwimmerPen2",
+    "slug": "SwimmerPen",
     "version": "0.0.1",
     "orientation": "landscape",
     "icon": "./assets/icon.png",
