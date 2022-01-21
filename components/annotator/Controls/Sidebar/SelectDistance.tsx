@@ -44,20 +44,9 @@ export default function SelectDistance() {
     [poolDistance, raceDistance]
   );
 
-  // const items = [{label: '0m', value: 0}];
-
-  const onChangeValue = (newValue: ValueType | ValueType[] | null) => {
+  const movePositionToDistance = (distance: number) => {
     if (videoStatus === null || !videoStatus.isLoaded) {
       return;
-    }
-
-    let distance: number;
-    if (newValue === null) {
-      distance = 0;
-    } else if (typeof newValue === 'number') {
-      distance = newValue as number;
-    } else {
-      distance = 0;
     }
     VideoService.seek(annotations[distance]);
   };
@@ -99,8 +88,10 @@ export default function SelectDistance() {
             }
           }}
           setValue={value => dispatch(setCurrentDistance(value()))}
+          onSelectItem={({ label, value }) => {
+            movePositionToDistance(value as number);
+          }}
           autoScroll={true}
-          onChangeValue={onChangeValue}
         />
       </Box>
       <Button
