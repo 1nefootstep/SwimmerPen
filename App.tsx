@@ -23,7 +23,7 @@ import SystemNavigationBar from 'react-native-system-navigation-bar';
 export const theme = extendTheme({ config });
 
 export default function App() {
-  SystemNavigationBar.immersive();
+  SystemNavigationBar.stickyImmersive();
   return (
     <Provider store={store}>
       <NativeBaseProvider>
