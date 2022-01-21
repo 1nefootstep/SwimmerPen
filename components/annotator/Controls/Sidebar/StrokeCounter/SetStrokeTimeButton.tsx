@@ -6,6 +6,7 @@ import { useAppSelector } from '../../../../../state/redux/hooks';
 import { useDispatch } from 'react-redux';
 import { addStrokeCount } from '../../../../../state/redux';
 import { StrokeRange } from '../../../../../state/AKB';
+import Hidden from '../../../../Hidden';
 
 const ICON_SIZE = 4;
 
@@ -23,12 +24,13 @@ export default function SetStrokeTimeButton() {
       ? strokeCounts[currentSr]
       : { strokeCount: 0, startTime: 0, endTime: 0 };
 
-  const onPressLeft = () => {
+  const sr = StrokeRange.fromString(currentSr);
+  const onPressLeft = (sr: StrokeRange) => {
     if (currentSr === '') {
       return;
     }
     console.log(positionMillis);
-    const sr = StrokeRange.fromString(currentSr);
+    ;
     dispatch(
       addStrokeCount(
         sr.startRange,
@@ -40,11 +42,10 @@ export default function SetStrokeTimeButton() {
     );
   };
 
-  const onPressRight = () => {
+  const onPressRight = (sr: StrokeRange) => {
     if (currentSr === '') {
       return;
     }
-    const sr = StrokeRange.fromString(currentSr);
     dispatch(
       addStrokeCount(
         sr.startRange,
@@ -55,32 +56,33 @@ export default function SetStrokeTimeButton() {
       )
     );
   };
-  const time = 0;
+  const isLapStroke = sr.endRange - sr.startRange >= 25;
   return (
-    <Column>
-      <Row justifyContent="space-around">
-        <Button
-          variant="subtle"
-          size="sm"
-          onPress={() => {
-            onPressLeft();
-            console.log('test');
-          }}
-          colorScheme={'primary'}
-        >
-          {'Start:'}
-          {formatTimeFromPosition(scWithTime.startTime)}
-        </Button>
-        <Button
-          variant="subtle"
-          size="sm"
-          onPress={onPressRight}
-          colorScheme={'primary'}
-        >
-          {'End:'}
-          {formatTimeFromPosition(scWithTime.endTime)}
-        </Button>
-      </Row>
-    </Column>
+    <Hidden isHidden={isLapStroke}>
+      <Column>
+        <Row justifyContent="space-around">
+          <Button
+            variant="subtle"
+            size="sm"
+            onPress={() => {
+              onPressLeft(sr);
+            }}
+            colorScheme={'primary'}
+          >
+            {'Start:'}
+            {formatTimeFromPosition(scWithTime.startTime)}
+          </Button>
+          <Button
+            variant="subtle"
+            size="sm"
+            onPress={() => onPressRight(sr)}
+            colorScheme={'primary'}
+          >
+            {'End:'}
+            {formatTimeFromPosition(scWithTime.endTime)}
+          </Button>
+        </Row>
+      </Column>
+    </Hidden>
   );
 }
