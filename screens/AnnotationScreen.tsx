@@ -3,10 +3,13 @@ import { Dimensions } from 'react-native';
 import { Center } from 'native-base';
 import { Video, AVPlaybackStatus } from 'expo-av';
 import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
-
 import * as VideoService from '../state/VideoService';
 import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
-import { saveAnnotation, updateVideoStatus } from '../state/redux';
+import {
+  clearControls,
+  saveAnnotation,
+  updateVideoStatus,
+} from '../state/redux';
 import AnnotationControls from '../components/annotator/Controls';
 import Hidden from '../components/Hidden';
 import BackButton from '../components/BackButton';
@@ -66,6 +69,7 @@ export default function AnnotationScreen({ navigation }) {
           <BackButton
             goBack={() => {
               dispatch(saveAnnotation());
+              dispatch(clearControls());
               navigation.goBack();
             }}
             style={{
@@ -100,7 +104,7 @@ export default function AnnotationScreen({ navigation }) {
           <TimerTool />
         </Center>
         <Hidden isHidden={!isControlActive}>
-          <AnnotationControls navigation={navigation}/>
+          <AnnotationControls navigation={navigation} />
         </Hidden>
       </VideoBoundContext.Provider>
     </LineContext.Provider>

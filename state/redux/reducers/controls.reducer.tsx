@@ -30,6 +30,9 @@ export function controlsReducer(
   action: ControlsActionTypes
 ): ControlsInfo {
   switch (action.type) {
+    case CONTROLS_ACTION_TYPES.CLEAR_CONTROLS: {
+      return initState();
+    }
     case CONTROLS_ACTION_TYPES.SET_CURRENT_DISTANCE: {
       const { payload } = action as SetCurrentDistanceAction;
       const { currentDistance } = payload;

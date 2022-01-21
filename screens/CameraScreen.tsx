@@ -25,8 +25,8 @@ export default function CameraScreen({ navigation }) {
   const [isRatioSet, setIsRatioSet] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [videoQuality, setVideoQuality] = useState<
-    '480' | '720' | '1080' | '2160'
-  >('720');
+    '480p' | '720p' | '1080p' | '2160p'
+  >('720p');
   const [isMute, setIsMute] = useState<boolean>(false);
   const [zoom, setZoom] = useState<number>(0);
 
@@ -90,14 +90,14 @@ export default function CameraScreen({ navigation }) {
                 <MuteButton isMute={isMute} setIsMute={setIsMute} />
                 <SelectResolution
                   currentResolution={videoQuality}
-                  resolutions={['480', '720', '1080', '2160']}
+                  resolutions={['480p', '720p', '1080p', '2160p']}
                   setVideoQuality={setVideoQuality}
                 />
               </Column>
             </Column>
           </Column>
           <Row flex={1} justifyContent="flex-end" mr="3">
-            <Column justifyContent="center" marginY={'25%'} w={16} >
+            <Column justifyContent="center" marginY={'25%'} w={16}>
               <Zoom setZoom={setZoom} />
             </Column>
             <Column justifyContent="center" alignItems="center">
@@ -105,7 +105,10 @@ export default function CameraScreen({ navigation }) {
                 isRecording={isRecording}
                 setIsRecording={setIsRecording}
                 cameraRef={cameraRef}
-                recordOptions={{ quality: videoQuality }}
+                recordOptions={{
+                  quality: Camera.Constants.VideoQuality[videoQuality],
+                  mute: isMute,
+                }}
               />
               <Center
                 position="absolute"

@@ -17,7 +17,6 @@ import {
 } from '../state/AKB/PoolConfig';
 import {
   updatePoolConfig,
-  updatePoolConfigAndResetCurrentDistance,
 } from '../state/redux';
 
 export default function SelectMode() {

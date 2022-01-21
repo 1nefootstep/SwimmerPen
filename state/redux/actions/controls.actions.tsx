@@ -1,5 +1,6 @@
 import {
   AddTimerAction,
+  ClearControlsAction,
   HideLineAction,
   RemoveTimerAction,
   SetCurrentDistanceAction,
@@ -8,6 +9,7 @@ import {
 } from '../types';
 
 export enum CONTROLS_ACTION_TYPES {
+  CLEAR_CONTROLS = 'CONTROLS/CLEAR_CONTROLS',
   SET_CURRENT_DISTANCE = 'CONTROLS/SET_CURRENT_DISTANCE',
   SET_CURRENT_STROKE_RANGE = 'CONTROLS/SET_CURRENT_STROKE_RANGE',
   SHOW_LINE = 'CONTROLS/SHOW_LINE',
@@ -16,10 +18,16 @@ export enum CONTROLS_ACTION_TYPES {
   REMOVE_TIMER = 'CONTROLS/REMOVE_TIMER',
 }
 
+export function clearControls(): ClearControlsAction {
+  return {
+    type: CONTROLS_ACTION_TYPES.CLEAR_CONTROLS,
+  };
+}
+
 export function setCurrentDistance(distance: number): SetCurrentDistanceAction {
   return {
     type: CONTROLS_ACTION_TYPES.SET_CURRENT_DISTANCE,
-    payload: { currentDistance: distance },
+    payload: { currentDistance: distance ?? 0 },
   };
 }
 

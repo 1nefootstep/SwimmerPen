@@ -14,6 +14,7 @@ import { StatusBar } from 'expo-status-bar';
 import RootNavigator from './router';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { AppState, AppStateStatus } from 'react-native';
+import Constants from 'expo-constants';
 
 // Define the config
 
@@ -46,7 +47,9 @@ export default function App() {
   };
 
   useEffect(() => {
-    SystemNavigationBar.stickyImmersive();
+    if (Constants.appOwnership !== 'expo') {
+      SystemNavigationBar.stickyImmersive();
+    }
   }, [appStateVisible]);
 
   return (

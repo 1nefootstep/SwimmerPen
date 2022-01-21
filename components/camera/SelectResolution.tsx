@@ -4,10 +4,10 @@ import { Button, Modal, Column, Radio, Box, Text } from 'native-base';
 import { useAppSelector } from '../../state/redux/hooks';
 
 interface SelectResolutionProps {
-  currentResolution: '480' | '720' | '1080' | '2160';
-  resolutions: Array<'480' | '720' | '1080' | '2160'>;
+  currentResolution: '480p' | '720p' | '1080p' | '2160p';
+  resolutions: Array<'480p' | '720p' | '1080p' | '2160p'>;
   setVideoQuality: React.Dispatch<
-    React.SetStateAction<'480' | '720' | '1080' | '2160'>
+    React.SetStateAction<'480p' | '720p' | '1080p' | '2160p'>
   >;
 }
 
@@ -17,8 +17,8 @@ export default function SelectResolution({
   setVideoQuality,
 }: SelectResolutionProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [quality, setQuality] = useState<'480' | '720' | '1080' | '2160'>(
-    '720'
+  const [quality, setQuality] = useState<'480p' | '720p' | '1080p' | '2160p'>(
+    '720p'
   );
   const isRecording = useAppSelector(state => state?.recording.isRecording);
 
@@ -35,7 +35,7 @@ export default function SelectResolution({
           isDisabled={isRecording}
           onPress={() => setShowModal(true)}
         >
-          <Text fontSize={[6, 8, 10, 14, 18]}>{quality}p</Text>
+          <Text fontSize={[6, 8, 10, 14, 18]}>{quality}</Text>
         </Button>
       </Box>
 
@@ -50,10 +50,10 @@ export default function SelectResolution({
               size="sm"
               onChange={(quality: string) => {
                 if (
-                  quality !== '480' &&
-                  quality !== '720' &&
-                  quality !== '1080' &&
-                  quality !== '2160'
+                  quality !== '480p' &&
+                  quality !== '720p' &&
+                  quality !== '1080p' &&
+                  quality !== '2160p'
                 ) {
                   return;
                 }
@@ -73,7 +73,7 @@ export default function SelectResolution({
                       }}
                       value={e}
                     >
-                      {e + 'p'}
+                      {e}
                     </Radio>
                   );
                 })}

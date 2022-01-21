@@ -1,3 +1,7 @@
+export type ClearControlsAction = {
+  type: string;
+};
+
 export type SetCurrentDistanceAction = {
   type: string;
   payload: { currentDistance: number };
@@ -27,6 +31,7 @@ export type RemoveTimerAction = {
 };
 
 export type ControlsActionTypes =
+  | ClearControlsAction
   | SetCurrentDistanceAction
   | ShowLineAction
   | HideLineAction

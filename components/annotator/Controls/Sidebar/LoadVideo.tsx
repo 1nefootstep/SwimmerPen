@@ -9,6 +9,7 @@ import {
 } from '../../../../state/redux';
 import * as FileHandler from '../../../../FileHandler';
 import FilePickerScreen from '../../../../screens/FilePickerScreen';
+// import { getFrametimes } from '../../../../state/VideoProcessor';
 
 export default function LoadVideo() {
   const [isFilePickerVisible, setIsFilePickerVisible] =
@@ -25,6 +26,7 @@ export default function LoadVideo() {
     dispatch(clearVideoStatus());
 
     VideoService.loadVideo(uri).then(isSuccessful => {
+      // getFrametimes(uri);
       if (!isSuccessful) {
         console.log('LoadVideo: load unsuccessful');
       } else {

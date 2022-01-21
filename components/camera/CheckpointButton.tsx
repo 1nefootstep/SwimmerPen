@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Icon, Button } from 'native-base';
+import { Icon, Button, useBreakpointValue } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 
 import { addAnnotationWhileRecording } from '../../state/redux';
@@ -18,17 +18,18 @@ export default function CheckpointButton() {
       ? `${recordingInfo.currentDistance}m`
       : 'DONE'
     : '0m';
+  const minW = useBreakpointValue({ md: 20, lg: 24 });
   return (
-    <>
-      <Button
-        leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
-        onPress={onPress}
-        isDisabled={
-          !recordingInfo.isRecording || recordingInfo.currentDistance === 'DONE'
-        }
-      >
-        {description}
-      </Button>
-    </>
+    <Button
+      leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
+      size={{ md: 12, lg: 16 }}
+      minW={minW}
+      onPress={onPress}
+      isDisabled={
+        !recordingInfo.isRecording || recordingInfo.currentDistance === 'DONE'
+      }
+    >
+      {description}
+    </Button>
   );
 }

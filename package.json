@@ -10,7 +10,8 @@
   ],
   "license": "MIT",
   "scripts": {
-    "start": "expo start --dev-client",
+    "start": "npx react-native start",
+    "start-expo": "expo start --dev-client",
     "android-expo": "expo run:android",
     "android": "npx react-native run-android --verbose",
     "ios": "expo run:ios",
