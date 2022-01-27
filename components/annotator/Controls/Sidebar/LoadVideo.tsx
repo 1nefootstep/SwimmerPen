@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Center } from 'native-base';
+import { Button, Center, Modal } from 'native-base';
 
 import * as VideoService from '../../../../state/VideoService';
 import { useAppDispatch } from '../../../../state/redux/hooks';
@@ -9,6 +9,7 @@ import {
 } from '../../../../state/redux';
 import * as FileHandler from '../../../../FileHandler';
 import FilePickerScreen from '../../../../screens/FilePickerScreen';
+import FilePickerScreen2 from '../../../../screens/FilePickerScreen2';
 // import { getFrametimes } from '../../../../state/VideoProcessor';
 
 export default function LoadVideo() {
@@ -42,11 +43,18 @@ export default function LoadVideo() {
 
   return (
     <>
-      <FilePickerScreen
-        isVisible={isFilePickerVisible}
-        setIsVisible={setIsFilePickerVisible}
-        onSelect={onSelectVideo}
-      />
+      <Modal
+        h="100%"
+        size="full"
+        isOpen={isFilePickerVisible}
+        onClose={setIsFilePickerVisible}
+      >
+        <FilePickerScreen2
+          isVisible={isFilePickerVisible}
+          setIsVisible={setIsFilePickerVisible}
+          onSelect={onSelectVideo}
+        />
+      </Modal>
       <Center>
         <Button
           size={{ md: 'sm', lg: 'md' }}

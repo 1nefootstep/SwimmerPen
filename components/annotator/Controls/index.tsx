@@ -7,6 +7,7 @@ import SelectDistance from './Sidebar/SelectDistance';
 import ToggleLineTool from './Sidebar/ToggleLineTool';
 import AddTimerButton from './Sidebar/AddTimerButton';
 import LoadVideo from './Sidebar/LoadVideo';
+import LoadVideoFilePicker from './Sidebar/LoadVideo2';
 import StrokeCounter from './Sidebar/StrokeCounter';
 import ToStatisticsButton from './Sidebar/ToStatisticsButton';
 import FrameStepButtons from './Sidebar/FrameStepButtons';
@@ -56,22 +57,19 @@ export default function AnnotationControls({ navigation }) {
         bg={translucentOverlayRgba}
       >
         <ScrollView nestedScrollEnabled={true}>
+          <LoadVideo />
+          <Spacer />
           <SelectDistance />
-          <Box zIndex={-5}>
-            <Spacer />
-            <FrameStepButtons />
-            <Spacer />
-            <ToggleLineTool />
-            <Spacer />
-            <AddTimerButton />
-            <Spacer />
-            <LoadVideo />
-            <Spacer />
-            <Spacer />
-            <StrokeCounter />
-            <Spacer />
-            <ToStatisticsButton navigation={navigation} />
-          </Box>
+          <Spacer />
+          <FrameStepButtons />
+          <Spacer />
+          <ToggleLineTool />
+          <Spacer />
+          <AddTimerButton />
+          <Spacer />
+          <StrokeCounter />
+          <Spacer />
+          <ToStatisticsButton navigation={navigation} />
         </ScrollView>
       </Box>
     </>

@@ -1,14 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Row, Box } from 'native-base';
 import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
-
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../state/redux/hooks';
-
 import { setCurrentStrokeRange } from '../../../../../state/redux';
-import { getDefaultMode, getModes, Modes } from '../../../../../state/AKB';
+import {
+  getDefaultMode,
+  getModes,
+  Modes,
+  StrokeRange,
+} from '../../../../../state/AKB';
+import * as VideoService from '../../../../../state/VideoService';
 
 export default function SelectStrokeRange() {
   const dispatch = useAppDispatch();
@@ -17,14 +21,14 @@ export default function SelectStrokeRange() {
   const { poolDistance, raceDistance } = useAppSelector(
     state => state.annotation.poolConfig
   );
-  // console.log(`pd: ${poolDistance} rd: ${raceDistance}`);
   const currentSr = useAppSelector(state => state.controls.currentSr);
+  const strokeCounts = useAppSelector(state => state.annotation.strokeCounts);
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modes, setModes] = useState<Modes | null>(null);
 
   const mode =
     modes !== null ? modes[poolDistance][raceDistance] : getDefaultMode();
-  // console.log(`mode: ${JSON.stringify(mode)}`);
   const items = useMemo(
     () =>
       mode.strokeRanges.map(e => {
@@ -44,20 +48,26 @@ export default function SelectStrokeRange() {
     })();
   }, []);
 
-  const onChangeValue = (newValue: ValueType | ValueType[] | null) => {
+  const seekToStartTime = (newValue: ValueType | ValueType[] | null) => {
     if (videoStatus === null || !videoStatus.isLoaded) {
       return;
     }
 
-    let sr: string;
+    let s: string;
     if (newValue === null) {
-      sr = '';
+      s = '';
     } else if (typeof newValue === 'string') {
-      sr = newValue as string;
+      s = newValue as string;
     } else {
-      sr = '';
+      s = '';
     }
-    dispatch(setCurrentStrokeRange(sr));
+    const scWithTime =
+      s in strokeCounts
+        ? strokeCounts[s]
+        : { strokeCount: 0, startTime: 0, endTime: 0 };
+    if (scWithTime.startTime !== 0) {
+      VideoService.seek(scWithTime.startTime);
+    }
   };
 
   return (
@@ -84,9 +94,12 @@ export default function SelectStrokeRange() {
               setIsOpen(b);
             }
           }}
-          setValue={value => dispatch(setCurrentStrokeRange(value()))}
+          setValue={value => {
+            const sr = value() ?? value;
+            dispatch(setCurrentStrokeRange(sr));
+            seekToStartTime(sr);
+          }}
           autoScroll={true}
-          onChangeValue={onChangeValue}
         />
       </Box>
     </Row>

@@ -9,17 +9,15 @@ import { StrokeRange } from '../../../../../state/AKB';
 import Hidden from '../../../../Hidden';
 import { getPosition } from '../../../../../state/VideoService';
 
-const ICON_SIZE = 4;
-
 export default function SetStrokeTimeButton() {
   const dispatch = useDispatch();
   const currentSr = useAppSelector(state => state.controls.currentSr);
   const strokeCounts = useAppSelector(state => state.annotation.strokeCounts);
   const videoStatus = useAppSelector(state => state.video.status);
-  const positionMillis =
-    videoStatus !== null && videoStatus.isLoaded
-      ? videoStatus.positionMillis
-      : 0;
+  // const positionMillis =
+  //   videoStatus !== null && videoStatus.isLoaded
+  //     ? videoStatus.positionMillis
+  //     : 0;
   const scWithTime =
     currentSr in strokeCounts
       ? strokeCounts[currentSr]
