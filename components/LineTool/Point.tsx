@@ -47,6 +47,7 @@ export default function Point({ pX, pY, setX, setY, bounds }: PointProps) {
     onActive: ({ translationX, translationY }, ctx) => {
       const targetX = ctx.x + translationX;
       const targetY = ctx.y + translationY;
+      // bound y2 always seems to be too small, need to verify with multiple devices?
       if (
         targetX + DIAMETER_OF_POINT >= bounds.x2 ||
         targetX <= bounds.x1 ||

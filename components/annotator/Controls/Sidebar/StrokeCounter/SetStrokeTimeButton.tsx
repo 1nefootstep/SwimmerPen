@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { addStrokeCount } from '../../../../../state/redux';
 import { StrokeRange } from '../../../../../state/AKB';
 import Hidden from '../../../../Hidden';
+import { getPosition } from '../../../../../state/VideoService';
 
 const ICON_SIZE = 4;
 
@@ -25,36 +26,40 @@ export default function SetStrokeTimeButton() {
       : { strokeCount: 0, startTime: 0, endTime: 0 };
 
   const sr = StrokeRange.fromString(currentSr);
-  const onPressLeft = (sr: StrokeRange) => {
+  const onPressLeft = async (sr: StrokeRange) => {
     if (currentSr === '') {
       return;
     }
-    console.log(positionMillis);
-    ;
-    dispatch(
-      addStrokeCount(
-        sr.startRange,
-        sr.endRange,
-        positionMillis,
-        scWithTime.endTime,
-        scWithTime.strokeCount
-      )
-    );
+    const posResult = await getPosition();
+    if (posResult.isSuccessful) {
+      dispatch(
+        addStrokeCount(
+          sr.startRange,
+          sr.endRange,
+          posResult.positionMillis,
+          scWithTime.endTime,
+          scWithTime.strokeCount
+        )
+      );
+    }
   };
 
-  const onPressRight = (sr: StrokeRange) => {
+  const onPressRight = async (sr: StrokeRange) => {
     if (currentSr === '') {
       return;
     }
-    dispatch(
-      addStrokeCount(
-        sr.startRange,
-        sr.endRange,
-        scWithTime.startTime,
-        positionMillis,
-        scWithTime.strokeCount
-      )
-    );
+    const posResult = await getPosition();
+    if (posResult.isSuccessful) {
+      dispatch(
+        addStrokeCount(
+          sr.startRange,
+          sr.endRange,
+          scWithTime.startTime,
+          posResult.positionMillis,
+          scWithTime.strokeCount
+        )
+      );
+    }
   };
   const isLapStroke = sr.endRange - sr.startRange >= 25;
   return (

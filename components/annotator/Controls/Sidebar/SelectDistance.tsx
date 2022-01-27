@@ -8,6 +8,7 @@ import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 import { addAnnotation, setCurrentDistance } from '../../../../state/redux';
 import * as VideoService from '../../../../state/VideoService';
 import { getDefaultMode, getModes, Modes } from '../../../../state/AKB';
+import { getPosition } from '../../../../state/VideoService';
 
 // const FactoryDropDown = Factory(DropDownPicker);
 
@@ -50,9 +51,10 @@ export default function SelectDistance() {
     VideoService.seek(annotations[distance]);
   };
 
-  const onPressCheckpoint = () => {
-    if (videoStatus !== null && videoStatus.isLoaded) {
-      dispatch(addAnnotation(currentDistance, videoStatus.positionMillis));
+  const onPressCheckpoint = async () => {
+    const posResult = await getPosition();
+    if (posResult.isSuccessful) {
+      dispatch(addAnnotation(currentDistance, posResult.positionMillis));
       const currIndex = mode.checkpoints.findIndex(
         cp => cp.distanceMeter === currentDistance
       );
@@ -66,6 +68,21 @@ export default function SelectDistance() {
         VideoService.seek(toSeek);
       }
     }
+    // if (videoStatus !== null && videoStatus.isLoaded) {
+    //   dispatch(addAnnotation(currentDistance, videoStatus.positionMillis));
+    //   const currIndex = mode.checkpoints.findIndex(
+    //     cp => cp.distanceMeter === currentDistance
+    //   );
+    //   const nextIndex =
+    //     currIndex + 1 > mode.checkpoints.length - 1 ? currIndex : currIndex + 1;
+
+    //   const d = mode.checkpoints[nextIndex].distanceMeter;
+    //   dispatch(setCurrentDistance(d));
+    //   const toSeek = annotations[d];
+    //   if (toSeek !== undefined) {
+    //     VideoService.seek(toSeek);
+    //   }
+    // }
   };
 
   return (

@@ -39,7 +39,7 @@ export function updateLastRecordedUri(
   uri: string
 ): UpdateLastRecordedUriAction {
   return {
-    type: RECORDING_ACTION_TYPES.UPDATE_DISTANCE,
+    type: RECORDING_ACTION_TYPES.UPDATE_LAST_RECORDED_URI,
     payload: { lastRecordedUri: uri },
   };
 }

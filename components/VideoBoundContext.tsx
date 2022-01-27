@@ -12,5 +12,5 @@ export const VideoBoundContext =
     x1: 0,
     y1: 0,
     x2: 200,
-    y2: 230,
+    y2: 250,
   });
