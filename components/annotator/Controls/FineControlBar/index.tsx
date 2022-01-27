@@ -34,7 +34,7 @@ export default function FineControlBar({
   const [length, setLength] = useState(0);
   const numOfDashes = Math.ceil(length / (dashGap + dashThickness));
 
-  const MOVEMENT_TO_FRAME_RATIO = 8;
+  const MOVEMENT_TO_FRAME_RATIO = 4;
 
   const displacementShared = useSharedValue(0);
 
@@ -67,11 +67,12 @@ export default function FineControlBar({
   return (
     <PanGestureHandler
       onGestureEvent={({ nativeEvent }) => {
-        const invertedTranslation = -nativeEvent.translationX;
+        const invertedTranslation = -Math.round(nativeEvent.translationX);
         displacementShared.value = withSpring(nativeEvent.translationX);
         const toSeek =
           posAtStartDrag +
           Math.floor(invertedTranslation * MOVEMENT_TO_FRAME_RATIO);
+          
         showTimeForDuration(1000);
         VideoService.seek(toSeek >= 0 ? toSeek : 0);
       }}

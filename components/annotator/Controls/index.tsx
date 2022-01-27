@@ -9,6 +9,7 @@ import AddTimerButton from './Sidebar/AddTimerButton';
 import LoadVideo from './Sidebar/LoadVideo';
 import StrokeCounter from './Sidebar/StrokeCounter';
 import ToStatisticsButton from './Sidebar/ToStatisticsButton';
+import FrameStepButtons from './Sidebar/FrameStepButtons';
 
 function Spacer() {
   return <Box h={2} />;
@@ -20,7 +21,6 @@ export default function AnnotationControls({ navigation }) {
       ? Dimensions.get('screen').width - (StatusBar.currentHeight ?? 0)
       : Dimensions.get('window').width;
 
-  console.log(`width: ${width}`);
   const translucentOverlayRgba = `rgba(255, 255, 255, 0.30)`;
   return (
     <>
@@ -33,10 +33,10 @@ export default function AnnotationControls({ navigation }) {
           width: width - 164,
         }}
       >
-          <VideoProgressBar />
-          <Box pl={4} pr={6} pb={3}>
-            <FineControlBar />
-          </Box>
+        <VideoProgressBar />
+        <Box pl={4} pr={6} pb={3}>
+          <FineControlBar />
+        </Box>
       </Box>
 
       <Box
@@ -58,6 +58,8 @@ export default function AnnotationControls({ navigation }) {
         <ScrollView nestedScrollEnabled={true}>
           <SelectDistance />
           <Box zIndex={-5}>
+            <Spacer />
+            <FrameStepButtons />
             <Spacer />
             <ToggleLineTool />
             <Spacer />
