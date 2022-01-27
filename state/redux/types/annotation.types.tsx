@@ -17,6 +17,10 @@ export type ClearAnnotatationAction = {
   type: string;
 };
 
+export type ClearAnnotationExceptPoolConfigAction = {
+  type: string;
+};
+
 export type UpdateNameAction = {
   type: string;
   payload: { name: string };
@@ -45,6 +49,7 @@ export type SaveVideoAndAnnotationAction = {
 export type AnnotationActionTypes =
   | AddAnnotationAction
   | ClearAnnotatationAction
+  | ClearAnnotationExceptPoolConfigAction
   | AddStrokeCountAction
   | UpdateNameAction
   | UpdatePoolConfigAction

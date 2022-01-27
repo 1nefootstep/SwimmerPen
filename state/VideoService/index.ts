@@ -27,6 +27,13 @@ export function pause() {
   }
 }
 
+export async function pauseSync() {
+  if (_video.current) {
+    const v = _video.current;
+    await v.pauseAsync();
+  }
+}
+
 export async function loadVideo(uri: string): Promise<boolean> {
   if (_video.current) {
     const v = _video.current;

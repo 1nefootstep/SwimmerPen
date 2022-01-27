@@ -28,6 +28,9 @@ export function annotationReducer(
     case ANNOTATION_ACTION_TYPES.CLEAR_ANNOTATION: {
       return initState();
     }
+    case ANNOTATION_ACTION_TYPES.CLEAR_ANNOTATION_EXCEPT_POOL_CONFIG: {
+      return { ...initState(), poolConfig: { ...state.poolConfig } };
+    }
     case ANNOTATION_ACTION_TYPES.ADD_ANNOTATION: {
       const { payload } = action as AddAnnotationAction;
       const { distance, timestamp } = payload;
@@ -68,7 +71,9 @@ export function annotationReducer(
       const { payload } = action as LoadAnnotationAction;
       const { annotation } = payload;
       if (annotation === undefined || annotation === null) {
-        console.log(`Annotation reducer error: annotation passed in was ${annotation}`);
+        console.log(
+          `Annotation reducer error: annotation passed in was ${annotation}`
+        );
         return state;
       }
       return {

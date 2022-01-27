@@ -8,13 +8,23 @@ export default function PlayPauseButton() {
   const videoStatus = useAppSelector(state => state.video.status);
   const isLoaded = videoStatus?.isLoaded ?? false;
   const isPlaying = (videoStatus?.isLoaded && videoStatus?.isPlaying) ?? false;
+  const positionMillis =
+    videoStatus !== null && videoStatus.isLoaded
+      ? videoStatus.positionMillis
+      : 0;
 
   return (
     <Button
       variant="unstyled"
-      onPress={() => {
+      onPress={async () => {
         if (isLoaded) {
-          isPlaying ? VideoService.pause() : VideoService.play();
+          if (isPlaying) {
+            const currPos = positionMillis;
+            await VideoService.pauseSync();
+            VideoService.seek(currPos);
+          } else {
+            VideoService.play();
+          }
         }
       }}
       isDisabled={!isLoaded}

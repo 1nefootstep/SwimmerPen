@@ -17,20 +17,21 @@ export default function SelectStrokeRange() {
   const { poolDistance, raceDistance } = useAppSelector(
     state => state.annotation.poolConfig
   );
+  // console.log(`pd: ${poolDistance} rd: ${raceDistance}`);
   const currentSr = useAppSelector(state => state.controls.currentSr);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modes, setModes] = useState<Modes | null>(null);
 
   const mode =
     modes !== null ? modes[poolDistance][raceDistance] : getDefaultMode();
-
+  // console.log(`mode: ${JSON.stringify(mode)}`);
   const items = useMemo(
     () =>
       mode.strokeRanges.map(e => {
         const label = e.toString();
         return { label: label, value: label };
       }),
-    [poolDistance, raceDistance]
+    [poolDistance, raceDistance, modes]
   );
 
   useEffect(() => {

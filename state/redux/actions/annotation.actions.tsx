@@ -10,6 +10,7 @@ import {
   AddAnnotationAction,
   AddStrokeCountAction,
   ClearAnnotatationAction,
+  ClearAnnotationExceptPoolConfigAction,
   UpdateNameAction,
   UpdatePoolConfigAction,
 } from '../types';
@@ -18,6 +19,7 @@ export enum ANNOTATION_ACTION_TYPES {
   ADD_ANNOTATION = 'ANNOTATION/ADD_ANNOTATION',
   ADD_STROKE_COUNT = 'ANNOTATION/ADD_STROKE_COUNT',
   CLEAR_ANNOTATION = 'ANNOTATION/CLEAR_ANNOTATION',
+  CLEAR_ANNOTATION_EXCEPT_POOL_CONFIG = 'ANNOTATION/CLEAR_ANNOTATION_EXCEPT_POOL_CONFIG',
   UPDATE_NAME = 'ANNOTATION/UPDATE_NAME',
   UPDATE_POOL_CONFIG = 'ANNOTATION/UPDATE_POOL_CONFIG',
   LOAD_ANNOTATION = 'ANNOTATION/LOAD_ANNOTATION',
@@ -26,6 +28,12 @@ export enum ANNOTATION_ACTION_TYPES {
 export function clearAnnotation(): ClearAnnotatationAction {
   return {
     type: ANNOTATION_ACTION_TYPES.CLEAR_ANNOTATION,
+  };
+}
+
+export function clearAnnotationExceptPoolConfig(): ClearAnnotationExceptPoolConfigAction {
+  return {
+    type: ANNOTATION_ACTION_TYPES.CLEAR_ANNOTATION_EXCEPT_POOL_CONFIG,
   };
 }
 

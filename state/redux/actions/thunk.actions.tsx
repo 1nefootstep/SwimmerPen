@@ -13,7 +13,7 @@ import { AppActionTypes } from '../types';
 import {
   addAnnotation,
   updatePoolConfig,
-  clearAnnotation,
+  clearAnnotationExceptPoolConfig,
 } from './annotation.actions';
 import { updateDistance, stopRecording } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
@@ -78,7 +78,7 @@ export function saveVideoAndAnnotation(
       const { baseName } = FileHandler.breakUri(saveVideoResult.filename);
       annotation.name = baseName;
       FileHandler.saveAnnotation(baseName, annotation);
-      dispatch(clearAnnotation());
+      dispatch(clearAnnotationExceptPoolConfig());
     }
   };
 }

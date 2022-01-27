@@ -92,7 +92,6 @@ export default function AnnotationScreen({ navigation }) {
               ref={video}
               style={{ height: '100%', aspectRatio: 1.77, maxWidth: '100%' }}
               useNativeControls={false}
-              progressUpdateIntervalMillis={500}
               onLoad={updateStatus}
               isLooping={false}
               resizeMode="contain"
