@@ -105,7 +105,11 @@ export function processFrames(uri: string): AppThunkAction {
       const output: { streams: Array<{ r_frame_rate: string }> } = JSON.parse(
         await session.getOutput()
       );
-      if (output.streams !== undefined && output.streams.length > 0) {
+      if (
+        output.streams !== undefined &&
+        output.streams.length > 0 &&
+        output.streams[0].r_frame_rate !== undefined
+      ) {
         const [numerator, denominator] =
           output.streams[0].r_frame_rate.split('/');
         const avgFrameTime =

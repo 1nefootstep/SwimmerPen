@@ -1,14 +1,15 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import { Center, Box, Divider, ScrollView } from 'native-base';
 import { FloatingMenu } from 'react-native-floating-action-menu';
 import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { useAppSelector } from '../state/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
 import {
   computeResult,
   DPSStatistic,
+  fixAnnotationFrameTimes,
   StrokeCountStatistic,
   StrokeRateStatistic,
   TimeDistStatistic,
@@ -31,8 +32,9 @@ interface FabItem {
 type FabAction = 'screenshot' | 'csv' | 'video';
 
 export default function ResultScreen({ navigation }) {
+  const dispatch = useAppDispatch();
   const annotationsInfo = useAppSelector(state => state.annotation);
-  console.log(annotationsInfo.frameTimes);
+
   const {
     timeAndDistances,
     averageVelocities,
@@ -49,6 +51,10 @@ export default function ResultScreen({ navigation }) {
     { label: 'Send csv', icon: 'file-csv', action: 'csv' },
     { label: 'Send video', icon: 'file-video', action: 'video' },
   ];
+
+  useEffect(() => {
+    fixAnnotationFrameTimes(annotationsInfo, dispatch);
+  }, []);
 
   const openShareDialogAsync = async (uri: string) => {
     if (!(await Sharing.isAvailableAsync())) {

@@ -1,10 +1,4 @@
-import {
-  AbstractSession,
-  FFmpegKitConfig,
-  FFprobeKit,
-  FFprobeSession,
-  LogRedirectionStrategy,
-} from 'ffmpeg-kit-react-native';
+import { FFmpegKitConfig, FFprobeKit } from 'ffmpeg-kit-react-native';
 
 export function getInfo(uri: string) {
   FFprobeKit.getMediaInformation(uri).then(async session => {
