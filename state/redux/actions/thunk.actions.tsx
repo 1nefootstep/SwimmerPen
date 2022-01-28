@@ -15,14 +15,13 @@ import {
   updatePoolConfig,
   clearAnnotationExceptPoolConfig,
   addFrameTimes,
-  addAvgFrameTime,
 } from './annotation.actions';
 import { updateDistance, stopRecording } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
 import { UnixTime } from '../../UnixTime';
 import { batch } from 'react-redux';
 import { breakUri, SaveVideoResult } from '../../../FileHandler';
-import { getFPS, getFrametimes } from '../../VideoProcessor';
+import { getFrametimes } from '../../VideoProcessor';
 
 export type AppThunkAction = ThunkAction<
   void,
@@ -101,23 +100,6 @@ export function updatePoolConfigAndResetCurrentDistance(
 export function processFrames(uri: string): AppThunkAction {
   return (dispatch, getState) => {
     const { annotation } = getState();
-    getFPS(uri).then(async session => {
-      const output: { streams: Array<{ r_frame_rate: string }> } = JSON.parse(
-        await session.getOutput()
-      );
-      if (
-        output.streams !== undefined &&
-        output.streams.length > 0 &&
-        output.streams[0].r_frame_rate !== undefined
-      ) {
-        const [numerator, denominator] =
-          output.streams[0].r_frame_rate.split('/');
-        const avgFrameTime =
-          (Number(denominator) * 1000) / Number(numerator) ?? 33;
-        dispatch(addAvgFrameTime(avgFrameTime));
-      }
-    });
-
     if (annotation.frameTimes.length !== 0) {
       return;
     }

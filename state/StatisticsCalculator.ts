@@ -222,13 +222,11 @@ export function computeResult(
 }
 
 function findIndexTimestamp(a: Array<number>, num: number) {
-  return binarySearch(a, e => e > num);
+  return binarySearch(a, e => Math.floor(e) > Math.floor(num));
 }
 
-export function nextFrameTime(
-  frames: Array<number>,
-  frameTime: number
-): number {
+export function nextFrameTime(frames: Array<number>, frameTime: number): number {
+  console.log(`next frame time from: ${frameTime}`);
   const idx = findIndexTimestamp(frames, frameTime);
   if (idx >= frames.length) {
     return frames[frames.length - 1];
@@ -253,10 +251,8 @@ export function getStartOfFrameGivenTime(
   return frames[idx];
 }
 
-export function previousFrameTime(
-  frames: Array<number>,
-  frameTime: number
-): number {
+export function previousFrameTime(frames: Array<number>, frameTime: number): number {
+  console.log(`prev frame time from: ${frameTime}`);
   const idx = findIndexTimestamp(frames, frameTime) - 2;
   if (idx >= frames.length) {
     return frames[frames.length - 1];
@@ -273,7 +269,7 @@ export function fixAnnotationFrameTimes(
 ) {
   const frames = annotationInfo.frameTimes;
   if (frames.length === 0) {
-    return;
+    return annotationInfo;
   }
   const updatedAnn = Object.fromEntries(
     Object.entries(annotationInfo.annotations).map(([key, value]) => [
@@ -302,11 +298,11 @@ export function fixAnnotationFrameTimes(
       ];
     })
   );
-  dispatch(
-    loadAnnotation({
-      ...annotationInfo,
-      annotations: updatedAnn,
-      strokeCounts: updatedSc,
-    })
-  );
+  const annInfoToUpdate = {
+    ...annotationInfo,
+    annotations: updatedAnn,
+    strokeCounts: updatedSc,
+  };
+  dispatch(loadAnnotation(annotationInfo));
+  return annInfoToUpdate;
 }

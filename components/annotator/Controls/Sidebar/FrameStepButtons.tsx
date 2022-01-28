@@ -3,11 +3,20 @@ import { IconButton, Row } from 'native-base';
 import { AntDesign } from '@expo/vector-icons';
 import * as VideoService from '../../../../state/VideoService';
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
-import { addTimer } from '../../../../state/redux';
+import {
+  nextFrameTime,
+  previousFrameTime,
+} from '../../../../state/StatisticsCalculator';
 
-export default function FrameStepButtons() {
+interface FrameStepButtonsProps {
+  stepSize: number;
+}
+
+export default function FrameStepButtons({
+  stepSize = 33,
+}: FrameStepButtonsProps) {
   const dispatch = useAppDispatch();
-  const stepSize = useAppSelector(state => state.annotation.avgFrameTime) / 2;
+  const frames = useAppSelector(state => state.annotation.frameTimes);
   const videoStatus = useAppSelector(state => state.video.status);
 
   const positionMillis =
@@ -21,6 +30,22 @@ export default function FrameStepButtons() {
   const colorScheme = 'amber';
   const color = 'white';
 
+  const onPress = (prevOrNext: 'prev' | 'next') => {
+    // console.log(frames);
+    if (frames.length !== 0) {
+      if (prevOrNext === 'prev') {
+        VideoService.seek(previousFrameTime(frames, positionMillis), dispatch);
+      } else {
+        VideoService.seek(nextFrameTime(frames, positionMillis), dispatch);
+      }
+    }
+    if (prevOrNext === 'prev') {
+      VideoService.seek(positionMillis - stepSize, dispatch);
+    } else {
+      VideoService.seek(positionMillis + stepSize, dispatch);
+    }
+  };
+
   return (
     <Row justifyContent={'center'} alignItems={'center'}>
       <IconButton
@@ -29,7 +54,7 @@ export default function FrameStepButtons() {
         variant={variant}
         colorScheme={colorScheme}
         mr={spacing}
-        onPress={() => VideoService.seek(positionMillis - stepSize, dispatch)}
+        onPress={() => onPress('prev')}
         _icon={{
           as: AntDesign,
           name: 'stepbackward',
@@ -41,7 +66,7 @@ export default function FrameStepButtons() {
         variant={variant}
         colorScheme={colorScheme}
         ml={spacing}
-        onPress={() => VideoService.seek(positionMillis + stepSize, dispatch)}
+        onPress={() => onPress('next')}
         _icon={{
           as: AntDesign,
           name: 'stepforward',

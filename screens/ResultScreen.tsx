@@ -21,7 +21,7 @@ import StrokeRateChart from '../components/result/StrokeRateChart';
 import Hidden from '../components/Hidden';
 import DPSChart from '../components/result/DPSChart';
 import { formatTimeFromPositionSeconds } from '../state/Util';
-import { createCsvInCacheDir, getVideoUri } from '../FileHandler';
+import { createCsvInCacheDir, getVideoUri, saveAnnotation } from '../FileHandler';
 
 interface FabItem {
   label: string;
@@ -53,7 +53,11 @@ export default function ResultScreen({ navigation }) {
   ];
 
   useEffect(() => {
-    fixAnnotationFrameTimes(annotationsInfo, dispatch);
+    const prev = annotationsInfo;
+    const updated = fixAnnotationFrameTimes(annotationsInfo, dispatch);
+    if (JSON.stringify(prev) !== JSON.stringify(updated)) {
+      saveAnnotation(updated.name, updated);
+    }
   }, []);
 
   const openShareDialogAsync = async (uri: string) => {

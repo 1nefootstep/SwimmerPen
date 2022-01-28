@@ -13,7 +13,6 @@ export type AnnotationInformation = {
   annotations: Annotations;
   strokeCounts: StrokeCounts;
   frameTimes: Array<number>;
-  avgFrameTime: number;
 };
 
 export type CheckpointResponse =

@@ -29,22 +29,6 @@ export function getInfo(uri: string) {
   });
 }
 
-export function getFPS(uri: string) {
-  return FFprobeKit.executeWithArguments([
-    '-print_format',
-    'json',
-    '-hide_banner',
-    '-loglevel',
-    'error',
-    '-select_streams',
-    'v:0',
-    '-show_entries',
-    'stream=r_frame_rate',
-    '-i',
-    uri,
-  ]);
-}
-
 export function getFrametimes(uri: string) {
   return FFprobeKit.executeWithArguments([
     '-print_format',

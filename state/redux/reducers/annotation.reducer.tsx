@@ -6,7 +6,6 @@ import {
   UpdatePoolConfigAction,
   LoadAnnotationAction,
   AddFrameTimesAction,
-  AddAvgFrameTimeAction,
 } from '../types';
 import { ANNOTATION_ACTION_TYPES } from '../actions';
 import { AnnotationInformation } from '../../AKB/AnnotationKnowledgeBank';
@@ -18,7 +17,6 @@ function initState(): AnnotationInformation {
     annotations: {},
     strokeCounts: {},
     frameTimes: [],
-    avgFrameTime: 33,
   };
 }
 
@@ -71,14 +69,6 @@ export function annotationReducer(
         frameTimes: frameTimes,
       };
     }
-    case ANNOTATION_ACTION_TYPES.ADD_AVG_FRAME_TIME: {
-      const { payload } = action as AddAvgFrameTimeAction;
-      const { avgFrameTime } = payload;
-      return {
-        ...state,
-        avgFrameTime: avgFrameTime,
-      };
-    }
     case ANNOTATION_ACTION_TYPES.UPDATE_POOL_CONFIG: {
       const { payload } = action as UpdatePoolConfigAction;
       const { poolConfig } = payload;
@@ -109,9 +99,6 @@ export function annotationReducer(
       }
       if (toReturn.frameTimes === undefined) {
         toReturn.frameTimes = [];
-      }
-      if (toReturn.avgFrameTime === undefined) {
-        toReturn.avgFrameTime = 33;
       }
       return toReturn;
     }

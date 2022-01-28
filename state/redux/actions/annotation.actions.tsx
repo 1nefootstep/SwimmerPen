@@ -8,7 +8,6 @@ import {
 } from '../../AKB';
 import {
   AddAnnotationAction,
-  AddAvgFrameTimeAction,
   AddFrameTimesAction,
   AddStrokeCountAction,
   ClearAnnotatationAction,
@@ -26,7 +25,6 @@ export enum ANNOTATION_ACTION_TYPES {
   UPDATE_POOL_CONFIG = 'ANNOTATION/UPDATE_POOL_CONFIG',
   ADD_FRAME_TIMES = 'ANNOTATION/ADD_FRAME_TIMES',
   LOAD_ANNOTATION = 'ANNOTATION/LOAD_ANNOTATION',
-  ADD_AVG_FRAME_TIME = 'ANNOTATION/ADD_AVG_FRAME_TIME',
 }
 
 export function clearAnnotation(): ClearAnnotatationAction {
@@ -39,13 +37,6 @@ export function addFrameTimes(frameTimes: Array<number>): AddFrameTimesAction {
   return {
     type: ANNOTATION_ACTION_TYPES.ADD_FRAME_TIMES,
     payload: { frameTimes: frameTimes },
-  };
-}
-
-export function addAvgFrameTime(avgFrameTime: number): AddAvgFrameTimeAction {
-  return {
-    type: ANNOTATION_ACTION_TYPES.ADD_AVG_FRAME_TIME,
-    payload: { avgFrameTime: avgFrameTime },
   };
 }
 
