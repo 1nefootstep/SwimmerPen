@@ -1,5 +1,7 @@
 import { Video } from 'expo-av';
 import { RefObject } from 'react';
+import { showTimeForDuration } from '../../components/annotator/Controls/VideoProgressBar/ShowTime';
+import { AppDispatch } from '../redux';
 
 let _video: RefObject<Video>;
 let _seekInfo = {
@@ -57,7 +59,10 @@ export async function loadVideo(uri: string): Promise<boolean> {
   return false;
 }
 
-export function seek(positionMillis: number | undefined) {
+export function seek(
+  positionMillis: number | undefined,
+  dispatch?: AppDispatch
+) {
   if (positionMillis === undefined) {
     return;
   }
@@ -74,13 +79,16 @@ export function seek(positionMillis: number | undefined) {
           if (_seekInfo.seekBuffer !== 0) {
             const copiedBuffer = _seekInfo.seekBuffer;
             _seekInfo.seekBuffer = 0;
-            seek(copiedBuffer);            
+            seek(copiedBuffer);
           }
         })
         .catch(e => console.log(`error: ${e}`))
         .finally(() => {
           _seekInfo.isSeeking = false;
         });
+      if (dispatch !== undefined) {
+        showTimeForDuration(dispatch);
+      }
     } else {
       _seekInfo.seekBuffer = positionMillis;
     }

@@ -6,11 +6,11 @@ import { useAppDispatch } from '../../../../state/redux/hooks';
 import {
   clearVideoStatus,
   loadAnnotation as reduxLoadAnnotation,
+  processFrames,
 } from '../../../../state/redux';
 import * as FileHandler from '../../../../FileHandler';
 import FilePickerScreen from '../../../../screens/FilePickerScreen';
-import FilePickerScreen2 from '../../../../screens/FilePickerScreen2';
-// import { getFrametimes } from '../../../../state/VideoProcessor';
+import { getFrametimes } from '../../../../state/VideoProcessor';
 
 export default function LoadVideo() {
   const [isFilePickerVisible, setIsFilePickerVisible] =
@@ -27,18 +27,18 @@ export default function LoadVideo() {
     dispatch(clearVideoStatus());
 
     VideoService.loadVideo(uri).then(isSuccessful => {
-      // getFrametimes(uri);
       if (!isSuccessful) {
         console.log('LoadVideo: load unsuccessful');
       } else {
         if (loadAnnResult.isSuccessful) {
           const toSeek = loadAnnResult.annotation.annotations[0];
           if (toSeek !== undefined) {
-            VideoService.seek(toSeek);
+            VideoService.seek(toSeek, dispatch);
           }
         }
       }
     });
+    dispatch(processFrames(uri));
   };
 
   return (
@@ -49,7 +49,7 @@ export default function LoadVideo() {
         isOpen={isFilePickerVisible}
         onClose={setIsFilePickerVisible}
       >
-        <FilePickerScreen2
+        <FilePickerScreen
           isVisible={isFilePickerVisible}
           setIsVisible={setIsFilePickerVisible}
           onSelect={onSelectVideo}

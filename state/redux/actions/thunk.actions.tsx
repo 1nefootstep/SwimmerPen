@@ -14,12 +14,15 @@ import {
   addAnnotation,
   updatePoolConfig,
   clearAnnotationExceptPoolConfig,
+  addFrameTimes,
+  addAvgFrameTime,
 } from './annotation.actions';
 import { updateDistance, stopRecording } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
 import { UnixTime } from '../../UnixTime';
 import { batch } from 'react-redux';
 import { breakUri, SaveVideoResult } from '../../../FileHandler';
+import { getFPS, getFrametimes } from '../../VideoProcessor';
 
 export type AppThunkAction = ThunkAction<
   void,
@@ -91,6 +94,41 @@ export function updatePoolConfigAndResetCurrentDistance(
     batch(() => {
       dispatch(updatePoolConfig(poolDistance, raceDistance));
       dispatch(setCurrentDistance(0));
+    });
+  };
+}
+
+export function processFrames(uri: string): AppThunkAction {
+  return (dispatch, getState) => {
+    const { annotation } = getState();
+    getFPS(uri).then(async session => {
+      const output: { streams: Array<{ r_frame_rate: string }> } = JSON.parse(
+        await session.getOutput()
+      );
+      if (output.streams !== undefined && output.streams.length > 0) {
+        const [numerator, denominator] =
+          output.streams[0].r_frame_rate.split('/');
+        const avgFrameTime =
+          (Number(denominator) * 1000) / Number(numerator) ?? 33;
+        dispatch(addAvgFrameTime(avgFrameTime));
+      }
+    });
+
+    if (annotation.frameTimes.length !== 0) {
+      return;
+    }
+    getFrametimes(uri).then(async session => {
+      // Console output generated for this execution
+      const output: { frames: Array<{ best_effort_timestamp_time: string }> } =
+        JSON.parse(await session.getOutput());
+      const frameTimesInMillis = output.frames.map(e => {
+        const n = Number(e.best_effort_timestamp_time);
+        if (isNaN(n) || n === undefined || n === null) {
+          return 0;
+        }
+        return n * 1000;
+      });
+      dispatch(addFrameTimes(frameTimesInMillis));
     });
   };
 }

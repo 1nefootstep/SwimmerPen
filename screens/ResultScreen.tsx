@@ -1,8 +1,7 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { View } from 'react-native';
-import { Button, Center, Box, Divider, ScrollView, Text } from 'native-base';
+import { Center, Box, Divider, ScrollView } from 'native-base';
 import { FloatingMenu } from 'react-native-floating-action-menu';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import * as ScreenOrientation from 'expo-screen-orientation';
@@ -33,7 +32,7 @@ type FabAction = 'screenshot' | 'csv' | 'video';
 
 export default function ResultScreen({ navigation }) {
   const annotationsInfo = useAppSelector(state => state.annotation);
-
+  console.log(annotationsInfo.frameTimes);
   const {
     timeAndDistances,
     averageVelocities,
@@ -47,7 +46,7 @@ export default function ResultScreen({ navigation }) {
   const [isFabOpen, setIsFabOpen] = useState<boolean>(false);
   const items: Array<FabItem> = [
     { label: 'Send graph', icon: 'chart-line', action: 'screenshot' },
-    { label: 'Send CSV', icon: 'file-csv', action: 'csv' },
+    { label: 'Send csv', icon: 'file-csv', action: 'csv' },
     { label: 'Send video', icon: 'file-video', action: 'video' },
   ];
 
@@ -204,6 +203,9 @@ export default function ResultScreen({ navigation }) {
         }}
         renderItemIcon={(item, index, menuState) => {
           return <FontAwesome5 name={item.icon} size={24} color="black" />;
+        }}
+        renderMenuIcon={() => {
+          return <FontAwesome name={'send'} size={24} color="black" />;
         }}
       />
     </>

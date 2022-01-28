@@ -48,7 +48,7 @@ export default function SelectDistance() {
     if (videoStatus === null || !videoStatus.isLoaded) {
       return;
     }
-    VideoService.seek(annotations[distance]);
+    VideoService.seek(annotations[distance], dispatch);
   };
 
   const onPressCheckpoint = async () => {

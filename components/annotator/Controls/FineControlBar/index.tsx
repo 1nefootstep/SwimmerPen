@@ -9,8 +9,9 @@ import Animated, {
 
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 import * as VideoService from '../../../../state/VideoService';
-import { hideTime, showTime } from '../../../../state/redux';
+// import { hideTime, showTime } from '../../../../state/redux';
 import { THEME_SIZE_RATIO } from '../../../../constants/Constants';
+import { showTimeForDuration } from '../VideoProgressBar/ShowTime';
 
 export default function FineControlBar({
   dashGap = 2,
@@ -29,8 +30,8 @@ export default function FineControlBar({
       : 0;
 
   const [posAtStartDrag, setPosAtStartDrag] = useState<number>(0);
-  const [timeToHideTime, setTimeToHideTime] = useState<number>(0);
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  // const [timeToHideTime, setTimeToHideTime] = useState<number>(0);
+  // const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
   const [length, setLength] = useState(0);
   const numOfDashes = Math.ceil(length / (dashGap + dashThickness));
 
@@ -44,25 +45,25 @@ export default function FineControlBar({
     };
   });
 
-  const showTimeForDuration = (duration: number) => {
-    dispatch(showTime());
-    setTimeToHideTime(Date.now() + duration);
-    if (timeoutId !== null) {
-      clearTimeout(timeoutId);
-    }
-    const id = setTimeout(() => {
-      if (Date.now() > timeToHideTime) {
-        dispatch(hideTime());
-        // setWaitingForTimeout(false);
-      } else {
-        showTimeForDuration(1000);
-      }
-      if (timeoutId !== null) {
-        setTimeoutId(null);
-      }
-    }, duration);
-    setTimeoutId(id);
-  };
+  // const showTimeForDuration = (dispatch: AppDispatch, duration: number) => {
+  //   dispatch(showTime());
+  //   setTimeToHideTime(Date.now() + duration);
+  //   if (timeoutId !== null) {
+  //     clearTimeout(timeoutId);
+  //   }
+  //   const id = setTimeout(() => {
+  //     if (Date.now() > timeToHideTime) {
+  //       dispatch(hideTime());
+  //       // setWaitingForTimeout(false);
+  //     } else {
+  //       showTimeForDuration(dispatch, 1000);
+  //     }
+  //     if (timeoutId !== null) {
+  //       setTimeoutId(null);
+  //     }
+  //   }, duration);
+  //   setTimeoutId(id);
+  // };
 
   return (
     <PanGestureHandler
@@ -73,8 +74,7 @@ export default function FineControlBar({
           posAtStartDrag +
           Math.floor(invertedTranslation * MOVEMENT_TO_FRAME_RATIO);
           
-        showTimeForDuration(1000);
-        VideoService.seek(toSeek >= 0 ? toSeek : 0);
+        VideoService.seek(toSeek >= 0 ? toSeek : 0, dispatch);
       }}
       onBegan={() => {
         setPosAtStartDrag(positionMillis);

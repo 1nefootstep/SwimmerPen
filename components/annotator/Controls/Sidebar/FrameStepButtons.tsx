@@ -5,14 +5,9 @@ import * as VideoService from '../../../../state/VideoService';
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 import { addTimer } from '../../../../state/redux';
 
-interface FrameStepButtonsProps {
-  stepSize?: number;
-}
-
-export default function FrameStepButtons({
-  stepSize = 33,
-}: FrameStepButtonsProps) {
+export default function FrameStepButtons() {
   const dispatch = useAppDispatch();
+  const stepSize = useAppSelector(state => state.annotation.avgFrameTime) / 2;
   const videoStatus = useAppSelector(state => state.video.status);
 
   const positionMillis =
@@ -34,7 +29,7 @@ export default function FrameStepButtons({
         variant={variant}
         colorScheme={colorScheme}
         mr={spacing}
-        onPress={() => VideoService.seek(positionMillis - stepSize)}
+        onPress={() => VideoService.seek(positionMillis - stepSize, dispatch)}
         _icon={{
           as: AntDesign,
           name: 'stepbackward',
@@ -46,7 +41,7 @@ export default function FrameStepButtons({
         variant={variant}
         colorScheme={colorScheme}
         ml={spacing}
-        onPress={() => VideoService.seek(positionMillis + stepSize)}
+        onPress={() => VideoService.seek(positionMillis + stepSize, dispatch)}
         _icon={{
           as: AntDesign,
           name: 'stepforward',

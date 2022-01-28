@@ -7,7 +7,6 @@ import SelectDistance from './Sidebar/SelectDistance';
 import ToggleLineTool from './Sidebar/ToggleLineTool';
 import AddTimerButton from './Sidebar/AddTimerButton';
 import LoadVideo from './Sidebar/LoadVideo';
-import LoadVideoFilePicker from './Sidebar/LoadVideo2';
 import StrokeCounter from './Sidebar/StrokeCounter';
 import ToStatisticsButton from './Sidebar/ToStatisticsButton';
 import FrameStepButtons from './Sidebar/FrameStepButtons';

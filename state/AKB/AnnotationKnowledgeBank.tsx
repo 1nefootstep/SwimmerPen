@@ -12,6 +12,8 @@ export type AnnotationInformation = {
   poolConfig: PoolConfig;
   annotations: Annotations;
   strokeCounts: StrokeCounts;
+  frameTimes: Array<number>;
+  avgFrameTime: number;
 };
 
 export type CheckpointResponse =

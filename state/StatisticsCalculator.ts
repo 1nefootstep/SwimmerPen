@@ -177,6 +177,10 @@ function computeDPS(
   return dps;
 }
 
+// function fixFrametimes() {
+
+// }
+
 export interface ComputedResult {
   timeAndDistances: Array<TimeDistStatistic>;
   strokeCounts: Array<StrokeCountStatistic>;

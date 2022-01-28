@@ -36,6 +36,16 @@ export type LoadAnnotationAction = {
   payload: { annotation: AnnotationInformation; name: string };
 };
 
+export type AddFrameTimesAction = {
+  type: string;
+  payload: { frameTimes: Array<number> };
+};
+
+export type AddAvgFrameTimeAction = {
+  type: string;
+  payload: { avgFrameTime: number };
+}
+
 export type SaveAnnotationAction = {
   type: string;
   payload: { filename: string };
@@ -51,6 +61,8 @@ export type AnnotationActionTypes =
   | ClearAnnotatationAction
   | ClearAnnotationExceptPoolConfigAction
   | AddStrokeCountAction
+  | AddFrameTimesAction
   | UpdateNameAction
   | UpdatePoolConfigAction
+  | AddAvgFrameTimeAction
   | LoadAnnotationAction;

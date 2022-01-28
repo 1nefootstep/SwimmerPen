@@ -5,6 +5,8 @@ import {
   UpdateNameAction,
   UpdatePoolConfigAction,
   LoadAnnotationAction,
+  AddFrameTimesAction,
+  AddAvgFrameTimeAction,
 } from '../types';
 import { ANNOTATION_ACTION_TYPES } from '../actions';
 import { AnnotationInformation } from '../../AKB/AnnotationKnowledgeBank';
@@ -15,6 +17,8 @@ function initState(): AnnotationInformation {
     poolConfig: { poolDistance: '50m', raceDistance: '100m' },
     annotations: {},
     strokeCounts: {},
+    frameTimes: [],
+    avgFrameTime: 33,
   };
 }
 
@@ -59,6 +63,22 @@ export function annotationReducer(
         name: name,
       };
     }
+    case ANNOTATION_ACTION_TYPES.ADD_FRAME_TIMES: {
+      const { payload } = action as AddFrameTimesAction;
+      const { frameTimes } = payload;
+      return {
+        ...state,
+        frameTimes: frameTimes,
+      };
+    }
+    case ANNOTATION_ACTION_TYPES.ADD_AVG_FRAME_TIME: {
+      const { payload } = action as AddAvgFrameTimeAction;
+      const { avgFrameTime } = payload;
+      return {
+        ...state,
+        avgFrameTime: avgFrameTime,
+      };
+    }
     case ANNOTATION_ACTION_TYPES.UPDATE_POOL_CONFIG: {
       const { payload } = action as UpdatePoolConfigAction;
       const { poolConfig } = payload;
@@ -76,15 +96,24 @@ export function annotationReducer(
         );
         return state;
       }
+      let toReturn;
       if (annotation.name === '' && name !== '') {
-        return {
+        toReturn = {
           ...annotation,
           name: name,
         };
+      } else {
+        toReturn = {
+          ...annotation,
+        };
       }
-      return {
-        ...annotation,
-      };
+      if (toReturn.frameTimes === undefined) {
+        toReturn.frameTimes = [];
+      }
+      if (toReturn.avgFrameTime === undefined) {
+        toReturn.avgFrameTime = 33;
+      }
+      return toReturn;
     }
     default:
       return state;

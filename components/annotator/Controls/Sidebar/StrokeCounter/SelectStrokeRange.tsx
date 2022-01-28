@@ -66,7 +66,7 @@ export default function SelectStrokeRange() {
         ? strokeCounts[s]
         : { strokeCount: 0, startTime: 0, endTime: 0 };
     if (scWithTime.startTime !== 0) {
-      VideoService.seek(scWithTime.startTime);
+      VideoService.seek(scWithTime.startTime, dispatch);
     }
   };
 

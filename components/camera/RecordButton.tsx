@@ -2,7 +2,6 @@ import React, { RefObject } from 'react';
 import { IconButton } from 'native-base';
 import { Entypo } from '@expo/vector-icons';
 import { Camera, CameraRecordingOptions } from 'expo-camera';
-import * as MediaLibrary from 'expo-media-library';
 import { useAppDispatch } from '../../state/redux/hooks';
 import {
   saveVideoAndAnnotation,
@@ -25,13 +24,6 @@ export default function RecordButton(props: {
   const onPress = async () => {
     if (isCameraReady) {
       if (!isRecording) {
-        let { status } = await MediaLibrary.requestPermissionsAsync();
-        if (status !== 'granted') {
-          console.log(
-            '<RecordButton> No permission: not allowed to write to media library'
-          );
-          return;
-        }
         cameraRef!
           .recordAsync(props.recordOptions)
           .then(async ({ uri }) => {

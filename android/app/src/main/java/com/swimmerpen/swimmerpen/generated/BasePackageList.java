@@ -17,7 +17,6 @@ public class BasePackageList {
         new expo.modules.imageloader.ImageLoaderPackage(),
         new expo.modules.imagepicker.ImagePickerPackage(),
         new expo.modules.keepawake.KeepAwakePackage(),
-        new expo.modules.medialibrary.MediaLibraryPackage(),
         new expo.modules.screenorientation.ScreenOrientationPackage(),
         new expo.modules.sharing.SharingPackage(),
         new expo.modules.splashscreen.SplashScreenPackage(),
