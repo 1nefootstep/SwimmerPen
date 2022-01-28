@@ -33,7 +33,7 @@ export type UpdatePoolConfigAction = {
 
 export type LoadAnnotationAction = {
   type: string;
-  payload: { annotation: AnnotationInformation };
+  payload: { annotation: AnnotationInformation; name: string };
 };
 
 export type SaveAnnotationAction = {

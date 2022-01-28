@@ -55,7 +55,7 @@ export function nestedArrayMap<T1, T2, G>(
   fn: (t1: T1) => T2
 ) {
   const prepareArg: Array<[T2, G]> = [];
-  nestedArr.forEach((e) => prepareArg.push([fn(e[0]), e[1]]));
+  nestedArr.forEach(e => prepareArg.push([fn(e[0]), e[1]]));
   return prepareArg;
 }
 
@@ -66,7 +66,7 @@ export function nestedArrayMap<T1, T2, G>(
  */
 export function numbersToStringRange(nums: Array<number>) {
   console.log(`numbersToStringRange, args: ${nums}`);
-  return nums.map(e=>e.toString()).join('-');
+  return nums.map(e => e.toString()).join('-');
 }
 
 function pad(pad: string, num: number, padLeft: boolean) {
@@ -81,5 +81,9 @@ export function formatTimeFromPosition(position: number): string {
   const millis = Math.floor(position % 1000);
   const seconds = Math.floor((position % 60000) / 1000);
   const mins = Math.floor(position / 60000);
-  return `${mins}:${pad("00", seconds, true)}.${pad("000", millis, true)}`;
+  return `${mins}:${pad('00', seconds, true)}.${pad('000', millis, true)}`;
+}
+
+export function formatTimeFromPositionSeconds(position: number): string {
+  return formatTimeFromPosition(position * 1000);
 }

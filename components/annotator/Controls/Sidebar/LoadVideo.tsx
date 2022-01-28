@@ -22,7 +22,7 @@ export default function LoadVideo() {
     const loadAnnResult = await FileHandler.loadAnnotation(baseName);
     console.log(JSON.stringify(loadAnnResult));
     if (loadAnnResult.isSuccessful) {
-      dispatch(reduxLoadAnnotation(loadAnnResult.annotation));
+      dispatch(reduxLoadAnnotation(loadAnnResult.annotation, baseName));
     }
     dispatch(clearVideoStatus());
 

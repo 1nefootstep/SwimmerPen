@@ -103,11 +103,12 @@ export function resetPoolConfig(): UpdatePoolConfigAction {
   };
 }
 
-export function loadAnnotation(annotationInfo: AnnotationInformation) {
+export function loadAnnotation(annotationInfo: AnnotationInformation, name?: string) {
   return {
     type: ANNOTATION_ACTION_TYPES.LOAD_ANNOTATION,
     payload: {
       annotation: annotationInfo,
+      name: name ?? '',
     },
   };
 }

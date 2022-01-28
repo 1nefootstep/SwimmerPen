@@ -231,3 +231,9 @@ export async function loadAnnotation(
     return { isSuccessful: false };
   }
 }
+
+export async function createCsvInCacheDir(csv: string, basename: string) {
+  const uri = `${FS.cacheDirectory}/${basename}.csv`;
+  await FS.writeAsStringAsync(uri, csv);
+  return uri;
+}

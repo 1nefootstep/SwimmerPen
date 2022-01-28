@@ -42,6 +42,7 @@
     "react-native-chart-kit": "^6.11.0",
     "react-native-dashed-line": "^1.1.0",
     "react-native-dropdown-picker": "^5.2.3",
+    "react-native-floating-action-menu": "^1.2.4",
     "react-native-gesture-handler": "~1.10.2",
     "react-native-image-viewing": "^0.2.1",
     "react-native-numeric-input": "^1.9.0",
