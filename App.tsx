@@ -15,6 +15,7 @@ import RootNavigator from './router';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
 import { AppState, AppStateStatus } from 'react-native';
 import Constants from 'expo-constants';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Define the config
 
@@ -55,7 +56,9 @@ export default function App() {
   return (
     <Provider store={store}>
       <NativeBaseProvider>
-        <RootNavigator />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <RootNavigator />
+        </GestureHandlerRootView>
         <StatusBar hidden={true} />
       </NativeBaseProvider>
     </Provider>
