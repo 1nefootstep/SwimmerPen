@@ -51,7 +51,7 @@ export default function Home({ navigation }) {
         <ImageButton
           onPress={() => navigation.navigate('CameraScreen')}
           description="Camera"
-          requireAsset={require('../assets/swimButton.jpg')}
+          requireAsset={require('../../assets/swimButton.jpg')}
         />
       </Box>
       <Spacer />
@@ -59,7 +59,7 @@ export default function Home({ navigation }) {
         <ImageButton
           onPress={() => navigation.navigate('AnnotationScreen')}
           description="Annotation"
-          requireAsset={require('../assets/annotationButton.jpg')}
+          requireAsset={require('../../assets/annotationButton.jpg')}
         />
       </Box>
       <Spacer />
