@@ -1,41 +1,48 @@
 import React, { RefObject } from 'react';
 import { IconButton } from 'native-base';
 import { Entypo } from '@expo/vector-icons';
-import { Camera, CameraRecordingOptions } from 'expo-camera';
+// import { Camera, CameraRecordingOptions } from 'expo-camera';
 import { useAppDispatch } from '../../state/redux/hooks';
 import {
   saveVideoAndAnnotation,
   startRecording,
   stopRecording,
 } from '../../state/redux';
+import { Camera } from 'react-native-vision-camera';
 
 export default function RecordButton({
   isRecording,
   setIsRecording,
-  cameraRef,
-  recordOptions,
-}: {
+  camera,
+}: // recordOptions,
+{
   isRecording: boolean;
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>;
-  cameraRef: RefObject<Camera>;
-  recordOptions?: CameraRecordingOptions;
+  camera: Camera | null;
+  // recordOptions?: CameraRecordingOptions;
 }) {
-  const camera = cameraRef.current;
+  // const camera = camera.current;
   const isCameraReady = camera !== null;
 
   const dispatch = useAppDispatch();
 
-  const onPress = async () => {
+  const onPress = () => {
+    console.log(`record pressed: isCameraReady: ${isCameraReady}`);
     if (isCameraReady) {
       if (!isRecording) {
-        camera!
-          .recordAsync(recordOptions)
-          .then(async ({ uri }) => {
-            dispatch(saveVideoAndAnnotation(uri));
-          })
-          .catch(e => {
+        camera!.startRecording({
+          flash: 'off',
+          onRecordingFinished: video => {
+            dispatch(saveVideoAndAnnotation(video.path))
+          },
+          onRecordingError: e => {
             console.log(`<RecordButton> error: ${e}`);
-          });
+          },
+        });
+        // .then(async ({ uri }) => {
+        //   dispatch(saveVideoAndAnnotation(uri));
+        // })
+        // .catch();
         // await camera!.takePictureAsync({ skipProcessing: true });
         dispatch(startRecording(Date.now()));
         setIsRecording(true);
