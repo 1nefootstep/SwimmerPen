@@ -9,36 +9,41 @@ import {
   stopRecording,
 } from '../../state/redux';
 
-export default function RecordButton(props: {
+export default function RecordButton({
+  isRecording,
+  setIsRecording,
+  cameraRef,
+  recordOptions,
+}: {
   isRecording: boolean;
   setIsRecording: React.Dispatch<React.SetStateAction<boolean>>;
   cameraRef: RefObject<Camera>;
   recordOptions?: CameraRecordingOptions;
 }) {
-  const isRecording = props.isRecording;
-  const cameraRef = props.cameraRef.current;
-  const isCameraReady = cameraRef !== null;
+  const camera = cameraRef.current;
+  const isCameraReady = camera !== null;
 
   const dispatch = useAppDispatch();
 
   const onPress = async () => {
     if (isCameraReady) {
       if (!isRecording) {
-        cameraRef!
-          .recordAsync(props.recordOptions)
+        camera!
+          .recordAsync(recordOptions)
           .then(async ({ uri }) => {
             dispatch(saveVideoAndAnnotation(uri));
           })
           .catch(e => {
             console.log(`<RecordButton> error: ${e}`);
           });
-        await cameraRef!.takePictureAsync({skipProcessing: true});
+        // await camera!.takePictureAsync({ skipProcessing: true });
         dispatch(startRecording(Date.now()));
+        setIsRecording(true);
       } else {
-        cameraRef!.stopRecording();
+        camera!.stopRecording();
         dispatch(stopRecording());
+        setIsRecording(false);
       }
-      props.setIsRecording(b => !b);
     }
   };
 
@@ -49,7 +54,7 @@ export default function RecordButton(props: {
       _icon={{
         as: Entypo,
         name: isRecording ? 'controller-stop' : 'controller-record',
-        size: { sm: '16', md: '20', lg: '24' },
+        size: { sm: 20, md: 20, lg: 24 },
         color: ['rose.600'],
       }}
     />

@@ -16,7 +16,7 @@ export default function MuteButton(props: {
     } else {
       props.setIsMute(true);
     }
-    console.log(isRecording);
+    //console.log(isRecording);
   };
 
   return (
@@ -28,7 +28,7 @@ export default function MuteButton(props: {
         <Icon
           as={FontAwesome}
           name={props.isMute ? 'volume-off' : 'volume-up'}
-          size={{ md: '12', lg: '16' }}
+          size={{ sm: '12', md: '12', lg: '16' }}
           color={props.isMute ? 'lime.700' : 'lime.300'}
         />
       }

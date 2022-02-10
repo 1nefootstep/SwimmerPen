@@ -48,7 +48,7 @@ export default function FilePickerScreen({
   const updateVideoUris = () => {
     setIsLoading(true);
     getVideoNames().then(async names => {
-      console.log(`video names: ${names}`);
+      //console.log(`video names: ${names}`);
       const urisAndModificationTime = await Promise.all(
         names.map(async e => {
           const { baseName } = breakUri(e);
@@ -133,47 +133,6 @@ export default function FilePickerScreen({
     </Box>
   );
 
-  // const footer = ({ imageIndex }: { imageIndex: number }) => (
-  //   <Column alignItems="center" justifyContent="center">
-  //     <Box
-  //       bg="primary.50"
-  //       paddingX={8}
-  //       paddingY={2}
-  //       mb={2}
-  //       alignItems="center"
-  //       justifyContent="center"
-  //     >
-  //       <Text>{getNameFromUri(videoUris[imageIndex] ?? '')}</Text>
-  //     </Box>
-  //     <Row>
-  //       <Button
-  //         variant="solid"
-  //         size="sm"
-  //         mr={4}
-  //         onPress={() => {
-  //           onSelect(videoUris[imageIndex]);
-  //           setIsVisible(false);
-  //         }}
-  //         colorScheme="tertiary"
-  //       >
-  //         Select
-  //       </Button>
-  //       <Button
-  //         variant="solid"
-  //         size="sm"
-  //         onPress={async () => {
-  //           const { baseName } = breakUri(videoUris[imageIndex]);
-  //           console.log(`uri: ${videoUris[imageIndex]}, basename: ${baseName}`);
-  //           await deleteVideoandAnnotation(baseName);
-  //           updateVideoUris();
-  //         }}
-  //         colorScheme="tertiary"
-  //       >
-  //         Delete
-  //       </Button>
-  //     </Row>
-  //   </Column>
-  // );
   if (isLoading) {
     return (
       <Row space={2} alignItems="center">

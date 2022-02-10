@@ -81,9 +81,9 @@ export function annotationReducer(
       const { payload } = action as LoadAnnotationAction;
       const { annotation, name } = payload;
       if (annotation === undefined || annotation === null) {
-        console.log(
-          `Annotation reducer error: annotation passed in was ${annotation}`
-        );
+        //console.log(
+        //   `Annotation reducer error: annotation passed in was ${annotation}`
+        // );
         return state;
       }
       let toReturn;

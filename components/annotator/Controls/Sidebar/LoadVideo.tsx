@@ -20,7 +20,7 @@ export default function LoadVideo() {
   const onSelectVideo = async (uri: string) => {
     const { baseName } = FileHandler.breakUri(uri);
     const loadAnnResult = await FileHandler.loadAnnotation(baseName);
-    console.log(JSON.stringify(loadAnnResult));
+    //console.log(JSON.stringify(loadAnnResult));
     if (loadAnnResult.isSuccessful) {
       dispatch(reduxLoadAnnotation(loadAnnResult.annotation, baseName));
     }
@@ -28,7 +28,7 @@ export default function LoadVideo() {
 
     VideoService.loadVideo(uri).then(isSuccessful => {
       if (!isSuccessful) {
-        console.log('LoadVideo: load unsuccessful');
+        //console.log('LoadVideo: load unsuccessful');
       } else {
         if (loadAnnResult.isSuccessful) {
           const toSeek = loadAnnResult.annotation.annotations[0];

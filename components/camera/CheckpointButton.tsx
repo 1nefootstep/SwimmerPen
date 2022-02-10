@@ -18,11 +18,11 @@ export default function CheckpointButton() {
       ? `${recordingInfo.currentDistance}m`
       : 'DONE'
     : '0m';
-  const minW = useBreakpointValue({ md: 20, lg: 24 });
+  const minW = useBreakpointValue({ sm: 16, md: 20, lg: 24 });
   return (
     <Button
       leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
-      size={{ md: 12, lg: 16 }}
+      size={{ sm: 10, md: 12, lg: 16 }}
       minW={minW}
       onPress={onPress}
       isDisabled={

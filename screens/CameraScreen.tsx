@@ -6,7 +6,9 @@ import { Camera } from 'expo-camera';
 import { Platform } from 'react-native';
 import RecordButton from '../components/camera/RecordButton';
 import SelectMode from '../components/SelectMode';
-import SelectResolution from '../components/camera/SelectResolution';
+import SelectResolution, {
+  AvailableResolution,
+} from '../components/camera/SelectResolution';
 import Zoom from '../components/camera/Zoom';
 import BackButton from '../components/BackButton';
 import MuteButton from '../components/camera/MuteButton';
@@ -24,9 +26,7 @@ export default function CameraScreen({ navigation }) {
   const [ratio, setRatio] = useState('4:3');
   const [isRatioSet, setIsRatioSet] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const [videoQuality, setVideoQuality] = useState<
-    '480p' | '720p' | '1080p' | '2160p'
-  >('720p');
+  const [videoQuality, setVideoQuality] = useState<AvailableResolution>('720p');
   const [isMute, setIsMute] = useState<boolean>(false);
   const [zoom, setZoom] = useState<number>(0);
 
@@ -35,11 +35,12 @@ export default function CameraScreen({ navigation }) {
       const { status } = await Camera.requestCameraPermissionsAsync();
       const micPermissionResponse =
         await Camera.requestMicrophonePermissionsAsync();
-      console.log(`${JSON.stringify(micPermissionResponse)}`);
+      //console.log(`${JSON.stringify(micPermissionResponse)}`);
       setHasPermission(
         status === 'granted' && micPermissionResponse.status === 'granted'
       );
-      await createDirs();
+      const result = await createDirs();
+      //console.log(`creating dir ${result ? 'successful' : 'failed'}`);
       dispatch(clearAnnotation());
     })();
   }, [setHasPermission]);
@@ -90,7 +91,7 @@ export default function CameraScreen({ navigation }) {
                 <MuteButton isMute={isMute} setIsMute={setIsMute} />
                 <SelectResolution
                   currentResolution={videoQuality}
-                  resolutions={['480p', '720p', '1080p', '2160p']}
+                  resolutions={['480p', '720p', '1080p']}
                   setVideoQuality={setVideoQuality}
                 />
               </Column>

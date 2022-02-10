@@ -20,7 +20,6 @@ import TimerTool from '../components/TimerTool';
 export default function AnnotationScreen({ navigation }) {
   const dispatch = useAppDispatch();
   const videoStatus = useAppSelector(state => state.video.status);
-  const isLoaded = videoStatus?.isLoaded ?? false;
   const updateStatus = (status: AVPlaybackStatus) => {
     dispatch(updateVideoStatus(status));
   };
@@ -35,7 +34,6 @@ export default function AnnotationScreen({ navigation }) {
 
   const video = useRef<Video>(null);
   const [isControlActive, setIsControlActive] = useState<boolean>(true);
-
   useEffect(() => {
     (() => {
       VideoService.setVideo(video);

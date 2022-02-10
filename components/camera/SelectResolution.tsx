@@ -3,12 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { Button, Modal, Column, Radio, Box, Text } from 'native-base';
 import { useAppSelector } from '../../state/redux/hooks';
 
+export type AvailableResolution = '480p' | '720p' | '1080p';
+
 interface SelectResolutionProps {
-  currentResolution: '480p' | '720p' | '1080p' | '2160p';
-  resolutions: Array<'480p' | '720p' | '1080p' | '2160p'>;
-  setVideoQuality: React.Dispatch<
-    React.SetStateAction<'480p' | '720p' | '1080p' | '2160p'>
-  >;
+  currentResolution: AvailableResolution;
+  resolutions: Array<AvailableResolution>;
+  setVideoQuality: React.Dispatch<React.SetStateAction<AvailableResolution>>;
 }
 
 export default function SelectResolution({
@@ -17,7 +17,7 @@ export default function SelectResolution({
   setVideoQuality,
 }: SelectResolutionProps) {
   const [showModal, setShowModal] = useState<boolean>(false);
-  const [quality, setQuality] = useState<'480p' | '720p' | '1080p' | '2160p'>(
+  const [quality, setQuality] = useState<AvailableResolution>(
     '720p'
   );
   const isRecording = useAppSelector(state => state?.recording.isRecording);
@@ -52,8 +52,7 @@ export default function SelectResolution({
                 if (
                   quality !== '480p' &&
                   quality !== '720p' &&
-                  quality !== '1080p' &&
-                  quality !== '2160p'
+                  quality !== '1080p'
                 ) {
                   return;
                 }

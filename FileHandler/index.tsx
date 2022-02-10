@@ -22,14 +22,14 @@ export async function createDirIfDontExist(dir: string): Promise<boolean> {
     if (!dirInfo.exists) {
       await FS.makeDirectoryAsync(dir);
     } else if (dirInfo.exists && !dirInfo.isDirectory) {
-      console.log(
-        `<FileHandler> createDirIfDontExist: ${dir} name is taken and is not a directory.`
-      );
+      //console.log(
+      //   `<FileHandler> createDirIfDontExist: ${dir} name is taken and is not a directory.`
+      // );
       return false;
     }
     return true;
   } catch (e) {
-    console.log(`<FileHandler> createDirIfDontExist: ${e}`);
+    //console.log(`<FileHandler> createDirIfDontExist: ${e}`);
     return false;
   }
 }
@@ -37,6 +37,7 @@ export async function createDirIfDontExist(dir: string): Promise<boolean> {
 export function createDirs() {
   const createAnnDirResult = createDirIfDontExist(APP_ANNOTATION_DIR_PATH);
   const createVidDirResult = createDirIfDontExist(APP_VIDEO_DIR_PATH);
+  return Promise.all([createAnnDirResult, createVidDirResult]);
 }
 
 interface BrokenUpUri {
@@ -116,7 +117,7 @@ export async function renameVideoAndAnnotation(
       to: `${videoUriSplit.directory}/${replacedVideoName}`,
     });
   } catch (err) {
-    console.log(`<FileHandler> Failed to rename: ${err}`);
+    //console.log(`<FileHandler> Failed to rename: ${err}`);
     return false;
   }
   return true;
@@ -141,19 +142,19 @@ export async function saveVideo(uri: string): Promise<SaveVideoResult> {
   try {
     const createDirResult = await createDirIfDontExist(APP_VIDEO_DIR_PATH);
     if (!createDirResult) {
-      console.log('create video dir failed');
+      //console.log('create video dir failed');
     }
     const nextNum = await getNextNumberInVideoFolder();
 
     const toUri = getVideoUri(`${NAME_PREFIX}${nextNum}`);
     await FS.copyAsync({ from: uri, to: toUri });
-    console.log(`<FileHandler> save video to ${toUri}`);
+    //console.log(`<FileHandler> save video to ${toUri}`);
     return {
       isSuccessful: true,
       filename: `${NAME_PREFIX}${nextNum}`,
     };
   } catch (err) {
-    console.log(`<FileHandler> Failed to save video: ${err}`);
+    //console.log(`<FileHandler> Failed to save video: ${err}`);
     return { isSuccessful: false };
   }
 }
@@ -183,7 +184,7 @@ export async function getVideoNames(): Promise<Array<string>> {
   try {
     return await readDirectoryAsync(APP_VIDEO_DIR_PATH);
   } catch (err) {
-    console.log(`<FileHandler> Failed to read video uris: ${err}`);
+    //console.log(`<FileHandler> Failed to read video uris: ${err}`);
     return [];
   }
 }
@@ -195,7 +196,7 @@ export async function saveAnnotation(
   try {
     const createDirResult = await createDirIfDontExist(APP_ANNOTATION_DIR_PATH);
     if (!createDirResult) {
-      console.log('create annotation dir failed');
+      //console.log('create annotation dir failed');
     }
     await FS.writeAsStringAsync(
       getAnnotationUri(basename),
@@ -203,7 +204,7 @@ export async function saveAnnotation(
     );
     return true;
   } catch (e) {
-    console.log(`<FileHandler> Failed to save annotation: ${e}`);
+    //console.log(`<FileHandler> Failed to save annotation: ${e}`);
     return false;
   }
 }
@@ -227,7 +228,7 @@ export async function loadAnnotation(
     const annotationInfo: AnnotationInformation = JSON.parse(result);
     return { isSuccessful: true, annotation: annotationInfo };
   } catch (e) {
-    console.log(`<FileHandler> Failed to load annotation: ${e}`);
+    //console.log(`<FileHandler> Failed to load annotation: ${e}`);
     return { isSuccessful: false };
   }
 }

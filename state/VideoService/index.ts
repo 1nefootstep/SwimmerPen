@@ -44,14 +44,14 @@ export async function loadVideo(uri: string): Promise<boolean> {
       try {
         await v.unloadAsync();
       } catch (e) {
-        console.log(`Error at unloadAsync: ${e}`);
+        //console.log(`Error at unloadAsync: ${e}`);
         return false;
       }
     }
     try {
       await v.loadAsync({ uri: uri });
     } catch (e) {
-      console.log(`Error at loadAsync while loading ${uri}: ${e}`);
+      //console.log(`Error at loadAsync while loading ${uri}: ${e}`);
       return false;
     }
     return true;
@@ -69,7 +69,7 @@ export function seek(
   if (_video.current) {
     if (!_seekInfo.isSeeking) {
       _seekInfo.isSeeking = true;
-      console.log(`Seeking to ${positionMillis}`);
+      //console.log(`Seeking to ${positionMillis}`);
       const v = _video.current;
       v.setPositionAsync(positionMillis, {
         toleranceMillisAfter: 0,

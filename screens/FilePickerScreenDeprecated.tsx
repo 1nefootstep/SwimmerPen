@@ -30,7 +30,7 @@ export default function FilePickerScreen({
   const updateVideoUris = () => {
     setIsLoading(true);
     getVideoNames().then(async names => {
-      console.log(`video names: ${names}`);
+      //console.log(`video names: ${names}`);
       const urisAndModificationTime = await Promise.all(
         names.map(async e => {
           const { baseName } = breakUri(e);
@@ -55,7 +55,7 @@ export default function FilePickerScreen({
           uris.map(async (e, i) => await VideoThumbnails.getThumbnailAsync(e))
         );
       } catch (err) {
-        console.log(`filepicker: ${err}`);
+        //console.log(`filepicker: ${err}`);
       }
       const imageSources = thumbnailResults.map((e, i) => {
         return { uri: e.uri };
@@ -107,7 +107,7 @@ export default function FilePickerScreen({
           size="sm"
           onPress={async () => {
             const { baseName } = breakUri(videoUris[imageIndex]);
-            console.log(`uri: ${videoUris[imageIndex]}, basename: ${baseName}`);
+            //console.log(`uri: ${videoUris[imageIndex]}, basename: ${baseName}`);
             await deleteVideoandAnnotation(baseName);
             updateVideoUris();
           }}

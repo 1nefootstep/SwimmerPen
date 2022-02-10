@@ -31,7 +31,7 @@ export default function SingleTimer({
     lg: {timerWidth: 90,timerHeight: 44},
   });
 
-  console.log(`w: ${timerWidth} h: ${timerHeight}`);
+  //console.log(`w: ${timerWidth} h: ${timerHeight}`);
   
   
   

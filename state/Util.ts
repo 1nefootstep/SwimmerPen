@@ -65,7 +65,7 @@ export function nestedArrayMap<T1, T2, G>(
  * @param nums Array of number
  */
 export function numbersToStringRange(nums: Array<number>) {
-  console.log(`numbersToStringRange, args: ${nums}`);
+  //console.log(`numbersToStringRange, args: ${nums}`);
   return nums.map(e => e.toString()).join('-');
 }
 

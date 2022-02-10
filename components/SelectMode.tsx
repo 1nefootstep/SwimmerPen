@@ -158,7 +158,7 @@ export default function SelectMode() {
                 setShowModal(false);
                 setShowModal2(false);
                 dispatch(updatePoolConfig(poolDistance, raceDistance));
-                console.log(`updating to ${poolDistance} ${raceDistance}`);
+                //console.log(`updating to ${poolDistance} ${raceDistance}`);
               }}
             >
               Continue

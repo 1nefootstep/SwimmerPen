@@ -9,7 +9,7 @@ import {
 } from '../../../../state/StatisticsCalculator';
 
 interface FrameStepButtonsProps {
-  stepSize: number;
+  stepSize?: number;
 }
 
 export default function FrameStepButtons({
@@ -31,7 +31,7 @@ export default function FrameStepButtons({
   const color = 'white';
 
   const onPress = (prevOrNext: 'prev' | 'next') => {
-    // console.log(frames);
+    // //console.log(frames);
     if (frames.length !== 0) {
       if (prevOrNext === 'prev') {
         VideoService.seek(previousFrameTime(frames, positionMillis), dispatch);

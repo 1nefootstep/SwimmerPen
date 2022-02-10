@@ -42,7 +42,7 @@ export default function AnnotationControls({ navigation }) {
       <Box
         position="absolute"
         onLayout={({ nativeEvent }) => {
-          console.log(JSON.stringify(nativeEvent.layout));
+          //console.log(JSON.stringify(nativeEvent.layout));
         }}
         style={{
           position: 'absolute',

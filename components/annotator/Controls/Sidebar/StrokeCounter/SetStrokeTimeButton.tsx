@@ -13,11 +13,6 @@ export default function SetStrokeTimeButton() {
   const dispatch = useDispatch();
   const currentSr = useAppSelector(state => state.controls.currentSr);
   const strokeCounts = useAppSelector(state => state.annotation.strokeCounts);
-  const videoStatus = useAppSelector(state => state.video.status);
-  // const positionMillis =
-  //   videoStatus !== null && videoStatus.isLoaded
-  //     ? videoStatus.positionMillis
-  //     : 0;
   const scWithTime =
     currentSr in strokeCounts
       ? strokeCounts[currentSr]

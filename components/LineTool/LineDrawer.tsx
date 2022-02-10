@@ -68,13 +68,13 @@ function calcOffset(radians: number, diameter: number) {
 export default function LineDrawer({ p1, p2, thickness }: LineDrawerProps) {
   const fixedP1 = fixUndefinedPoint(p1);
   const fixedP2 = fixUndefinedPoint(p2);
-  const centerOfPoints = midpoint(fixedP1, fixedP2);
+  // const centerOfPoints = midpoint(fixedP1, fixedP2);
   const length = distanceBetweenPoints(fixedP1, fixedP2);
   const angleRad = angleRadOfPoints(fixedP1, fixedP2) - DEG_90_IN_RAD;
   const { xOffset, yOffset } = calcOffset(angleRad, length);
   // const angleDeg = angleDegOfPoints(fixedP1, fixedP2) + 180;
-  // console.log(`midpoint: ${JSON.stringify(centerOfPoints)}, deg: -${angleDeg}`);
-  // console.log(`x:${fixedP1.x + xOffset}, y:${fixedP1.y + yOffset})`);
+  // //console.log(`midpoint: ${JSON.stringify(centerOfPoints)}, deg: -${angleDeg}`);
+  // //console.log(`x:${fixedP1.x + xOffset}, y:${fixedP1.y + yOffset})`);
   return (
     <Box
       position="absolute"
@@ -88,9 +88,9 @@ export default function LineDrawer({ p1, p2, thickness }: LineDrawerProps) {
         width: thickness,
         transform: [{ rotate: `${angleRad}rad` }],
       }}
-      onLayout={({nativeEvent}) => {
-        console.log(JSON.stringify(nativeEvent.layout));
-      }}
+      // onLayout={({nativeEvent}) => {
+      //   //console.log(JSON.stringify(nativeEvent.layout));
+      // }}
     />
   );
 }

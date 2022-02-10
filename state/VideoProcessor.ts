@@ -13,18 +13,18 @@ export function getInfo(uri: string) {
       const failStackTrace = await session.getFailStackTrace();
       const duration = await session.getDuration();
       const output = await session.getOutput();
-      console.log(`returnCode: ${returnCode}`);
-      console.log(`failStackTrace: ${failStackTrace}`);
-      console.log(`duration: ${duration}`);
-      console.log(`output: ${output}`);
+      //console.log(`returnCode: ${returnCode}`);
+      //console.log(`failStackTrace: ${failStackTrace}`);
+      //console.log(`duration: ${duration}`);
+      //console.log(`output: ${output}`);
     } else {
-      console.log(`streams: ${JSON.stringify(information.getStreams())}`);
-      console.log(
-        `properties: ${JSON.stringify(information.getAllProperties())}`
-      );
-      console.log(
-        `mediaProperties: ${JSON.stringify(information.getMediaProperties())}`
-      );
+      //console.log(`streams: ${JSON.stringify(information.getStreams())}`);
+      //console.log(
+      //   `properties: ${JSON.stringify(information.getAllProperties())}`
+      // );
+      // console.log(
+      //   `mediaProperties: ${JSON.stringify(information.getMediaProperties())}`
+      // );
     }
   });
 }
