@@ -41,7 +41,7 @@ export default function SelectDistance() {
       mode.checkpoints.map((e, i) => {
         return { label: e.name, value: e.distanceMeter };
       }),
-    [poolDistance, raceDistance]
+    [mode]
   );
 
   const movePositionToDistance = (distance: number) => {
