@@ -165,7 +165,7 @@ export default function ResultScreen({ navigation }) {
                 <Divider thickness={4} bg="muted.300" />
               </>
             </Hidden>
-            <Hidden isHidden={strokeCounts.length === 0}>
+            <Hidden isHidden={lapStrokeCounts.length === 0}>
               <>
                 <Box py={4}>
                   <StrokeCountChart strokeCounts={lapStrokeCounts} />
