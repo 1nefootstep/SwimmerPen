@@ -13,9 +13,10 @@ import {
 import AnnotationControls from '../components/annotator/Controls';
 import Hidden from '../components/Hidden';
 import BackButton from '../components/BackButton';
-import LineTool from '../components/LineTool';
+import LineTool, { LineContext } from '../components/LineTool';
 import { VideoBoundContext } from '../components/VideoBoundContext';
 import TimerTool from '../components/TimerTool';
+import { useSharedValue } from 'react-native-reanimated';
 
 export default function AnnotationScreen({ navigation }) {
   const dispatch = useAppDispatch();
@@ -38,55 +39,64 @@ export default function AnnotationScreen({ navigation }) {
   }, [setHeight, setWidth]);
 
   return (
-    <VideoBoundContext.Provider
+    <LineContext.Provider
       value={{
-        x1: 0,
-        y1: 0,
-        x2: width - 100,
-        y2: height - 60,
+        p1X: useSharedValue(100),
+        p1Y: useSharedValue(100),
+        p2X: useSharedValue(150),
+        p2Y: useSharedValue(150),
       }}
     >
-      <Center flex={1} bg="black" safeArea>
-        <BackButton
-          goBack={() => {
-            dispatch(saveAnnotation());
-            dispatch(clearControls());
-            navigation.goBack();
-          }}
-          style={{
-            zIndex: 1,
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            margin: 12,
-          }}
-        />
-        <ReactNativeZoomableView
-          maxZoom={5}
-          minZoom={0.5}
-          zoomStep={0.5}
-          initialZoom={1}
-          bindToBorders={false}
-          onSingleTap={() => setIsControlActive(b => !b)}
-        >
-          <Video
-            ref={video}
-            style={{ height: '100%', aspectRatio: 1.77, maxWidth: '100%' }}
-            useNativeControls={false}
-            onLoad={updateStatus}
-            isLooping={false}
-            resizeMode="contain"
-            onPlaybackStatusUpdate={updateStatus}
+      <VideoBoundContext.Provider
+        value={{
+          x1: 0,
+          y1: 0,
+          x2: width - 100,
+          y2: height - 60,
+        }}
+      >
+        <Center flex={1} bg="black" safeArea>
+          <BackButton
+            goBack={() => {
+              dispatch(saveAnnotation());
+              dispatch(clearControls());
+              navigation.goBack();
+            }}
+            style={{
+              zIndex: 1,
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              margin: 12,
+            }}
           />
-        </ReactNativeZoomableView>
-        <Hidden isHidden={!isLineVisible}>
-          <LineTool />
+          <ReactNativeZoomableView
+            maxZoom={5}
+            minZoom={0.5}
+            zoomStep={0.5}
+            initialZoom={1}
+            bindToBorders={false}
+            onSingleTap={() => setIsControlActive(b => !b)}
+          >
+            <Video
+              ref={video}
+              style={{ height: '100%', aspectRatio: 1.77, maxWidth: '100%' }}
+              useNativeControls={false}
+              onLoad={updateStatus}
+              isLooping={false}
+              resizeMode="contain"
+              onPlaybackStatusUpdate={updateStatus}
+            />
+          </ReactNativeZoomableView>
+          <Hidden isHidden={!isLineVisible}>
+            <LineTool />
+          </Hidden>
+          <TimerTool />
+        </Center>
+        <Hidden isHidden={!isControlActive}>
+          <AnnotationControls navigation={navigation} />
         </Hidden>
-        <TimerTool />
-      </Center>
-      <Hidden isHidden={!isControlActive}>
-        <AnnotationControls navigation={navigation} />
-      </Hidden>
-    </VideoBoundContext.Provider>
+      </VideoBoundContext.Provider>
+    </LineContext.Provider>
   );
 }

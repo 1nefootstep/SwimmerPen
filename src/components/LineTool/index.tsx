@@ -12,13 +12,18 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import { LineContext } from './LineContext';
 
 export default function LineTool() {
   const isLineVisible = useAppSelector(state => state.controls.isLineVisible);
-  const p1X = useSharedValue(100);
-  const p1Y = useSharedValue(100);
-  const p2X = useSharedValue(150);
-  const p2Y = useSharedValue(150);
+  let { p1X, p1Y, p2X, p2Y } = useContext(LineContext);
+  if (p1X === undefined || p2X === undefined || p1Y === undefined || p2Y === undefined) {
+    return null;
+  }
+  // const p1X = useSharedValue(100);
+  // const p1Y = useSharedValue(100);
+  // const p2X = useSharedValue(150);
+  // const p2Y = useSharedValue(150);
 
   const bounds = useContext(VideoBoundContext);
 
