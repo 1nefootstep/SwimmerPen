@@ -15,7 +15,7 @@ export interface TimeDistStatistic {
 function getTimeAtDistance(annotations: Annotations): Array<TimeDistStatistic> {
   const timeDistStatistics: Array<TimeDistStatistic> = [];
   for (const [key, value] of Object.entries(annotations)) {
-    // //console.log(`getTimeAtDistance: annotations[${key}] = ${value}`);
+    // console.log(`getTimeAtDistance: annotations[${key}] = ${value}`);
     timeDistStatistics.push({ time: value / 1000, distance: parseInt(key) });
   }
   timeDistStatistics.sort((a, b) => a.distance - b.distance);
@@ -45,11 +45,11 @@ function computeAverageVelocities(
     const td2 = timeDistStatistics[i + 1];
     const distTravelled = td2.distance - td1.distance;
     const timeTaken = td2.time - td1.time;
-    // //console.log(
-    //   `computeAverageVelocities: velocity at ${td1.distance}m-${
-    //     td2.distance
-    //   }m is ${distTravelled / timeTaken}m/s`
-    // );
+    console.log(
+      `computeAverageVelocities: velocity at ${td1.distance}m-${
+        td2.distance
+      }m is ${distTravelled / timeTaken}m/s`
+    );
     velocities.push({
       startRange: td1.distance,
       endRange: td2.distance,
@@ -81,11 +81,11 @@ function computeStrokeRate(
     if (timeTaken === 0 || strokeRange.startRange === strokeRange.endRange) {
       continue;
     }
-    // //console.log(
-    //   `computeStrokeRate: ${strokeRange.toString()} ${
-    //     scWithTime.strokeCount / timeTaken
-    //   } strokes/min`
-    // );
+    console.log(
+      `computeStrokeRate: ${strokeRange.toString()} ${
+        scWithTime.strokeCount / timeTaken
+      } strokes/min`
+    );
     strokeRates.push({
       startRange: strokeRange.startRange,
       endRange: strokeRange.endRange,
@@ -134,11 +134,11 @@ function computeStrokeCounts(
       if (timeTaken === 0) {
         return;
       }
-      // //console.log(
-      //   `computeStrokeCount: ${startRange}m-${endRange}m is ${
-      //     strokeRate * timeTaken
-      //   } `
-      // );
+      console.log(
+        `computeStrokeCount: ${startRange}m-${endRange}m is ${
+          strokeRate * timeTaken
+        } `
+      );
       strokeCounts.push({
         startRange: startRange,
         endRange: endRange,
@@ -165,11 +165,11 @@ function computeDPS(
     if (startRange === endRange) {
       return;
     }
-    // //console.log(
-    //   `computeDPS: ${startRange}m-${endRange}m is ${
-    //     (endRange - startRange) / strokeCount
-    //   } `
-    // );
+    console.log(
+      `computeDPS: ${startRange}m-${endRange}m is ${
+        (endRange - startRange) / strokeCount
+      } `
+    );
     dps.push({
       startRange: startRange,
       endRange: endRange,
@@ -226,7 +226,7 @@ function findIndexTimestamp(a: Array<number>, num: number) {
 }
 
 export function nextFrameTime(frames: Array<number>, frameTime: number): number {
-  //console.log(`next frame time from: ${frameTime}`);
+  console.log(`next frame time from: ${frameTime}`);
   const idx = findIndexTimestamp(frames, frameTime);
   if (idx >= frames.length) {
     return frames[frames.length - 1];
@@ -252,7 +252,7 @@ export function getStartOfFrameGivenTime(
 }
 
 export function previousFrameTime(frames: Array<number>, frameTime: number): number {
-  //console.log(`prev frame time from: ${frameTime}`);
+  console.log(`prev frame time from: ${frameTime}`);
   const idx = findIndexTimestamp(frames, frameTime) - 2;
   if (idx >= frames.length) {
     return frames[frames.length - 1];
@@ -281,7 +281,7 @@ export function fixAnnotationFrameTimes(
     Object.keys(annotationInfo.strokeCounts).map(e => {
       let scWithTime = annotationInfo.strokeCounts[e];
       if (scWithTime === undefined) {
-        //console.log(`undefined scWithTime. Key: ${e}`);
+        console.log(`undefined scWithTime. Key: ${e}`);
         scWithTime = {
           startTime: 0,
           endTime: 0,

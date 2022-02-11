@@ -88,9 +88,27 @@ export default function FilePickerScreen({
     if (isVisible) {
       updateVideoUris();
     }
-    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    ScreenOrientation.getOrientationAsync()
+      .then(currOrientation => {
+        currOrientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
+        currOrientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT
+          ? ScreenOrientation.lockAsync(
+              ScreenOrientation.OrientationLock.PORTRAIT
+            )
+          : null;
+      })
+      .catch(err => console.error(err));
     return () => {
-      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+      ScreenOrientation.getOrientationAsync()
+        .then(currOrientation => {
+          currOrientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
+          currOrientation === ScreenOrientation.Orientation.PORTRAIT_DOWN
+            ? ScreenOrientation.lockAsync(
+                ScreenOrientation.OrientationLock.LANDSCAPE
+              )
+            : null;
+        })
+        .catch(err => console.error(err));
     };
   }, [isVisible]);
 
