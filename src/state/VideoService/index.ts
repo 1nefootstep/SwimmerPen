@@ -75,17 +75,15 @@ export function seek(
         toleranceMillisAfter: 0,
         toleranceMillisBefore: 0,
       })
-        .then(status => {
+        .then(() => {
+          _seekInfo.isSeeking = false;
           if (_seekInfo.seekBuffer !== 0) {
             const copiedBuffer = _seekInfo.seekBuffer;
             _seekInfo.seekBuffer = 0;
             seek(copiedBuffer);
           }
         })
-        .catch(e => console.log(`error: ${e}`))
-        .finally(() => {
-          _seekInfo.isSeeking = false;
-        });
+        .catch(e => console.log(`error: ${e}`));
       if (dispatch !== undefined) {
         showTimeForDuration(dispatch);
       }

@@ -21,12 +21,12 @@ export default function PlayPauseButton() {
   return (
     <Button
       variant="unstyled"
-      onPress={async () => {
+      onPress={() => {
         // if (isLoaded) {
         if (isPlaying) {
-          const currPos = positionMillis;
-          await VideoService.pauseSync();
-          VideoService.seek(currPos);
+          // const currPos = positionMillis;
+          VideoService.pauseSync();
+          // VideoService.seek(currPos);
         } else {
           VideoService.play();
         }
