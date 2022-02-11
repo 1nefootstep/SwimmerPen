@@ -7,10 +7,10 @@ import { addTimer } from '../../../../state/redux';
 
 export default function AddTimerButton() {
   const dispatch = useAppDispatch();
-  const videoStatus = useAppSelector(state => state.video.status);
-  const isLineVisible = useAppSelector(state => state.controls.isLineVisible);
+  // const videoStatus = useAppSelector(state => state.video.status);
+  const positionMillis = useAppSelector(state => state.video.positionMillis);
 
-  const positionMillis = (videoStatus !== null && videoStatus.isLoaded) ? videoStatus.positionMillis : 0;
+  // const positionMillis = (videoStatus !== null && videoStatus.isLoaded) ? videoStatus.positionMillis : 0;
 
   const onPress = () => {
     dispatch(addTimer(positionMillis));

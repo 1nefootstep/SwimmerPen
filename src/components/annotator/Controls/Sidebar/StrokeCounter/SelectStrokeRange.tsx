@@ -16,7 +16,7 @@ import * as VideoService from '../../../../../state/VideoService';
 
 export default function SelectStrokeRange() {
   const dispatch = useAppDispatch();
-  const videoStatus = useAppSelector(state => state.video.status);
+  // const videoStatus = useAppSelector(state => state.video.status);
 
   const { poolDistance, raceDistance } = useAppSelector(
     state => state.annotation.poolConfig
@@ -49,9 +49,9 @@ export default function SelectStrokeRange() {
   }, []);
 
   const seekToStartTime = (newValue: ValueType | ValueType[] | null) => {
-    if (videoStatus === null || !videoStatus.isLoaded) {
-      return;
-    }
+    // if (videoStatus === null || !videoStatus.isLoaded) {
+    //   return;
+    // }
 
     let s: string;
     if (newValue === null) {
@@ -90,9 +90,9 @@ export default function SelectStrokeRange() {
           }}
           open={isOpen}
           setOpen={b => {
-            if (videoStatus !== null && videoStatus.isLoaded) {
-              setIsOpen(b);
-            }
+            // if (videoStatus !== null && videoStatus.isLoaded) {
+            setIsOpen(b);
+            // }
           }}
           setValue={value => {
             const sr = value() ?? value;

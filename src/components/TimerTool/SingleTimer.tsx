@@ -25,16 +25,14 @@ export default function SingleTimer({
   const translateX = useSharedValue(50);
   const translateY = useSharedValue(50);
 
-  const {timerWidth, timerHeight} = useBreakpointValue({
-    base: {timerWidth: 80,timerHeight: 32},
-    md: {timerWidth: 84,timerHeight: 36},
-    lg: {timerWidth: 90,timerHeight: 44},
+  const { timerWidth, timerHeight } = useBreakpointValue({
+    base: { timerWidth: 80, timerHeight: 32 },
+    md: { timerWidth: 84, timerHeight: 36 },
+    lg: { timerWidth: 90, timerHeight: 44 },
   });
 
   //console.log(`w: ${timerWidth} h: ${timerHeight}`);
-  
-  
-  
+
   const onGestureEvent = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
     { x: number; y: number }
@@ -66,13 +64,13 @@ export default function SingleTimer({
     left: translateX.value,
   }));
 
-  const videoStatus = useAppSelector(state => state.video.status);
+  // const videoStatus = useAppSelector(state => state.video.status);
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
-
-  const positionMillis =
-    videoStatus !== null && videoStatus.isLoaded
-      ? videoStatus.positionMillis
-      : 0;
+  const positionMillis = useAppSelector(state => state.video.positionMillis);
+  // const positionMillis =
+  //   videoStatus !== null && videoStatus.isLoaded
+  //     ? videoStatus.positionMillis
+  //     : 0;
 
   const difference = positionMillis - startPositionMillis;
   const absoluteDifference = Math.abs(difference);

@@ -17,12 +17,13 @@ export default function FrameStepButtons({
 }: FrameStepButtonsProps) {
   const dispatch = useAppDispatch();
   const frames = useAppSelector(state => state.annotation.frameTimes);
-  const videoStatus = useAppSelector(state => state.video.status);
+  // const videoStatus = useAppSelector(state => state.video.status);
+  const positionMillis = useAppSelector(state => state.video.positionMillis);
 
-  const positionMillis =
-    videoStatus !== null && videoStatus.isLoaded
-      ? videoStatus.positionMillis
-      : 0;
+  // const positionMillis =
+  //   videoStatus !== null && videoStatus.isLoaded
+  //     ? videoStatus.positionMillis
+  //     : 0;
 
   const size = 'sm';
   const variant = 'solid';

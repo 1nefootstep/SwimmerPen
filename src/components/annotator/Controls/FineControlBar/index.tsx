@@ -21,11 +21,12 @@ export default function FineControlBar({
   dashThickness?: number;
 }) {
   const dispatch = useAppDispatch();
-  const videoStatus = useAppSelector(state => state.video.status);
-  const positionMillis =
-    videoStatus !== null && videoStatus.isLoaded
-      ? videoStatus.positionMillis
-      : 0;
+  const positionMillis = useAppSelector(state => state.video.positionMillis);
+  // const videoStatus = useAppSelector(state => state.video.status);
+  // const positionMillis =
+  //   videoStatus !== null && videoStatus.isLoaded
+  //     ? videoStatus.positionMillis
+  //     : 0;
 
   const [posAtStartDrag, setPosAtStartDrag] = useState<number>(0);
   const [length, setLength] = useState(0);
