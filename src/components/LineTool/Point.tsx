@@ -11,8 +11,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { RADIUS_OF_POINT } from '../../constants/Constants';
 
-const DIAMETER_OF_POINT = RADIUS_OF_POINT * 2;
-
 export interface PointProps {
   pX?: number;
   pY?: number;
@@ -58,7 +56,6 @@ export default function Point({ pX, pY, setX, setY, bounds }: PointProps) {
       }
       translateX.value = targetX;
       translateY.value = targetY;
-      // runOnJS(setPoints)();
     },
     onEnd: () => {},
   });

@@ -11,7 +11,7 @@ export default function ToStatisticsButton({ navigation }) {
         w={24}
         colorScheme="info"
         variant="subtle"
-        size={{ md: 'sm', lg: 'md' }}
+        size={{ sm: 'sm', md: 'sm', lg: 'md' }}
       >
         Statistics
       </Button>
