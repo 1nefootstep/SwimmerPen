@@ -4,14 +4,11 @@ import {
   Heading,
   Spinner,
   Row,
-  Button,
+  Center,
   Text,
   Box,
   Column,
-  Divider,
-  Spacer,
   FlatList,
-  Modal,
   Image,
 } from 'native-base';
 import * as VideoThumbnails from 'expo-video-thumbnails';
@@ -19,12 +16,7 @@ import * as ScreenOrientation from 'expo-screen-orientation';
 import { ImageSource } from 'react-native-image-viewing/dist/@types';
 import * as FS from 'expo-file-system';
 
-import {
-  breakUri,
-  deleteVideoandAnnotation,
-  getVideoNames,
-  getVideoUri,
-} from '../FileHandler';
+import { breakUri, getVideoNames, getVideoUri } from '../FileHandler';
 import { Dimensions, Platform, StatusBar } from 'react-native';
 
 interface FilePickerScreenProps {
@@ -45,49 +37,46 @@ export default function FilePickerScreen({
     Platform.OS === 'android'
       ? Dimensions.get('screen').width - (StatusBar.currentHeight ?? 0)
       : Dimensions.get('window').width;
-  const updateVideoUris = () => {
-    setIsLoading(true);
-    getVideoNames().then(async names => {
-      //console.log(`video names: ${names}`);
-      const urisAndModificationTime = await Promise.all(
-        names.map(async e => {
-          const { baseName } = breakUri(e);
-          const uri = getVideoUri(baseName);
-          const result = await FS.getInfoAsync(uri);
-          if (result.exists) {
-            return { uri: uri, modTime: result.modificationTime };
-          } else {
-            return { uri: uri, modTime: 0 };
-          }
-        })
-      );
-
-      const uris = urisAndModificationTime
-        .filter(e => e.modTime !== 0)
-        .sort((a, b) => b.modTime - a.modTime)
-        .map(e => e.uri);
-      setVideoUris(uris);
-      let thumbnailResults: Array<VideoThumbnails.VideoThumbnailsResult> = [];
-      try {
-        thumbnailResults = await Promise.all(
-          uris.map(async (e, i) => await VideoThumbnails.getThumbnailAsync(e))
-        );
-      } catch (err) {
-        console.log(`filepicker: ${err}`);
-      }
-      const imageSources = thumbnailResults.map((e, i) => {
-        return { uri: e.uri };
-      });
-
-      setThumbnailUris(imageSources);
-    });
-    setIsLoading(false);
-  };
 
   useEffect(() => {
-    if (isVisible) {
-      updateVideoUris();
-    }
+    const updateVideoUris = () => {
+      setIsLoading(true);
+      getVideoNames().then(async names => {
+        //console.log(`video names: ${names}`);
+        const urisAndModificationTime = await Promise.all(
+          names.map(async e => {
+            const { baseName } = breakUri(e);
+            const uri = getVideoUri(baseName);
+            const result = await FS.getInfoAsync(uri);
+            if (result.exists) {
+              return { uri: uri, modTime: result.modificationTime };
+            } else {
+              return { uri: uri, modTime: 0 };
+            }
+          })
+        );
+
+        const uris = urisAndModificationTime
+          .filter(e => e.modTime !== 0)
+          .sort((a, b) => b.modTime - a.modTime)
+          .map(e => e.uri);
+        setVideoUris(uris);
+        let thumbnailResults: Array<VideoThumbnails.VideoThumbnailsResult> = [];
+        try {
+          thumbnailResults = await Promise.all(
+            uris.map(async (e, i) => await VideoThumbnails.getThumbnailAsync(e))
+          );
+        } catch (err) {
+          console.log(`filepicker: ${err}`);
+        }
+        const imageSources = thumbnailResults.map((e, i) => {
+          return { uri: e.uri };
+        });
+
+        setThumbnailUris(imageSources);
+        setIsLoading(false);
+      });
+    };
     ScreenOrientation.getOrientationAsync()
       .then(currOrientation => {
         currOrientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
@@ -98,6 +87,9 @@ export default function FilePickerScreen({
           : null;
       })
       .catch(err => console.error(err));
+    if (isVisible) {
+      updateVideoUris();
+    }
     return () => {
       ScreenOrientation.getOrientationAsync()
         .then(currOrientation => {
@@ -122,7 +114,7 @@ export default function FilePickerScreen({
   }: {
     item: { videoUri: string; idx: number };
   }) => (
-    <Box pl="4" pr="5" py="2" style={{ maxWidth: width / 2 }}>
+    <Box m="auto">
       <Row space={3} justifyContent="space-between">
         <Column>
           <TouchableOpacity
@@ -150,27 +142,22 @@ export default function FilePickerScreen({
       </Row>
     </Box>
   );
-
-  if (isLoading) {
-    return (
-      <Row space={2} alignItems="center">
-        <Spinner accessibilityLabel="Loading posts" />
-        <Heading color="primary.500" fontSize="md">
-          Loading
-        </Heading>
-      </Row>
-    );
-  }
   return (
-    <Column flex={1} alignItems="center" w="100%" bg="gray.400">
-      <FlatList
-        data={videoUris.map((e, i) => {
-          return { videoUri: e, idx: i };
-        })}
-        renderItem={Card}
-        numColumns={2}
-        keyExtractor={item => item.videoUri}
-      />
+    <Column flex={1} mx="auto" w="100%" bg="gray.400">
+      {isLoading ? (
+        <Center h='100%'>
+          <Spinner color="secondary.500" size="lg" accessibilityLabel="Loading" />
+        </Center>
+      ) : (
+        <FlatList
+          data={videoUris.map((e, i) => {
+            return { videoUri: e, idx: i };
+          })}
+          renderItem={Card}
+          numColumns={2}
+          keyExtractor={item => item.videoUri}
+        />
+      )}
     </Column>
   );
 }
