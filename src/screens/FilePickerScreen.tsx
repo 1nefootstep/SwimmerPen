@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { TouchableOpacity } from 'react-native';
 import {
-  Heading,
+  IconButton,
+  Icon,
   Spinner,
   Row,
   Center,
   Text,
+  Button,
   Box,
   Column,
   FlatList,
-  Image,
 } from 'native-base';
+import { MaterialIcons } from '@expo/vector-icons';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { ImageSource } from 'react-native-image-viewing/dist/@types';
@@ -18,11 +19,49 @@ import * as FS from 'expo-file-system';
 
 import { breakUri, getVideoNames, getVideoUri } from '../FileHandler';
 import { Dimensions, Platform, StatusBar } from 'react-native';
+import { default as FilePickerCard } from '../components/filepicker/Card';
 
 interface FilePickerScreenProps {
   onSelect: (uri: string) => Promise<void>;
   isVisible: boolean;
   setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+function AppBar({ onPressBack }: { onPressBack: () => void }) {
+  const COLOR = '#f5f5f4';
+  return (
+    <>
+      <StatusBar backgroundColor={COLOR} barStyle="light-content" />
+      <Box safeAreaTop bg={COLOR} />
+      <Row
+        bg={COLOR}
+        px="1"
+        py="3"
+        justifyContent="space-between"
+        shadow="9"
+        w="100%"
+      >
+        <Row alignItems="center">
+          <IconButton
+            icon={<Icon size="sm" as={MaterialIcons} name="arrow-back" />}
+            onPress={onPressBack}
+          />
+          <Text mx={4} fontSize="20" fontWeight="bold">
+            Video Picker
+          </Text>
+        </Row>
+        <Row mr={4}>
+          <Button
+            size="lg"
+            variant="unstyled"
+            onPress={() => console.log('hello world')}
+          >
+            Import
+          </Button>
+        </Row>
+      </Row>
+    </>
+  );
 }
 
 export default function FilePickerScreen({
@@ -38,45 +77,43 @@ export default function FilePickerScreen({
       ? Dimensions.get('screen').width - (StatusBar.currentHeight ?? 0)
       : Dimensions.get('window').width;
 
-  useEffect(() => {
-    const updateVideoUris = () => {
-      setIsLoading(true);
-      getVideoNames().then(async names => {
-        //console.log(`video names: ${names}`);
-        const urisAndModificationTime = await Promise.all(
-          names.map(async e => {
-            const { baseName } = breakUri(e);
-            const uri = getVideoUri(baseName);
-            const result = await FS.getInfoAsync(uri);
-            if (result.exists) {
-              return { uri: uri, modTime: result.modificationTime };
-            } else {
-              return { uri: uri, modTime: 0 };
-            }
-          })
-        );
-
+  const updateVideoUris = () => {
+    setIsLoading(true);
+    getVideoNames().then(async names => {
+      Promise.all(
+        names.map(async e => {
+          const { baseName } = breakUri(e);
+          const uri = getVideoUri(baseName);
+          const result = await FS.getInfoAsync(uri);
+          if (result.exists) {
+            return { uri: uri, modTime: result.modificationTime };
+          } else {
+            return { uri: uri, modTime: 0 };
+          }
+        })
+      ).then(urisAndModificationTime => {
         const uris = urisAndModificationTime
           .filter(e => e.modTime !== 0)
           .sort((a, b) => b.modTime - a.modTime)
           .map(e => e.uri);
         setVideoUris(uris);
-        let thumbnailResults: Array<VideoThumbnails.VideoThumbnailsResult> = [];
-        try {
-          thumbnailResults = await Promise.all(
-            uris.map(async (e, i) => await VideoThumbnails.getThumbnailAsync(e))
-          );
-        } catch (err) {
-          console.log(`filepicker: ${err}`);
-        }
-        const imageSources = thumbnailResults.map((e, i) => {
-          return { uri: e.uri };
-        });
+        Promise.all(
+          uris.map(async (e, i) => await VideoThumbnails.getThumbnailAsync(e))
+        )
+          .then(thumbnailResults => {
+            const imageSources = thumbnailResults.map((e, i) => {
+              return { uri: e.uri };
+            });
 
-        setThumbnailUris(imageSources);
-        setIsLoading(false);
+            setThumbnailUris(imageSources);
+            setIsLoading(false);
+          })
+          .catch(err => console.log(`filepicker: ${err}`));
       });
-    };
+    });
+  };
+
+  useEffect(() => {
     ScreenOrientation.getOrientationAsync()
       .then(currOrientation => {
         currOrientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
@@ -104,57 +141,43 @@ export default function FilePickerScreen({
     };
   }, [isVisible]);
 
-  const getNameFromUri = (uri: string) => {
-    const { baseName } = breakUri(uri);
-    return baseName;
+  const onPressCard = (videoUri: string) => {
+    onSelect(videoUri);
+    setIsVisible(false);
   };
 
-  const Card = ({
-    item: { videoUri, idx },
-  }: {
-    item: { videoUri: string; idx: number };
-  }) => (
-    <Box m="auto">
-      <Row space={3} justifyContent="space-between">
-        <Column>
-          <TouchableOpacity
-            onPress={() => {
-              onSelect(videoUris[idx]);
-              setIsVisible(false);
-            }}
-          >
-            <Image
-              source={thumbnailUris[idx]}
-              alt={idx.toString()}
-              h={200}
-              w={width / 2}
-            />
-          </TouchableOpacity>
-          <Text
-            color="coolGray.600"
-            _dark={{
-              color: 'warmGray.200',
-            }}
-          >
-            {getNameFromUri(videoUri)}
-          </Text>
-        </Column>
-      </Row>
-    </Box>
-  );
+  const onDeleteUpdate = () => {
+    updateVideoUris();
+  };
+
   return (
     <Column flex={1} mx="auto" w="100%" bg="gray.400">
+      <AppBar onPressBack={() => setIsVisible(false)} />
       {isLoading ? (
-        <Center h='100%'>
-          <Spinner color="secondary.500" size="lg" accessibilityLabel="Loading" />
+        <Center h="100%">
+          <Spinner
+            color="secondary.500"
+            size="lg"
+            accessibilityLabel="Loading"
+          />
         </Center>
       ) : (
         <FlatList
           data={videoUris.map((e, i) => {
-            return { videoUri: e, idx: i };
+            return { videoUri: e, thumbnailUri: thumbnailUris[i] };
           })}
-          renderItem={Card}
+          renderItem={e => (
+            <FilePickerCard
+              key={e.item.videoUri}
+              videoUri={e.item.videoUri}
+              thumbnailUri={e.item.thumbnailUri}
+              width={width}
+              onPress={onPressCard}
+              onDeleteUpdate={onDeleteUpdate}
+            />
+          )}
           numColumns={2}
+          columnWrapperStyle={{ paddingHorizontal: 12 }}
           keyExtractor={item => item.videoUri}
         />
       )}

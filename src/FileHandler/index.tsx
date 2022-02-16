@@ -96,28 +96,39 @@ export async function renameVideoAndAnnotation(
   currBaseName: string,
   newBaseName: string
 ): Promise<boolean> {
-  const currVideoUri = `${APP_VIDEO_DIR_PATH}/${currBaseName}`;
-  const currAnnotationUri = `${APP_ANNOTATION_DIR_PATH}/${currBaseName}`;
+  console.log(`currBaseName: ${currBaseName}`);
+  console.log(`newBaseName: ${newBaseName}`);
+  const currVideoUri = getVideoUri(currBaseName);
+  const currAnnotationUri = getAnnotationUri(currBaseName);
+  console.log(`currVideoUri: ${currVideoUri}`);
+  console.log(`currAnnotationUri: ${currAnnotationUri}`);
   const videoUriSplit = breakUri(currVideoUri);
-  const annotationUriSplit = breakUri(currAnnotationUri);
   const replacedVideoName = new String(videoUriSplit.baseNameWithExt).replace(
     currBaseName,
     newBaseName
   );
-  const replacedAnnotationName = new String(
-    annotationUriSplit.baseNameWithExt
-  ).replace(currBaseName, newBaseName);
   try {
-    await FS.moveAsync({
-      from: currAnnotationUri,
-      to: `${annotationUriSplit.directory}/${replacedAnnotationName}`,
-    });
-    await FS.moveAsync({
-      from: currAnnotationUri,
-      to: `${videoUriSplit.directory}/${replacedVideoName}`,
-    });
+    const ann = await loadAnnotation(currBaseName);
+    if (ann.isSuccessful) {
+      const result = await saveAnnotation(newBaseName, ann.annotation);
+      if (!result) {
+        console.log(
+          `<FileHandler> Failed to save new annotation when renaming`
+        );
+        return false;
+      }
+      await FS.copyAsync({
+        from: currVideoUri,
+        to: `${videoUriSplit.directory}/${replacedVideoName}`,
+      });
+      await FS.deleteAsync(currAnnotationUri);
+      await FS.deleteAsync(currVideoUri);
+    } else {
+      console.log(`<FileHandler> Failed to load annotation when renaming`);
+      return false;
+    }
   } catch (err) {
-    //console.log(`<FileHandler> Failed to rename: ${err}`);
+    console.log(`<FileHandler> Failed to rename: ${err}`);
     return false;
   }
   return true;
@@ -159,7 +170,7 @@ export async function saveVideo(uri: string): Promise<SaveVideoResult> {
   }
 }
 
-export async function deleteVideoandAnnotation(
+export async function deleteVideoAndAnnotation(
   basename: string
 ): Promise<void> {
   const videoUri = getVideoUri(basename);
@@ -198,6 +209,7 @@ export async function saveAnnotation(
     if (!createDirResult) {
       //console.log('create annotation dir failed');
     }
+    annotationInfo.name = basename;
     await FS.writeAsStringAsync(
       getAnnotationUri(basename),
       JSON.stringify(annotationInfo)
@@ -222,13 +234,11 @@ export async function loadAnnotation(
   basename: string
 ): Promise<LoadAnnotationResult> {
   try {
-    const result = await FS.readAsStringAsync(
-      `${APP_ANNOTATION_DIR_PATH}/${basename}`
-    );
+    const result = await FS.readAsStringAsync(getAnnotationUri(basename));
     const annotationInfo: AnnotationInformation = JSON.parse(result);
     return { isSuccessful: true, annotation: annotationInfo };
   } catch (e) {
-    //console.log(`<FileHandler> Failed to load annotation: ${e}`);
+    console.log(`<FileHandler> Failed to load annotation: ${e}`);
     return { isSuccessful: false };
   }
 }

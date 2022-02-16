@@ -1,7 +1,7 @@
 import React, { RefObject } from 'react';
 
 import { IconButton } from 'native-base';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { StyleProp, ViewStyle } from 'react-native';
 
 export default function BackButton({ goBack, style }: { goBack: any, style?:StyleProp<ViewStyle> }) {
@@ -11,7 +11,7 @@ export default function BackButton({ goBack, style }: { goBack: any, style?:Styl
       onPress={goBack}
       style={style}
       _icon={{
-        as: Ionicons,
+        as: MaterialIcons,
         name: 'arrow-back',
         size: ['6', '8'],
         color: ['white'],
