@@ -21,15 +21,14 @@ import StrokeRateChart from '../components/result/StrokeRateChart';
 import Hidden from '../components/Hidden';
 import DPSChart from '../components/result/DPSChart';
 import { formatTimeFromPositionSeconds } from '../state/Util';
-import { createCsvInCacheDir, getVideoUri, saveAnnotation } from '../FileHandler';
-
-interface FabItem {
-  label: string;
-  icon: string;
-  action: FabAction;
-}
-
-type FabAction = 'screenshot' | 'csv' | 'video';
+import {
+  createCsvInCacheDir,
+  getAnnotationUri,
+  getVideoUri,
+  saveAnnotation,
+} from '../FileHandler';
+import SendFab from '../components/result/SendFab';
+import { IconNode } from 'react-native-elements/dist/icons/Icon';
 
 export default function ResultScreen({ navigation }) {
   const dispatch = useAppDispatch();
@@ -45,13 +44,6 @@ export default function ResultScreen({ navigation }) {
   } = useMemo(() => computeResult(annotationsInfo), [annotationsInfo]);
 
   const viewShotRef = useRef<ViewShot | null>(null);
-  const [isFabOpen, setIsFabOpen] = useState<boolean>(false);
-  const items: Array<FabItem> = [
-    { label: 'Send graph', icon: 'chart-line', action: 'screenshot' },
-    { label: 'Send csv', icon: 'file-csv', action: 'csv' },
-    { label: 'Send video', icon: 'file-video', action: 'video' },
-  ];
-
   useEffect(() => {
     const prev = annotationsInfo;
     const updated = fixAnnotationFrameTimes(annotationsInfo, dispatch);
@@ -144,6 +136,39 @@ export default function ResultScreen({ navigation }) {
     }
   };
 
+  const shareRawAnnotations = async () => {
+    if (annotationsInfo.name !== '') {
+      shareFile(getAnnotationUri(annotationsInfo.name));
+    }
+  };
+
+  const items: Array<{
+    label: string;
+    icon: IconNode;
+    action: (() => void) | (() => Promise<void>);
+  }> = [
+    {
+      label: 'Send graph',
+      icon: { name: 'linechart', type: 'antdesign' },
+      action: takeScreenshot,
+    },
+    {
+      label: 'Send csv',
+      icon: { name: 'file-csv', type: 'font-awesome-5' },
+      action: shareCsv,
+    },
+    {
+      label: 'Send video',
+      icon: { name: 'file-video', type: 'font-awesome-5' },
+      action: shareVideo,
+    },
+    {
+      label: 'Send annotations',
+      icon: { name: 'file-word', type: 'font-awesome-5' },
+      action: shareRawAnnotations,
+    },
+  ];
+
   return (
     <>
       <ScrollView alwaysBounceVertical={true}>
@@ -192,32 +217,7 @@ export default function ResultScreen({ navigation }) {
           </Center>
         </ViewShot>
       </ScrollView>
-
-      <FloatingMenu
-        items={items}
-        isOpen={isFabOpen}
-        onMenuToggle={() => setIsFabOpen(!isFabOpen)}
-        onItemPress={(i: FabItem) => {
-          switch (i.action) {
-            case 'screenshot': {
-              takeScreenshot();
-              break;
-            }
-            case 'csv':
-              shareCsv();
-              break;
-            case 'video':
-              shareVideo();
-              break;
-          }
-        }}
-        renderItemIcon={(item, index, menuState) => {
-          return <FontAwesome5 name={item.icon} size={24} color="black" />;
-        }}
-        renderMenuIcon={() => {
-          return <FontAwesome name={'send'} size={24} color="black" />;
-        }}
-      />
+      <SendFab items={items} />
     </>
   );
 }

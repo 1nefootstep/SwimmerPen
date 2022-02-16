@@ -122,8 +122,8 @@ export default function CameraScreen({ navigation }) {
       //   await Camera.requestMicrophonePermissionsAsync();
       //console.log(`${JSON.stringify(micPermissionResponse)}`);
       if (
-        cameraPermission === 'not-determined' &&
-        microphonePermission === 'not-determined'
+        cameraPermission !== 'authorized' &&
+        microphonePermission !== 'authorized'
       ) {
         const newCameraPermission = await Camera.requestCameraPermission();
         const newMicrophonePermission =
