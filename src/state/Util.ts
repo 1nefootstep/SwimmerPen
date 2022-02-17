@@ -1,3 +1,5 @@
+import { CameraDeviceFormat } from 'react-native-vision-camera';
+
 /**
  * Returns i such that 0 ≤ i ≤ array.length and
  * the given predicate is false for array[i - 1]
@@ -86,4 +88,11 @@ export function formatTimeFromPosition(position: number): string {
 
 export function formatTimeFromPositionSeconds(position: number): string {
   return formatTimeFromPosition(position * 1000);
+}
+
+export function getMaxFps(format: CameraDeviceFormat): number {
+  return format.frameRateRanges.reduce((prev, curr) => {
+    if (curr.maxFrameRate > prev) return curr.maxFrameRate;
+    else return prev;
+  }, 0);
 }

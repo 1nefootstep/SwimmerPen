@@ -22,12 +22,51 @@ import {
   useCameraDevices,
 } from 'react-native-vision-camera';
 import { useIsForeground } from '../hooks/useIsForeground';
+import SelectFormat from '../components/camera/SelectFormat';
+import { getMaxFps } from '../state/Util';
 
-function getMaxFps(format: CameraDeviceFormat): number {
-  return format.frameRateRanges.reduce((prev, curr) => {
-    if (curr.maxFrameRate > prev) return curr.maxFrameRate;
-    else return prev;
-  }, 0);
+/**
+ * Returns true if a is closer to idealRatio compared to b.
+ */
+function ratioIsCloser(
+  a: { width: number; height: number },
+  b: { width: number; height: number },
+  idealRatio: number
+) {
+  const ratioA = a.width / a.height;
+  const ratioB = b.width / b.height;
+  return Math.abs(ratioB - idealRatio) - Math.abs(ratioA - idealRatio) > 0;
+}
+
+function filterFormats({
+  formats,
+  idealRatio,
+}: {
+  formats: CameraDeviceFormat[];
+  idealRatio?: number;
+}) {
+  const result: { [resolution: string]: CameraDeviceFormat } = {};
+  formats.forEach(e => {
+    const { videoHeight: height, videoWidth: width } = e;
+    if (height < 480 || width < 480 || height > width) {
+      return;
+    }
+    if (
+      idealRatio !== undefined &&
+      (width / height).toPrecision(4) !== idealRatio.toPrecision(4)
+    ) {
+      return;
+    }
+    const identifier = `${width}x${height}`;
+    if (result[identifier] === undefined) {
+      result[identifier] = e;
+    } else {
+      if (getMaxFps(result[identifier]) < getMaxFps(e)) {
+        result[identifier] = e;
+      }
+    }
+  });
+  return Object.entries(result).map(e => e[1]);
 }
 
 function sortFormats(
@@ -87,40 +126,40 @@ export default function CameraScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const cameraRef = useRef<Camera>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
-  // const [ratio, setRatio] = useState('4:3');
-  // const [isRatioSet, setIsRatioSet] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   // const [videoQuality, setVideoQuality] = useState<AvailableResolution>('720p');
   const [isMute, setIsMute] = useState<boolean>(false);
-  // const [zoom, setZoom] = useState<number>(1);
-  // const [maxZoom, setMaxZoom] = useState<number>(1);
+  const [format, setFormat] = useState<CameraDeviceFormat | undefined>(
+    undefined
+  );
 
   const devices = useCameraDevices();
   const device = devices.back;
-  // const isForeground = useIsForeground();
-  const format = useMemo(() => {
+  const formats = useMemo(() => {
     if (device === undefined) {
-      return undefined;
+      return [];
     }
-    const f = device?.formats.sort(sortFormats)[0];
-    console.log(
-      `resolution: ${f?.videoWidth}x${
-        f?.videoHeight
-      },\n fps range: ${f?.frameRateRanges.map(e =>
-        JSON.stringify(e)
-      )},\n max zoom:${f?.maxZoom}`
-    );
-    return f;
+
+    const result = filterFormats({
+      formats: device.formats,
+      idealRatio: 16 / 9,
+    });
+    if (result.length !== 0) {
+      return result;
+    }
+    return filterFormats({ formats: device.formats });
   }, [device?.formats]);
+  useEffect(() => {
+    if (format === undefined && formats.length !== 0) {
+      const format1080 = formats.find(e => e.photoHeight === 1080);
+      setFormat(format1080 ?? formats[0]);
+    }
+  }, [formats]);
 
   useEffect(() => {
     (async () => {
-      // const { status } = await Camera.requestCameraPermissionsAsync();
       const cameraPermission = await Camera.getCameraPermissionStatus();
       const microphonePermission = await Camera.getMicrophonePermissionStatus();
-      // const micPermissionResponse =
-      //   await Camera.requestMicrophonePermissionsAsync();
-      //console.log(`${JSON.stringify(micPermissionResponse)}`);
       if (
         cameraPermission !== 'authorized' &&
         microphonePermission !== 'authorized'
@@ -144,22 +183,11 @@ export default function CameraScreen({ navigation }) {
     })();
   }, [setHasPermission]);
 
-  // const prepareRatio = async () => {
-  //   let desiredRatio = '16:9';
-  //   if (Platform.OS === 'android') {
-  //     const ratios = await cameraRef.current!.getSupportedRatiosAsync();
-  //     if (ratios.some(r => r === desiredRatio)) {
-  //       setRatio(desiredRatio);
-  //     }
-  //   }
-  //   setIsRatioSet(true);
-  // };
-
-  // const onCameraReady = async () => {
-  //   if (!isRatioSet) {
-  //     await prepareRatio();
-  //   }
-  // };
+  const onChangeFormat = (f?: CameraDeviceFormat) => {
+    if (f !== undefined) {
+      setFormat(f);
+    }
+  };
 
   if (hasPermission === null) {
     return (
@@ -183,16 +211,16 @@ export default function CameraScreen({ navigation }) {
         onInitialized={() => setIsReady(true)}
       />
       <Row flex={1}>
-        <Column flex={1} mr="3">
-          <Column flex={1} alignItems="flex-start">
-            <Column justifyContent="space-around" m={3}>
-              <BackButton goBack={navigation.goBack} />
-              <SelectMode />
-              <Column flex={2} />
-              <MuteButton isMute={isMute} setIsMute={setIsMute} />
-              <Column flex={1} />
-            </Column>
-          </Column>
+        <Column justifyContent="space-around" m={3}>
+          <BackButton goBack={navigation.goBack} />
+          <SelectMode />
+          <Column flex={2} />
+          <MuteButton isMute={isMute} setIsMute={setIsMute} />
+          <SelectFormat
+            formats={formats}
+            format={format}
+            onChangeFormat={onChangeFormat}
+          />
         </Column>
         <Row flex={1} justifyContent="flex-end" mr="3">
           <Column justifyContent="center" alignItems="center">

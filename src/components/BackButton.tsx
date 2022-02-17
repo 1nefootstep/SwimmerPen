@@ -13,7 +13,7 @@ export default function BackButton({ goBack, style }: { goBack: any, style?:Styl
       _icon={{
         as: MaterialIcons,
         name: 'arrow-back',
-        size: ['6', '8'],
+        size: 8,
         color: ['white'],
       }}
     />
