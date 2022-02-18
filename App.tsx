@@ -24,7 +24,7 @@ import { useIsForeground } from './src/hooks/useIsForeground';
 export const theme = extendTheme({ config });
 
 export default function App() {
-  const appState = useRef(AppState.currentState);
+  // const appState = useRef(AppState.currentState);
   const appStateVisible = useIsForeground();
   // const [appStateVisible, setAppStateVisible] = useState(appState.current);
 

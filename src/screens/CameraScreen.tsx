@@ -1,13 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Text, Box, Row, Center, Column, Container } from 'native-base';
-
-import { StyleSheet, Platform } from 'react-native';
+import { Box, Row, Center, Column } from 'native-base';
+import { StyleSheet } from 'react-native';
 import RecordButton from '../components/camera/RecordButton';
 import SelectMode from '../components/SelectMode';
-import SelectResolution, {
-  AvailableResolution,
-} from '../components/camera/SelectResolution';
-import Zoom from '../components/camera/Zoom';
 import BackButton from '../components/BackButton';
 import MuteButton from '../components/camera/MuteButton';
 import CheckpointButton from '../components/camera/CheckpointButton';
@@ -127,11 +122,11 @@ export default function CameraScreen({ navigation }) {
   const cameraRef = useRef<Camera>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  // const [videoQuality, setVideoQuality] = useState<AvailableResolution>('720p');
   const [isMute, setIsMute] = useState<boolean>(false);
   const [format, setFormat] = useState<CameraDeviceFormat | undefined>(
     undefined
   );
+  const isActive = useIsForeground();
 
   const devices = useCameraDevices();
   const device = devices.back;
@@ -178,7 +173,6 @@ export default function CameraScreen({ navigation }) {
         );
       }
       await createDirs();
-      //console.log(`creating dir ${result ? 'successful' : 'failed'}`);
       dispatch(clearAnnotation());
     })();
   }, [setHasPermission]);
@@ -206,7 +200,7 @@ export default function CameraScreen({ navigation }) {
         ref={cameraRef}
         video={true}
         audio={!isMute}
-        isActive={true}
+        isActive={isActive}
         enableZoomGesture={true}
         onInitialized={() => setIsReady(true)}
       />
