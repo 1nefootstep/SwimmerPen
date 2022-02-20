@@ -2,7 +2,7 @@
   "expo": {
     "name": "SwimmerPen",
     "slug": "SwimmerPen",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "orientation": "landscape",
     "icon": "./assets/icon.png",
     "splash": {
@@ -35,7 +35,7 @@
       "visible": "sticky-immersive"
     },
     "android": {
-      "versionCode": 3,
+      "versionCode": 4,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

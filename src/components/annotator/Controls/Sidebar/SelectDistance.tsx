@@ -5,7 +5,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 
-import { addAnnotation, setCurrentDistance } from '../../../../state/redux';
+import { addAnnotation, saveAnnotation, setCurrentDistance } from '../../../../state/redux';
 import * as VideoService from '../../../../state/VideoService';
 import { getDefaultMode, getModes, Modes } from '../../../../state/AKB';
 import { getPosition } from '../../../../state/VideoService';
@@ -67,22 +67,10 @@ export default function SelectDistance() {
       if (toSeek !== undefined) {
         VideoService.seek(toSeek);
       }
+      if (currentDistance % 50 === 0) {
+        dispatch(saveAnnotation());
+      }
     }
-    // if (videoStatus !== null && videoStatus.isLoaded) {
-    //   dispatch(addAnnotation(currentDistance, videoStatus.positionMillis));
-    //   const currIndex = mode.checkpoints.findIndex(
-    //     cp => cp.distanceMeter === currentDistance
-    //   );
-    //   const nextIndex =
-    //     currIndex + 1 > mode.checkpoints.length - 1 ? currIndex : currIndex + 1;
-
-    //   const d = mode.checkpoints[nextIndex].distanceMeter;
-    //   dispatch(setCurrentDistance(d));
-    //   const toSeek = annotations[d];
-    //   if (toSeek !== undefined) {
-    //     VideoService.seek(toSeek);
-    //   }
-    // }
   };
 
   return (

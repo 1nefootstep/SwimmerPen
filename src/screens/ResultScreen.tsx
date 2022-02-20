@@ -1,7 +1,5 @@
-import React, { useMemo, useRef, useState, useEffect } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { Center, Box, Divider, ScrollView } from 'native-base';
-import { FloatingMenu } from 'react-native-floating-action-menu';
-import { FontAwesome, FontAwesome5 } from '@expo/vector-icons';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import * as ScreenOrientation from 'expo-screen-orientation';

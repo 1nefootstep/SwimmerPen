@@ -7088,6 +7088,13 @@ react-native-dashed-line@^1.1.0:
   resolved "https://registry.yarnpkg.com/react-native-dashed-line/-/react-native-dashed-line-1.1.0.tgz#dd586dbeabee3bc7d51aef0b8ae0d9fda418b1fc"
   integrity sha512-eO1YxTSYuE/1eaOO/mnV/DSQ45e7LQ690D6iv24Oyl9FcZFFiIIwoCurHnS+myJQvydppsshY1d0WwaQroNx/Q==
 
+react-native-document-picker@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-8.0.0.tgz#f760f89049cda668be8b1cfb31a484af19716f35"
+  integrity sha512-4O1FNOJHzfZ7BBFOJhNoeCKHSjthFtZyMEWJsAxX1ORdShGSa6miLvTHtQjpCDMNWSoPU1C7fXLNNPrv8GAarQ==
+  dependencies:
+    invariant "^2.2.4"
+
 react-native-dropdown-picker@^5.2.3:
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/react-native-dropdown-picker/-/react-native-dropdown-picker-5.3.0.tgz#a1043890846e07a197ed882ff922299b46dd4a7a"

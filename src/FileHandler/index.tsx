@@ -1,8 +1,8 @@
 import { Platform } from 'react-native';
-
 import * as FS from 'expo-file-system';
 import { AnnotationInformation } from '../state/AKB/AnnotationKnowledgeBank';
-import { readDirectoryAsync } from 'expo-file-system';
+import { moveAsync, readDirectoryAsync } from 'expo-file-system';
+import DocumentPicker, { types } from 'react-native-document-picker';
 
 const APP_DIRECTORY_PATH = `${FS.documentDirectory}`;
 const APP_VIDEO_DIR_PATH = `${APP_DIRECTORY_PATH}Video`;
@@ -187,8 +187,12 @@ export function getVideoUri(basename: string): string {
   }
 }
 
+// export function getAnnotationUri(basename: string): string {
+//   return `${APP_ANNOTATION_DIR_PATH}/${basename}`;
+// }
+
 export function getAnnotationUri(basename: string): string {
-  return `${APP_ANNOTATION_DIR_PATH}/${basename}`;
+  return `${APP_ANNOTATION_DIR_PATH}/${basename}.txt`;
 }
 
 export async function getVideoNames(): Promise<Array<string>> {
@@ -247,4 +251,42 @@ export async function createCsvInCacheDir(csv: string, basename: string) {
   const uri = `${FS.cacheDirectory}/${basename}.csv`;
   await FS.writeAsStringAsync(uri, csv);
   return uri;
+}
+
+export async function importVideoAndAnnotation() {
+  try {
+    const files = await DocumentPicker.pick({
+      mode: 'open',
+      type: [types.video, types.plainText],
+      copyTo: 'cachesDirectory',
+      allowMultiSelection: true,
+    });
+    files.forEach(f => console.log(JSON.stringify(f)));
+    files.forEach(async f => {
+      if (f.fileCopyUri !== null) {
+        const { baseName } = breakUri(f.fileCopyUri);
+        if (f.type?.includes('video')) {
+          await FS.moveAsync({
+            from: f.fileCopyUri,
+            to: getVideoUri(baseName),
+          });
+        } else if (f.type === types.plainText) {
+          await FS.moveAsync({
+            from: f.fileCopyUri,
+            to: getAnnotationUri(baseName),
+          });
+        } else {
+          console.error(`file format is neither video nor plainText...`);
+          return false;
+        }
+      }
+      console.log(`moved`);
+    });
+    return true;
+  } catch (err) {
+    if (!DocumentPicker.isCancel(err)) {
+      console.error(`importVideoAndAnnotation: picking error: ${err}`);
+    }
+    return false;
+  }
 }

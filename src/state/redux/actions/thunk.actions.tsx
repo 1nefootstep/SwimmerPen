@@ -58,9 +58,6 @@ export function saveAnnotation(basename?: string): AppThunkAction {
     } else {
       const videoStatus = video.status;
       if (videoStatus === null || !videoStatus.isLoaded) {
-        //console.log(
-        //   "Cannot save annotation because don't have base name nor video loaded."
-        // );
         return;
       }
       const { baseName } = breakUri(videoStatus.uri);
