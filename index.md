@@ -28,7 +28,7 @@
 ![delete video](assets/delete_video.gif)
 
 - Move and zoom video  
-![recording and annotating](assets/recording.gif)
+![moving and zooming video](assets/move_video.gif)
 
 - Jumping between checkpoints  
 ![jumping between checkpoints](assets/jump_to_checkpoint.gif)
