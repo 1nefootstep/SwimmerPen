@@ -1,27 +1,37 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { StrokeRateStatistic } from '../../state/StatisticsCalculator';
-import GeneralLineChart from './GeneralLineChart';
+import MultiLineChart from './MultiLineChart';
 
 export interface StrokeRateChartProps {
-  strokeRates: Array<StrokeRateStatistic>;
+  nameAndStrokeRates: Array<{
+    name: string;
+    stats: Array<StrokeRateStatistic>;
+  }>;
 }
 
-export default function StrokeRateChart({ strokeRates }: StrokeRateChartProps) {
-  const data = useMemo(() => {
-    const labels = strokeRates.map(e => `${e.startRange}m - ${e.endRange}m`);
-    const dataset = strokeRates.map(e => e.strokeRate);
-    return {
-      labels: labels,
-      datasets: [
-        {
-          data: dataset,
-          color: (opacity = 1) => `rgba(101, 163, 13, ${opacity})`, // optional
-          strokeWidth: 2, // optional
-        },
-      ],
-      legend: ['Stroke rate'],
-    };
-  }, [strokeRates]);
+const colors = [
+  (opacity = 1) => `rgba(101, 163, 13, ${opacity})`,
+  (opacity = 1) => `rgba(2, 132, 199, ${opacity})`,
+  (opacity = 1) => `rgba(234, 88, 12, ${opacity})`,
+  (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+];
 
-  return <GeneralLineChart data={data} unit="st/min" />;
+export default function StrokeRateChart({
+  nameAndStrokeRates,
+}: StrokeRateChartProps) {
+  return (
+    <MultiLineChart
+      nameAndStats={nameAndStrokeRates.map(e => ({
+        name: e.name,
+        stats: e.stats.map(i => ({
+          startRange: i.startRange,
+          endRange: i.endRange,
+          stat: i.strokeRate,
+        })),
+      }))}
+      colors={colors}
+      lineType="Stroke rate"
+      unit={'st/min'}
+    />
+  );
 }

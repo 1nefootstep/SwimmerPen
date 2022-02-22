@@ -175,7 +175,11 @@ export default function ResultScreen({ navigation }) {
             <Hidden isHidden={averageVelocities.length === 0}>
               <>
                 <Box py={4}>
-                  <VelocityChart velocities={averageVelocities} />
+                  <VelocityChart
+                    nameAndVelocities={[
+                      { name: annotationsInfo.name, stats: averageVelocities },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
@@ -183,7 +187,11 @@ export default function ResultScreen({ navigation }) {
             <Hidden isHidden={strokeCounts.length === 0}>
               <>
                 <Box py={4}>
-                  <StrokeCountChart strokeCounts={strokeCounts} />
+                  <StrokeCountChart
+                    nameAndStrokeCounts={[
+                      { name: annotationsInfo.name, stats: strokeCounts },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
@@ -191,7 +199,11 @@ export default function ResultScreen({ navigation }) {
             <Hidden isHidden={lapStrokeCounts.length === 0}>
               <>
                 <Box py={4}>
-                  <StrokeCountChart strokeCounts={lapStrokeCounts} />
+                  <StrokeCountChart
+                    nameAndStrokeCounts={[
+                      { name: annotationsInfo.name, stats: lapStrokeCounts },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
@@ -199,7 +211,14 @@ export default function ResultScreen({ navigation }) {
             <Hidden isHidden={strokeRates.length === 0}>
               <>
                 <Box py={4}>
-                  <StrokeRateChart strokeRates={strokeRates} />
+                  <StrokeRateChart
+                    nameAndStrokeRates={[
+                      {
+                        name: annotationsInfo.name,
+                        stats: strokeRates,
+                      },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
@@ -207,7 +226,14 @@ export default function ResultScreen({ navigation }) {
             <Hidden isHidden={distancePerStroke.length === 0}>
               <>
                 <Box py={4}>
-                  <DPSChart dps={distancePerStroke} />
+                  <DPSChart
+                    nameAndDps={[
+                      {
+                        name: annotationsInfo.name,
+                        stats: distancePerStroke,
+                      },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>

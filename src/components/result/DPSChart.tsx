@@ -1,27 +1,35 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { DPSStatistic } from '../../state/StatisticsCalculator';
-import GeneralLineChart from './GeneralLineChart';
+import MultiLineChart from './MultiLineChart';
 
 export interface DPSChartProps {
-  dps: Array<DPSStatistic>;
+  nameAndDps: Array<{
+    name: string;
+    stats: Array<DPSStatistic>;
+  }>;
 }
 
-export default function DPSChart({ dps }: DPSChartProps) {
-  const data = useMemo(() => {
-    const labels = dps.map(e => `${e.startRange}m - ${e.endRange}m`);
-    const dataset = dps.map(e => e.distancePerStroke);
-    return {
-      labels: labels,
-      datasets: [
-        {
-          data: dataset,
-          color: (opacity = 1) => `rgba(234, 88, 12, ${opacity})`, // optional
-          strokeWidth: 2, // optional
-        },
-      ],
-      legend: ['Distance per stroke'],
-    };
-  }, [dps]);
+const colors = [
+  (opacity = 1) => `rgba(234, 88, 12, ${opacity})`,
+  (opacity = 1) => `rgba(101, 163, 13, ${opacity})`,
+  (opacity = 1) => `rgba(2, 132, 199, ${opacity})`,
+  (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+];
 
-  return <GeneralLineChart data={data} unit="m" />;
+export default function DPSChart({ nameAndDps }: DPSChartProps) {
+  return (
+    <MultiLineChart
+      nameAndStats={nameAndDps.map(e => ({
+        name: e.name,
+        stats: e.stats.map(i => ({
+          startRange: i.startRange,
+          endRange: i.endRange,
+          stat: i.distancePerStroke,
+        })),
+      }))}
+      colors={colors}
+      lineType="Dist/stroke"
+      unit={'m'}
+    />
+  );
 }

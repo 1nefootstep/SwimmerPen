@@ -73,7 +73,6 @@ export default function GeneralLineChart({
       verticalLabelRotation={rotation()}
       withVerticalLines={false}
       renderDotContent={({ x, y, index, indexData }) => {
-        console.log(`index: ${index}: ${indexData.toFixed(1)}`);
         return (
           <Box
             key={`${x},${y}`}

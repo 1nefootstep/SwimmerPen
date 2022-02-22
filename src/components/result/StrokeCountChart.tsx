@@ -1,29 +1,36 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { StrokeCountStatistic } from '../../state/StatisticsCalculator';
-import GeneralLineChart from './GeneralLineChart';
+import MultiLineChart from './MultiLineChart';
 
 export interface StrokeCountChartProps {
-  strokeCounts: Array<StrokeCountStatistic>;
+  nameAndStrokeCounts: Array<{
+    name: string;
+    stats: Array<StrokeCountStatistic>;
+  }>;
 }
 
-export default function StrokeCountChart({
-  strokeCounts,
-}: StrokeCountChartProps) {
-  const data = useMemo(() => {
-    const labels = strokeCounts.map(e => `${e.startRange}m - ${e.endRange}m`);
-    const dataset = strokeCounts.map(e => e.strokeCount);
-    return {
-      labels: labels,
-      datasets: [
-        {
-          data: dataset,
-          color: (opacity = 1) => `rgba(2, 132, 199, ${opacity})`, // optional
-          strokeWidth: 2, // optional
-        },
-      ],
-      legend: ['Stroke count'],
-    };
-  }, [strokeCounts]);
+const colors = [
+  (opacity = 1) => `rgba(2, 132, 199, ${opacity})`,
+  (opacity = 1) => `rgba(234, 88, 12, ${opacity})`,
+  (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+  (opacity = 1) => `rgba(101, 163, 13, ${opacity})`,
+];
 
-  return <GeneralLineChart data={data} />;
+export default function StrokeCountChart({
+  nameAndStrokeCounts,
+}: StrokeCountChartProps) {
+  return (
+    <MultiLineChart
+      nameAndStats={nameAndStrokeCounts.map(e => ({
+        name: e.name,
+        stats: e.stats.map(i => ({
+          startRange: i.startRange,
+          endRange: i.endRange,
+          stat: i.strokeCount,
+        })),
+      }))}
+      colors={colors}
+      lineType="Stroke count"
+    />
+  );
 }

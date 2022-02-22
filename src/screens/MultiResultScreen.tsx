@@ -28,7 +28,7 @@ import {
 import SendFab from '../components/result/SendFab';
 import { IconNode } from 'react-native-elements/dist/icons/Icon';
 
-export default function MultiResultScreen({ navigation }) {
+export default function ResultScreen({ navigation }) {
   const dispatch = useAppDispatch();
   const annotationsInfo = useAppSelector(state => state.annotation);
 
@@ -72,6 +72,52 @@ export default function MultiResultScreen({ navigation }) {
       });
   };
 
+  const toCsv = (
+    td: Array<TimeDistStatistic>,
+    sc: Array<StrokeCountStatistic>,
+    v: Array<VelocityAtRangeStatistic>,
+    sr: Array<StrokeRateStatistic>,
+    dps: Array<DPSStatistic>
+  ) => {
+    const header: Array<string> = [];
+    const values: Array<string> = [];
+    td.forEach(e => {
+      header.push(`${e.distance}m`);
+      values.push(formatTimeFromPositionSeconds(e.time));
+    });
+    sc.forEach(e => {
+      header.push(`SC ${e.startRange}-${e.endRange}m`);
+      values.push(e.strokeCount.toFixed(2));
+    });
+    v.forEach(e => {
+      header.push(`Velocity ${e.startRange}-${e.endRange}m`);
+      values.push(e.velocity.toFixed(2));
+    });
+    sr.forEach(e => {
+      header.push(`SR ${e.startRange}-${e.endRange}m`);
+      values.push(e.strokeRate.toFixed(2));
+    });
+    dps.forEach(e => {
+      header.push(`DPS ${e.startRange}-${e.endRange}m`);
+      values.push(e.distancePerStroke.toFixed(2));
+    });
+    return `${header.join(',')}\n${values.join(',')}`;
+  };
+
+  const shareCsv = async () => {
+    const uri = await createCsvInCacheDir(
+      toCsv(
+        timeAndDistances,
+        strokeCounts,
+        averageVelocities,
+        strokeRates,
+        distancePerStroke
+      ),
+      annotationsInfo.name !== '' ? annotationsInfo.name : Date.now().toString()
+    );
+    shareFile(uri);
+  };
+
   const takeScreenshot = async () => {
     if (
       viewShotRef.current !== null &&
@@ -79,6 +125,18 @@ export default function MultiResultScreen({ navigation }) {
     ) {
       const uri = await viewShotRef.current.capture();
       shareFile(uri);
+    }
+  };
+
+  const shareVideo = async () => {
+    if (annotationsInfo.name !== '') {
+      shareFile(getVideoUri(annotationsInfo.name));
+    }
+  };
+
+  const shareRawAnnotations = async () => {
+    if (annotationsInfo.name !== '') {
+      shareFile(getAnnotationUri(annotationsInfo.name));
     }
   };
 
@@ -92,6 +150,21 @@ export default function MultiResultScreen({ navigation }) {
       icon: { name: 'linechart', type: 'antdesign' },
       action: takeScreenshot,
     },
+    {
+      label: 'Send csv',
+      icon: { name: 'file-csv', type: 'font-awesome-5' },
+      action: shareCsv,
+    },
+    {
+      label: 'Send video',
+      icon: { name: 'file-video', type: 'font-awesome-5' },
+      action: shareVideo,
+    },
+    {
+      label: 'Send annotations',
+      icon: { name: 'file-word', type: 'font-awesome-5' },
+      action: shareRawAnnotations,
+    },
   ];
 
   return (
@@ -102,7 +175,11 @@ export default function MultiResultScreen({ navigation }) {
             <Hidden isHidden={averageVelocities.length === 0}>
               <>
                 <Box py={4}>
-                  <VelocityChart velocities={averageVelocities} />
+                  <VelocityChart
+                    nameAndVelocities={[
+                      { name: annotationsInfo.name, stats: averageVelocities },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
@@ -110,7 +187,11 @@ export default function MultiResultScreen({ navigation }) {
             <Hidden isHidden={strokeCounts.length === 0}>
               <>
                 <Box py={4}>
-                  <StrokeCountChart strokeCounts={strokeCounts} />
+                  <StrokeCountChart
+                    nameAndStrokeCounts={[
+                      { name: annotationsInfo.name, stats: strokeCounts },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
@@ -118,7 +199,11 @@ export default function MultiResultScreen({ navigation }) {
             <Hidden isHidden={lapStrokeCounts.length === 0}>
               <>
                 <Box py={4}>
-                  <StrokeCountChart strokeCounts={lapStrokeCounts} />
+                  <StrokeCountChart
+                    nameAndStrokeCounts={[
+                      { name: annotationsInfo.name, stats: lapStrokeCounts },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
@@ -126,7 +211,14 @@ export default function MultiResultScreen({ navigation }) {
             <Hidden isHidden={strokeRates.length === 0}>
               <>
                 <Box py={4}>
-                  <StrokeRateChart strokeRates={strokeRates} />
+                  <StrokeRateChart
+                    nameAndStrokeRates={[
+                      {
+                        name: annotationsInfo.name,
+                        stats: strokeRates,
+                      },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
@@ -134,7 +226,14 @@ export default function MultiResultScreen({ navigation }) {
             <Hidden isHidden={distancePerStroke.length === 0}>
               <>
                 <Box py={4}>
-                  <DPSChart dps={distancePerStroke} />
+                  <DPSChart
+                    nameAndDps={[
+                      {
+                        name: annotationsInfo.name,
+                        stats: distancePerStroke,
+                      },
+                    ]}
+                  />
                 </Box>
                 <Divider thickness={4} bg="muted.300" />
               </>
