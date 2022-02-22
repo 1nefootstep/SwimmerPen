@@ -11,7 +11,11 @@ export interface GeneralLineChartProps {
   unit?: string;
 }
 
-export default function GeneralLineChart({ data, precision, unit }: GeneralLineChartProps) {
+export default function GeneralLineChart({
+  data,
+  precision,
+  unit,
+}: GeneralLineChartProps) {
   const screenWidth = Dimensions.get('window').width;
   const numXLabels = data.labels.length;
 
@@ -29,7 +33,7 @@ export default function GeneralLineChart({ data, precision, unit }: GeneralLineC
       return 8;
     }
     return 10;
-  }
+  };
   const rotation = () => {
     if (numXLabels < 10) {
       return 0;
@@ -47,7 +51,8 @@ export default function GeneralLineChart({ data, precision, unit }: GeneralLineC
     backgroundGradientFromOpacity: 0,
     backgroundGradientFrom: '#eff3ff',
     backgroundGradientTo: '#efefef',
-    fillShadowGradientOpacity: 0,
+    fillShadowGradientFromOpacity: 0,
+    fillShadowGradientToOpacity: 0,
     color: (opacity = 1) => `#023047`,
     labelColor: (opacity = 1) => `#333`,
     propsForVerticalLabels: { fontSize: fontSize() },
@@ -68,6 +73,7 @@ export default function GeneralLineChart({ data, precision, unit }: GeneralLineC
       verticalLabelRotation={rotation()}
       withVerticalLines={false}
       renderDotContent={({ x, y, index, indexData }) => {
+        console.log(`index: ${index}: ${indexData.toFixed(1)}`);
         return (
           <Box
             key={`${x},${y}`}
@@ -80,7 +86,9 @@ export default function GeneralLineChart({ data, precision, unit }: GeneralLineC
             }}
             bg="purple.50"
           >
-            <Text fontSize={fontSize()}>{indexData.toFixed(precision !== undefined ? precision : 1)}</Text>
+            <Text fontSize={fontSize()}>
+              {indexData.toFixed(precision !== undefined ? precision : 1)}
+            </Text>
           </Box>
         );
       }}

@@ -5,7 +5,11 @@ import DropDownPicker from 'react-native-dropdown-picker';
 
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 
-import { addAnnotation, saveAnnotation, setCurrentDistance } from '../../../../state/redux';
+import {
+  addAnnotation,
+  saveAnnotation,
+  setCurrentDistance,
+} from '../../../../state/redux';
 import * as VideoService from '../../../../state/VideoService';
 import { getDefaultMode, getModes, Modes } from '../../../../state/AKB';
 import { getPosition } from '../../../../state/VideoService';
@@ -84,7 +88,11 @@ export default function SelectDistance() {
           scrollViewProps={{ nestedScrollEnabled: true }}
           placeholder={`${currentDistance}m`}
           value={currentDistance}
-          dropDownContainerStyle={{ zIndex: 20, elevation: 999 }}
+          dropDownContainerStyle={{
+            maxHeight: 148,
+            zIndex: 20,
+            elevation: 999,
+          }}
           open={isOpen}
           setOpen={b => {
             // if (videoStatus !== null && videoStatus.isLoaded) {
