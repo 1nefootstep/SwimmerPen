@@ -96,3 +96,9 @@ export function getMaxFps(format: CameraDeviceFormat): number {
     else return prev;
   }, 0);
 }
+
+export function shortenText(text: string, charsAmount = 6) {
+  const firstPart = text.substring(0, charsAmount);
+  const lastPart = text.substring(text.length - charsAmount, text.length);
+  return `${firstPart}...${lastPart}`;
+}

@@ -10,6 +10,8 @@ import {
   Box,
   Column,
   FlatList,
+  CloseIcon,
+  CheckIcon,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import * as VideoThumbnails from 'expo-video-thumbnails';
@@ -24,21 +26,23 @@ import {
 } from '../FileHandler';
 import { Dimensions, Platform, StatusBar } from 'react-native';
 import { default as FilePickerCard } from '../components/filepicker/MultiCard';
-
-interface FilePickerScreenProps {
-  onSelect: (uri: string) => Promise<void>;
-  isVisible: boolean;
-  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { MultiFilePickerProps } from '../router';
 
 function AppBar({
   onPressBack,
   onImport,
+  selections,
+  onReset,
+  onDone,
 }: {
   onPressBack: () => void;
   onImport: () => void;
+  selections: Array<string>;
+  onReset: () => void;
+  onDone: (selections: Array<string>) => void;
 }) {
   const COLOR = '#f5f5f4';
+  const hasSelection = selections.length > 0;
   return (
     <>
       <StatusBar backgroundColor={COLOR} barStyle="light-content" />
@@ -52,45 +56,72 @@ function AppBar({
         w="100%"
       >
         <Row alignItems="center">
-          <IconButton
-            icon={<Icon size="sm" as={MaterialIcons} name="arrow-back" />}
-            onPress={onPressBack}
-          />
-          <Text mx={4} fontSize="20" fontWeight="bold">
-            Video Picker
-          </Text>
+          {hasSelection ? (
+            <IconButton icon={<CloseIcon size="sm" />} onPress={onReset} />
+          ) : (
+            <IconButton
+              icon={<Icon size="sm" as={MaterialIcons} name="arrow-back" />}
+              onPress={onPressBack}
+            />
+          )}
+        </Row>
+        <Row>
+          {hasSelection ? (
+            <Text mx={4} fontSize="12">{`${selections.length} selected.`}</Text>
+          ) : (
+            <Text mx={4} fontSize="20" fontWeight="bold">
+              Video Picker
+            </Text>
+          )}
         </Row>
         <Row mr={4}>
-          <Button
-            size="lg"
-            variant="unstyled"
-            onPress={() => {
-              importVideoAndAnnotation()
-                .then(isSuccessful => {
-                  console.log(isSuccessful);
-                  if (isSuccessful) {
-                    onImport();
-                  }
-                })
-                .catch(err => console.error(`importing video error: ${err}`));
-            }}
-          >
-            Import
-          </Button>
+          {hasSelection ? (
+            <IconButton
+              icon={<CheckIcon size="sm" />}
+              onPress={() => {
+                onDone(selections);
+                onPressBack();
+              }}
+            />
+          ) : (
+            <Button
+              size="lg"
+              variant="unstyled"
+              onPress={() => {
+                importVideoAndAnnotation()
+                  .then(isSuccessful => {
+                    console.log(isSuccessful);
+                    if (isSuccessful) {
+                      onImport();
+                    }
+                  })
+                  .catch(err => console.error(`importing video error: ${err}`));
+              }}
+            >
+              Import
+            </Button>
+          )}
         </Row>
       </Row>
     </>
   );
 }
 
-export default function FilePickerScreen({
-  onSelect,
-  isVisible,
-  setIsVisible,
-}: FilePickerScreenProps) {
+export interface MultiFilePickerScreenProps {
+  onSelect: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+export default function MultiFilePickerScreen({
+  route: {
+    params: { onSelect },
+  },
+  navigation,
+}: MultiFilePickerProps) {
   const [videoUris, setVideoUris] = useState<Array<string>>([]);
   const [thumbnailUris, setThumbnailUris] = useState<Array<ImageSource>>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isMultiSelecting, setIsMultiSelecting] = useState(false);
+  const [selected, setSelected] = useState<Array<string>>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const width =
     Platform.OS === 'android'
       ? Dimensions.get('screen').width - (StatusBar.currentHeight ?? 0)
@@ -143,9 +174,7 @@ export default function FilePickerScreen({
           : null;
       })
       .catch(err => console.error(err));
-    if (isVisible) {
-      updateVideoUris();
-    }
+    updateVideoUris();
     return () => {
       ScreenOrientation.getOrientationAsync()
         .then(currOrientation => {
@@ -158,22 +187,42 @@ export default function FilePickerScreen({
         })
         .catch(err => console.error(err));
     };
-  }, [isVisible]);
+  }, [onSelect]);
 
-  const onPressCard = (videoUri: string) => {
-    onSelect(videoUri);
-    setIsVisible(false);
+  const onPressCard = (baseName: string) => {
+    if (isMultiSelecting) {
+      if (selected.includes(baseName)) {
+        setSelected(prev => prev.filter(e => e !== baseName));
+      } else {
+        setSelected(prev => prev.concat(selected));
+      }
+    } else {
+      onSelect([baseName]);
+    }
   };
 
   const onDeleteUpdate = () => {
     updateVideoUris();
   };
 
+  const onLongPress = (baseName: string) => {
+    if (isMultiSelecting) {
+      setIsMultiSelecting(false);
+      setSelected([]);
+    } else {
+      setIsMultiSelecting(true);
+      setSelected([baseName]);
+    }
+  };
+
   return (
     <Column flex={1} mx="auto" w="100%" bg="gray.400">
       <AppBar
-        onPressBack={() => setIsVisible(false)}
+        onPressBack={navigation.goBack}
         onImport={() => updateVideoUris()}
+        selections={selected}
+        onReset={() => setSelected([])}
+        onDone={() => onSelect(selected)}
       />
       {isLoading ? (
         <Center h="100%">
@@ -196,6 +245,7 @@ export default function FilePickerScreen({
               width={width}
               onPress={onPressCard}
               onDeleteUpdate={onDeleteUpdate}
+              onLongPress={onLongPress}
             />
           )}
           numColumns={2}

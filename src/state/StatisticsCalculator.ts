@@ -225,7 +225,10 @@ function findIndexTimestamp(a: Array<number>, num: number) {
   return binarySearch(a, e => Math.floor(e) > Math.floor(num));
 }
 
-export function nextFrameTime(frames: Array<number>, frameTime: number): number {
+export function nextFrameTime(
+  frames: Array<number>,
+  frameTime: number
+): number {
   console.log(`next frame time from: ${frameTime}`);
   const idx = findIndexTimestamp(frames, frameTime);
   if (idx >= frames.length) {
@@ -251,7 +254,10 @@ export function getStartOfFrameGivenTime(
   return frames[idx];
 }
 
-export function previousFrameTime(frames: Array<number>, frameTime: number): number {
+export function previousFrameTime(
+  frames: Array<number>,
+  frameTime: number
+): number {
   console.log(`prev frame time from: ${frameTime}`);
   const idx = findIndexTimestamp(frames, frameTime) - 2;
   if (idx >= frames.length) {
@@ -265,7 +271,7 @@ export function previousFrameTime(frames: Array<number>, frameTime: number): num
 
 export function fixAnnotationFrameTimes(
   annotationInfo: AnnotationInformation,
-  dispatch: AppDispatch
+  dispatch?: AppDispatch
 ) {
   const frames = annotationInfo.frameTimes;
   if (frames.length === 0) {
@@ -303,6 +309,8 @@ export function fixAnnotationFrameTimes(
     annotations: updatedAnn,
     strokeCounts: updatedSc,
   };
-  dispatch(loadAnnotation(annotationInfo));
+  if (dispatch !== undefined) {
+    dispatch(loadAnnotation(annotationInfo));
+  }
   return annInfoToUpdate;
 }

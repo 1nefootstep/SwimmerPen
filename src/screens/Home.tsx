@@ -63,6 +63,14 @@ export default function Home({ navigation }) {
         />
       </Box>
       <Spacer />
+      <Box flex={3} h="95%">
+        <ImageButton
+          onPress={() => navigation.navigate('MultiStatistics')}
+          description="Statistics"
+          requireAsset={require('../../assets/annotationButton.jpg')}
+        />
+      </Box>
+      <Spacer />
     </Row>
   );
 }

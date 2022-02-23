@@ -1,54 +1,69 @@
-import React, { useMemo, useRef, useEffect } from 'react';
-import { Center, Box, Divider, ScrollView } from 'native-base';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Center,
+  Box,
+  Divider,
+  ScrollView,
+  StatusBar,
+  Row,
+  IconButton,
+  Button,
+  Column,
+  Icon,
+} from 'native-base';
+import { MaterialIcons } from '@expo/vector-icons';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
 import {
   computeResult,
-  DPSStatistic,
   fixAnnotationFrameTimes,
-  StrokeCountStatistic,
-  StrokeRateStatistic,
-  TimeDistStatistic,
-  VelocityAtRangeStatistic,
 } from '../state/StatisticsCalculator';
 import VelocityChart from '../components/result/VelocityChart';
 import StrokeCountChart from '../components/result/StrokeCountChart';
 import StrokeRateChart from '../components/result/StrokeRateChart';
 import Hidden from '../components/Hidden';
 import DPSChart from '../components/result/DPSChart';
-import { formatTimeFromPositionSeconds } from '../state/Util';
-import {
-  createCsvInCacheDir,
-  getAnnotationUri,
-  getVideoUri,
-  saveAnnotation,
-} from '../FileHandler';
+import { loadAnnotation, saveAnnotation } from '../FileHandler';
 import SendFab from '../components/result/SendFab';
 import { IconNode } from 'react-native-elements/dist/icons/Icon';
+import { AnnotationInformation } from '../state/AKB';
+
+const COLOR = '#f5f5f4';
 
 export default function ResultScreen({ navigation }) {
-  const dispatch = useAppDispatch();
-  const annotationsInfo = useAppSelector(state => state.annotation);
-
-  const {
-    timeAndDistances,
-    averageVelocities,
-    strokeRates,
-    lapStrokeCounts,
-    strokeCounts,
-    distancePerStroke,
-  } = useMemo(() => computeResult(annotationsInfo), [annotationsInfo]);
+  const [annotationBaseNames, setAnnotationBaseNames] = useState<Array<string>>(
+    []
+  );
+  const [annotationInfos, setAnnotationInfos] = useState<
+    Array<AnnotationInformation>
+  >([]);
 
   const viewShotRef = useRef<ViewShot | null>(null);
   useEffect(() => {
-    const prev = annotationsInfo;
-    const updated = fixAnnotationFrameTimes(annotationsInfo, dispatch);
-    if (JSON.stringify(prev) !== JSON.stringify(updated)) {
-      saveAnnotation(updated.name, updated);
+    async function getAnnotationInfo() {
+      const aOrNull = await Promise.all(
+        annotationBaseNames.map(async baseName => {
+          const result = await loadAnnotation(baseName);
+          if (result.isSuccessful) {
+            const prev = result.annotation;
+            const updated = fixAnnotationFrameTimes(prev);
+            if (JSON.stringify(prev) !== JSON.stringify(updated)) {
+              saveAnnotation(updated.name, updated);
+            }
+            return updated;
+          }
+          return null;
+        })
+      );
+      const a: Array<AnnotationInformation> = aOrNull.filter(
+        (e): e is AnnotationInformation => e !== null
+      );
+      setAnnotationInfos(a);
     }
-  }, []);
+    getAnnotationInfo();
+  }, [annotationBaseNames]);
 
   const openShareDialogAsync = async (uri: string) => {
     if (!(await Sharing.isAvailableAsync())) {
@@ -72,52 +87,6 @@ export default function ResultScreen({ navigation }) {
       });
   };
 
-  const toCsv = (
-    td: Array<TimeDistStatistic>,
-    sc: Array<StrokeCountStatistic>,
-    v: Array<VelocityAtRangeStatistic>,
-    sr: Array<StrokeRateStatistic>,
-    dps: Array<DPSStatistic>
-  ) => {
-    const header: Array<string> = [];
-    const values: Array<string> = [];
-    td.forEach(e => {
-      header.push(`${e.distance}m`);
-      values.push(formatTimeFromPositionSeconds(e.time));
-    });
-    sc.forEach(e => {
-      header.push(`SC ${e.startRange}-${e.endRange}m`);
-      values.push(e.strokeCount.toFixed(2));
-    });
-    v.forEach(e => {
-      header.push(`Velocity ${e.startRange}-${e.endRange}m`);
-      values.push(e.velocity.toFixed(2));
-    });
-    sr.forEach(e => {
-      header.push(`SR ${e.startRange}-${e.endRange}m`);
-      values.push(e.strokeRate.toFixed(2));
-    });
-    dps.forEach(e => {
-      header.push(`DPS ${e.startRange}-${e.endRange}m`);
-      values.push(e.distancePerStroke.toFixed(2));
-    });
-    return `${header.join(',')}\n${values.join(',')}`;
-  };
-
-  const shareCsv = async () => {
-    const uri = await createCsvInCacheDir(
-      toCsv(
-        timeAndDistances,
-        strokeCounts,
-        averageVelocities,
-        strokeRates,
-        distancePerStroke
-      ),
-      annotationsInfo.name !== '' ? annotationsInfo.name : Date.now().toString()
-    );
-    shareFile(uri);
-  };
-
   const takeScreenshot = async () => {
     if (
       viewShotRef.current !== null &&
@@ -125,18 +94,6 @@ export default function ResultScreen({ navigation }) {
     ) {
       const uri = await viewShotRef.current.capture();
       shareFile(uri);
-    }
-  };
-
-  const shareVideo = async () => {
-    if (annotationsInfo.name !== '') {
-      shareFile(getVideoUri(annotationsInfo.name));
-    }
-  };
-
-  const shareRawAnnotations = async () => {
-    if (annotationsInfo.name !== '') {
-      shareFile(getAnnotationUri(annotationsInfo.name));
     }
   };
 
@@ -150,25 +107,66 @@ export default function ResultScreen({ navigation }) {
       icon: { name: 'linechart', type: 'antdesign' },
       action: takeScreenshot,
     },
-    {
-      label: 'Send csv',
-      icon: { name: 'file-csv', type: 'font-awesome-5' },
-      action: shareCsv,
-    },
-    {
-      label: 'Send video',
-      icon: { name: 'file-video', type: 'font-awesome-5' },
-      action: shareVideo,
-    },
-    {
-      label: 'Send annotations',
-      icon: { name: 'file-word', type: 'font-awesome-5' },
-      action: shareRawAnnotations,
-    },
   ];
 
+  const onPressBack = navigation.goBack;
+
   return (
-    <>
+    <Column>
+      <StatusBar backgroundColor={COLOR} barStyle="light-content" />
+      <Box safeAreaTop bg={COLOR} />
+      <Row
+        bg={COLOR}
+        px="1"
+        py="3"
+        justifyContent="space-between"
+        shadow="9"
+        w="100%"
+      >
+        <Row alignItems="center">
+          <IconButton
+            icon={<Icon size="sm" as={MaterialIcons} name="arrow-back" />}
+            onPress={onPressBack}
+          />
+        </Row>
+        <Row>
+          {hasSelection ? (
+            <Text mx={4} fontSize="12">{`${selections.length} selected.`}</Text>
+          ) : (
+            <Text mx={4} fontSize="20" fontWeight="bold">
+              Video Picker
+            </Text>
+          )}
+        </Row>
+        <Row mr={4}>
+          {hasSelection ? (
+            <IconButton
+              icon={<CheckIcon size="sm" />}
+              onPress={() => {
+                onDone(selections);
+                onPressBack();
+              }}
+            />
+          ) : (
+            <Button
+              size="lg"
+              variant="unstyled"
+              onPress={() => {
+                importVideoAndAnnotation()
+                  .then(isSuccessful => {
+                    console.log(isSuccessful);
+                    if (isSuccessful) {
+                      onImport();
+                    }
+                  })
+                  .catch(err => console.error(`importing video error: ${err}`));
+              }}
+            >
+              Compare annotations
+            </Button>
+          )}
+        </Row>
+      </Row>
       <ScrollView alwaysBounceVertical={true}>
         <ViewShot style={{ backgroundColor: '#fff' }} ref={viewShotRef}>
           <Center>
@@ -242,6 +240,6 @@ export default function ResultScreen({ navigation }) {
         </ViewShot>
       </ScrollView>
       <SendFab items={items} />
-    </>
+    </Column>
   );
 }

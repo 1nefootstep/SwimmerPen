@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity } from 'react-native';
-import { Text, Box, Image, Menu, Pressable, Row, Icon } from 'native-base';
+import {
+  Text,
+  Box,
+  Image,
+  Menu,
+  Pressable,
+  Row,
+  Icon,
+  CheckCircleIcon,
+} from 'native-base';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ImageSource } from 'react-native-image-viewing/dist/@types';
 import { breakUri, deleteVideoAndAnnotation } from '../../FileHandler';
@@ -8,29 +17,34 @@ import DeleteVideoModal from './DeleteVideoModal';
 import EditNameModal from './EditNameModal';
 import { shortenText } from '../../state/Util';
 
-interface CardProps {
-  videoUri: string;
-  thumbnailUri: ImageSource;
-  width: number;
-  onPress: (videoUri: string) => void;
-  onDeleteUpdate: () => void;
-}
-
 function getNameFromUri(uri: string) {
   const { baseName } = breakUri(uri);
   return baseName;
 }
 
-export default function Card({
+interface MultiCardProps {
+  videoUri: string;
+  thumbnailUri: ImageSource;
+  width: number;
+  onLongPress?: (baseName: string) => void;
+  onPress: (baseName: string) => void;
+  onDeleteUpdate: () => void;
+  isSelected?: boolean;
+}
+
+export default function MultiCard({
   videoUri,
   thumbnailUri,
   width,
   onPress,
   onDeleteUpdate,
-}: CardProps) {
+  onLongPress,
+  isSelected,
+}: MultiCardProps) {
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>('');
+
   useEffect(() => {
     setName(getNameFromUri(videoUri));
   }, []);
@@ -52,13 +66,40 @@ export default function Card({
 
   return (
     <Box m="auto" py={4}>
-      <TouchableOpacity onPress={() => onPress(videoUri)}>
-        <Image
-          source={thumbnailUri}
-          alt="video-thumbnail"
-          h={200}
-          w={width / 2 - 16}
-        />
+      <TouchableOpacity
+        onPress={() => onPress(name)}
+        onLongPress={() =>
+          onLongPress !== undefined ? onLongPress(name) : null
+        }
+      >
+        <Box h={200} w={width / 2 - 16}>
+          <Image
+            source={thumbnailUri}
+            alt="video-thumbnail"
+            h="100%"
+            w="100%"
+          />
+          <Box
+            w={6}
+            h={6}
+            borderRadius={12}
+            bg={isSelected ? 'white' : `rgba(255,255,255, 0.3)`}
+            position="absolute"
+            bottom={3}
+            right={3}
+          >
+            {isSelected ? (
+              <CheckCircleIcon
+                color="#03a9f4"
+                style={{
+                  position: 'absolute',
+                  width: 24,
+                  height: 24,
+                }}
+              />
+            ) : null}
+          </Box>
+        </Box>
       </TouchableOpacity>
       <Row justifyContent="space-between">
         <Text
