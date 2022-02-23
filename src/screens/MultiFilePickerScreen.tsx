@@ -26,7 +26,6 @@ import {
 } from '../FileHandler';
 import { Dimensions, Platform, StatusBar } from 'react-native';
 import { default as FilePickerCard } from '../components/filepicker/MultiCard';
-import { MultiFilePickerProps } from '../router';
 
 function AppBar({
   onPressBack,
@@ -108,15 +107,20 @@ function AppBar({
 }
 
 export interface MultiFilePickerScreenProps {
-  onSelect: React.Dispatch<React.SetStateAction<string[]>>;
+  // onSelect: React.Dispatch<React.SetStateAction<string[]>>;
+  isVisible: boolean;
+  // setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  goBack: () => void;
+  onSelect: (baseNames: string[]) => void;
+  setIsLandscape: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function MultiFilePickerScreen({
-  route: {
-    params: { onSelect },
-  },
-  navigation,
-}: MultiFilePickerProps) {
+  onSelect,
+  isVisible,
+  goBack,
+  setIsLandscape,
+}: MultiFilePickerScreenProps) {
   const [videoUris, setVideoUris] = useState<Array<string>>([]);
   const [thumbnailUris, setThumbnailUris] = useState<Array<ImageSource>>([]);
   const [isMultiSelecting, setIsMultiSelecting] = useState(false);
@@ -172,9 +176,12 @@ export default function MultiFilePickerScreen({
               ScreenOrientation.OrientationLock.PORTRAIT
             )
           : null;
+        setIsLandscape(false);
       })
       .catch(err => console.error(err));
-    updateVideoUris();
+    if (isVisible) {
+      updateVideoUris();
+    }
     return () => {
       ScreenOrientation.getOrientationAsync()
         .then(currOrientation => {
@@ -184,20 +191,22 @@ export default function MultiFilePickerScreen({
                 ScreenOrientation.OrientationLock.LANDSCAPE
               )
             : null;
+          setIsLandscape(true);
         })
         .catch(err => console.error(err));
     };
-  }, [onSelect]);
+  }, [isVisible]);
 
   const onPressCard = (baseName: string) => {
     if (isMultiSelecting) {
       if (selected.includes(baseName)) {
         setSelected(prev => prev.filter(e => e !== baseName));
       } else {
-        setSelected(prev => prev.concat(selected));
+        setSelected(prev => prev.concat(baseName));
       }
     } else {
       onSelect([baseName]);
+      goBack();
     }
   };
 
@@ -215,14 +224,21 @@ export default function MultiFilePickerScreen({
     }
   };
 
+  const onPressConfirm = (selection: Array<string>) => {
+    if (selection.length !== 0) {
+      onSelect(selection);
+      goBack();
+    }
+  };
+
   return (
     <Column flex={1} mx="auto" w="100%" bg="gray.400">
       <AppBar
-        onPressBack={navigation.goBack}
+        onPressBack={goBack}
         onImport={() => updateVideoUris()}
         selections={selected}
         onReset={() => setSelected([])}
-        onDone={() => onSelect(selected)}
+        onDone={onPressConfirm}
       />
       {isLoading ? (
         <Center h="100%">
@@ -237,17 +253,21 @@ export default function MultiFilePickerScreen({
           data={videoUris.map((e, i) => {
             return { videoUri: e, thumbnailUri: thumbnailUris[i] };
           })}
-          renderItem={e => (
-            <FilePickerCard
-              key={e.item.videoUri}
-              videoUri={e.item.videoUri}
-              thumbnailUri={e.item.thumbnailUri}
-              width={width}
-              onPress={onPressCard}
-              onDeleteUpdate={onDeleteUpdate}
-              onLongPress={onLongPress}
-            />
-          )}
+          renderItem={e => {
+            const { baseName } = breakUri(e.item.videoUri);
+            return (
+              <FilePickerCard
+                key={e.item.videoUri}
+                videoUri={e.item.videoUri}
+                thumbnailUri={e.item.thumbnailUri}
+                width={width}
+                onPress={onPressCard}
+                onDeleteUpdate={onDeleteUpdate}
+                onLongPress={onLongPress}
+                isSelected={selected.includes(baseName)}
+              />
+            );
+          }}
           numColumns={2}
           columnWrapperStyle={{ paddingHorizontal: 12 }}
           keyExtractor={item => item.videoUri}

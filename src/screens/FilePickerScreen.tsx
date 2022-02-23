@@ -23,13 +23,7 @@ import {
   importVideoAndAnnotation,
 } from '../FileHandler';
 import { Dimensions, Platform, StatusBar } from 'react-native';
-import { default as FilePickerCard } from '../components/filepicker/MultiCard';
-
-interface FilePickerScreenProps {
-  onSelect: (uri: string) => Promise<void>;
-  isVisible: boolean;
-  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { default as FilePickerCard } from '../components/filepicker/Card';
 
 function AppBar({
   onPressBack,
@@ -81,6 +75,12 @@ function AppBar({
       </Row>
     </>
   );
+}
+
+interface FilePickerScreenProps {
+  onSelect: (uri: string) => Promise<void>;
+  isVisible: boolean;
+  setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function FilePickerScreen({

@@ -19,6 +19,7 @@ import {
 import { useIsForeground } from '../hooks/useIsForeground';
 import SelectFormat from '../components/camera/SelectFormat';
 import { getMaxFps } from '../state/Util';
+import { NavigatorProps } from '../router';
 
 /**
  * Returns true if a is closer to idealRatio compared to b.
@@ -116,7 +117,7 @@ function sortFormats(
   return rightPoints - leftPoints;
 }
 
-export default function CameraScreen({ navigation }) {
+export default function CameraScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const cameraRef = useRef<Camera>(null);

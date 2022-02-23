@@ -10,6 +10,7 @@ import {
   Image,
 } from 'native-base';
 import { ImageRequireSource } from 'react-native';
+import { NavigatorProps } from '../router';
 
 function ImageButton({
   onPress,
@@ -42,11 +43,10 @@ function ImageButton({
   );
 }
 
-export default function Home({ navigation }) {
+export default function Home({ navigation }: NavigatorProps) {
   return (
     <Row flex={1} justifyContent="space-around" alignItems="center">
       <Spacer />
-
       <Box flex={3} h="95%">
         <ImageButton
           onPress={() => navigation.navigate('CameraScreen')}
@@ -67,7 +67,7 @@ export default function Home({ navigation }) {
         <ImageButton
           onPress={() => navigation.navigate('MultiStatistics')}
           description="Statistics"
-          requireAsset={require('../../assets/annotationButton.jpg')}
+          requireAsset={require('../../assets/statisticsButton.jpg')}
         />
       </Box>
       <Spacer />

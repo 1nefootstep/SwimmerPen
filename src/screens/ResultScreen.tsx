@@ -27,8 +27,9 @@ import {
 } from '../FileHandler';
 import SendFab from '../components/result/SendFab';
 import { IconNode } from 'react-native-elements/dist/icons/Icon';
+import { NavigatorProps } from '../router';
 
-export default function ResultScreen({ navigation }) {
+export default function ResultScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
   const annotationsInfo = useAppSelector(state => state.annotation);
 

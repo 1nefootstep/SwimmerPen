@@ -17,8 +17,9 @@ import LineTool, { LineContext } from '../components/LineTool';
 import { VideoBoundContext } from '../components/VideoBoundContext';
 import TimerTool from '../components/TimerTool';
 import { useSharedValue } from 'react-native-reanimated';
+import { NavigatorProps } from '../router';
 
-export default function AnnotationScreen({ navigation }) {
+export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
   const updateStatus = (status: AVPlaybackStatus) => {
     dispatch(updateVideoStatus(status));

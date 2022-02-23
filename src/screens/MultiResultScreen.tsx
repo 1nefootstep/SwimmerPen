@@ -10,13 +10,15 @@ import {
   Button,
   Column,
   Icon,
+  Text,
+  Modal,
 } from 'native-base';
 import { MaterialIcons } from '@expo/vector-icons';
 import ViewShot from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
 import {
+  ComputedResult,
   computeResult,
   fixAnnotationFrameTimes,
 } from '../state/StatisticsCalculator';
@@ -29,16 +31,20 @@ import { loadAnnotation, saveAnnotation } from '../FileHandler';
 import SendFab from '../components/result/SendFab';
 import { IconNode } from 'react-native-elements/dist/icons/Icon';
 import { AnnotationInformation } from '../state/AKB';
+import { NavigatorProps } from '../router';
+import MultiFilePickerScreen from './MultiFilePickerScreen';
 
 const COLOR = '#f5f5f4';
 
-export default function ResultScreen({ navigation }) {
+export default function MultiResultScreen({ navigation }: NavigatorProps) {
+  const [isFilePickerVisible, setIsFilePickerVisible] = useState(false);
   const [annotationBaseNames, setAnnotationBaseNames] = useState<Array<string>>(
     []
   );
-  const [annotationInfos, setAnnotationInfos] = useState<
-    Array<AnnotationInformation>
+  const [computedData, setComputedData] = useState<
+    Array<{ name: string; result: ComputedResult }>
   >([]);
+  const [isLandscape, setIsLandscape] = useState(true);
 
   const viewShotRef = useRef<ViewShot | null>(null);
   useEffect(() => {
@@ -60,7 +66,7 @@ export default function ResultScreen({ navigation }) {
       const a: Array<AnnotationInformation> = aOrNull.filter(
         (e): e is AnnotationInformation => e !== null
       );
-      setAnnotationInfos(a);
+      setComputedData(a.map(e => ({ name: e.name, result: computeResult(e) })));
     }
     getAnnotationInfo();
   }, [annotationBaseNames]);
@@ -110,136 +116,134 @@ export default function ResultScreen({ navigation }) {
   ];
 
   const onPressBack = navigation.goBack;
+  const velocityData = computedData.map(e => ({
+    name: e.name,
+    stats: e.result.averageVelocities,
+  }));
+  const dpsData = computedData.map(e => ({
+    name: e.name,
+    stats: e.result.distancePerStroke,
+  }));
+  const lapScData = computedData.map(e => ({
+    name: e.name,
+    stats: e.result.lapStrokeCounts,
+  }));
+  const scData = computedData.map(e => ({
+    name: e.name,
+    stats: e.result.strokeCounts,
+  }));
+  const srData = computedData.map(e => ({
+    name: e.name,
+    stats: e.result.strokeRates,
+  }));
+
+  const onBackFromPicker = () => {
+    setIsFilePickerVisible(false);
+  };
+  const onSelectInPicker = (baseNames: Array<string>) => {
+    setAnnotationBaseNames(baseNames);
+  };
 
   return (
-    <Column>
-      <StatusBar backgroundColor={COLOR} barStyle="light-content" />
-      <Box safeAreaTop bg={COLOR} />
-      <Row
-        bg={COLOR}
-        px="1"
-        py="3"
-        justifyContent="space-between"
-        shadow="9"
-        w="100%"
-      >
-        <Row alignItems="center">
-          <IconButton
-            icon={<Icon size="sm" as={MaterialIcons} name="arrow-back" />}
-            onPress={onPressBack}
-          />
-        </Row>
-        <Row>
-          {hasSelection ? (
-            <Text mx={4} fontSize="12">{`${selections.length} selected.`}</Text>
-          ) : (
-            <Text mx={4} fontSize="20" fontWeight="bold">
-              Video Picker
-            </Text>
-          )}
-        </Row>
-        <Row mr={4}>
-          {hasSelection ? (
+    <>
+      <Column flex={1} width="100%">
+        <StatusBar backgroundColor={COLOR} barStyle="light-content" />
+        <Box safeAreaTop bg={COLOR} />
+        <Row
+          bg={COLOR}
+          px="1"
+          py="3"
+          justifyContent="space-between"
+          alignItems="center"
+          shadow="9"
+          w="100%"
+        >
+          <Row flex={1}>
             <IconButton
-              icon={<CheckIcon size="sm" />}
-              onPress={() => {
-                onDone(selections);
-                onPressBack();
-              }}
+              icon={<Icon size="sm" as={MaterialIcons} name="arrow-back" />}
+              onPress={onPressBack}
             />
-          ) : (
+          </Row>
+          <Row flex={1} justifyContent="center">
+            <Text mx={4} fontSize="20" fontWeight="bold">
+              Charts
+            </Text>
+          </Row>
+          <Row flex={1} justifyContent="flex-end" mr={4}>
             <Button
               size="lg"
               variant="unstyled"
               onPress={() => {
-                importVideoAndAnnotation()
-                  .then(isSuccessful => {
-                    console.log(isSuccessful);
-                    if (isSuccessful) {
-                      onImport();
-                    }
-                  })
-                  .catch(err => console.error(`importing video error: ${err}`));
+                setIsFilePickerVisible(true);
               }}
             >
-              Compare annotations
+              Select annotations
             </Button>
-          )}
+            <Modal
+              h="100%"
+              size="full"
+              isOpen={isFilePickerVisible}
+              onClose={setIsFilePickerVisible}
+            >
+              <MultiFilePickerScreen
+                isVisible={isFilePickerVisible}
+                goBack={onBackFromPicker}
+                onSelect={onSelectInPicker}
+                setIsLandscape={setIsLandscape}
+              />
+            </Modal>
+          </Row>
         </Row>
-      </Row>
-      <ScrollView alwaysBounceVertical={true}>
-        <ViewShot style={{ backgroundColor: '#fff' }} ref={viewShotRef}>
-          <Center>
-            <Hidden isHidden={averageVelocities.length === 0}>
-              <>
-                <Box py={4}>
-                  <VelocityChart
-                    nameAndVelocities={[
-                      { name: annotationsInfo.name, stats: averageVelocities },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
-            </Hidden>
-            <Hidden isHidden={strokeCounts.length === 0}>
-              <>
-                <Box py={4}>
-                  <StrokeCountChart
-                    nameAndStrokeCounts={[
-                      { name: annotationsInfo.name, stats: strokeCounts },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
-            </Hidden>
-            <Hidden isHidden={lapStrokeCounts.length === 0}>
-              <>
-                <Box py={4}>
-                  <StrokeCountChart
-                    nameAndStrokeCounts={[
-                      { name: annotationsInfo.name, stats: lapStrokeCounts },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
-            </Hidden>
-            <Hidden isHidden={strokeRates.length === 0}>
-              <>
-                <Box py={4}>
-                  <StrokeRateChart
-                    nameAndStrokeRates={[
-                      {
-                        name: annotationsInfo.name,
-                        stats: strokeRates,
-                      },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
-            </Hidden>
-            <Hidden isHidden={distancePerStroke.length === 0}>
-              <>
-                <Box py={4}>
-                  <DPSChart
-                    nameAndDps={[
-                      {
-                        name: annotationsInfo.name,
-                        stats: distancePerStroke,
-                      },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
-            </Hidden>
-          </Center>
-        </ViewShot>
-      </ScrollView>
+        <Hidden isHidden={!isLandscape}>
+          <ScrollView flex={1} alwaysBounceVertical={true}>
+            <ViewShot style={{ backgroundColor: '#fff' }} ref={viewShotRef}>
+              <Center>
+                <Hidden isHidden={velocityData.length === 0}>
+                  <>
+                    <Box py={4}>
+                      <VelocityChart nameAndVelocities={velocityData} />
+                    </Box>
+                    <Divider thickness={4} bg="muted.300" />
+                  </>
+                </Hidden>
+                <Hidden isHidden={scData.length === 0}>
+                  <>
+                    <Box py={4}>
+                      <StrokeCountChart nameAndStrokeCounts={scData} />
+                    </Box>
+                    <Divider thickness={4} bg="muted.300" />
+                  </>
+                </Hidden>
+                <Hidden isHidden={lapScData.length === 0}>
+                  <>
+                    <Box py={4}>
+                      <StrokeCountChart nameAndStrokeCounts={lapScData} />
+                    </Box>
+                    <Divider thickness={4} bg="muted.300" />
+                  </>
+                </Hidden>
+                <Hidden isHidden={srData.length === 0}>
+                  <>
+                    <Box py={4}>
+                      <StrokeRateChart nameAndStrokeRates={srData} />
+                    </Box>
+                    <Divider thickness={4} bg="muted.300" />
+                  </>
+                </Hidden>
+                <Hidden isHidden={dpsData.length === 0}>
+                  <>
+                    <Box py={4}>
+                      <DPSChart nameAndDps={dpsData} />
+                    </Box>
+                    <Divider thickness={4} bg="muted.300" />
+                  </>
+                </Hidden>
+              </Center>
+            </ViewShot>
+          </ScrollView>
+        </Hidden>
+      </Column>
       <SendFab items={items} />
-    </Column>
+    </>
   );
 }

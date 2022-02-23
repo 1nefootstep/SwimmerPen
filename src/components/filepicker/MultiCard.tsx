@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Vibration } from 'react-native';
 import {
   Text,
   Box,
@@ -68,9 +68,13 @@ export default function MultiCard({
     <Box m="auto" py={4}>
       <TouchableOpacity
         onPress={() => onPress(name)}
-        onLongPress={() =>
-          onLongPress !== undefined ? onLongPress(name) : null
-        }
+        onLongPress={() => {
+          if (onLongPress !== undefined) {
+            onLongPress(name);
+            Vibration.vibrate(300);
+          }
+        }}
+        delayLongPress={600}
       >
         <Box h={200} w={width / 2 - 16}>
           <Image

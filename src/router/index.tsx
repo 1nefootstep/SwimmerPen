@@ -19,13 +19,9 @@ type RootStackParamList = {
   AnnotationScreen: undefined;
   MultiStatistics: undefined;
   Statistics: undefined;
-  MultiFilePicker: MultiFilePickerScreenProps;
 };
 
-export type MultiFilePickerProps = NativeStackScreenProps<
-  RootStackParamList,
-  'MultiFilePicker'
->;
+export type NavigatorProps = NativeStackScreenProps<RootStackParamList>;
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -53,10 +49,6 @@ export default function RootNavigator() {
           <Stack.Screen name="CameraScreen" component={CameraScreen} />
           <Stack.Screen name="AnnotationScreen" component={AnnotationScreen} />
           <Stack.Screen name="MultiStatistics" component={MultiResultScreen} />
-          <Stack.Screen
-            name="MultiFilePicker"
-            component={MultiFilePickerScreen}
-          />
         </Stack.Group>
         <Stack.Screen name="Statistics" component={ResultScreen} />
       </Stack.Navigator>
