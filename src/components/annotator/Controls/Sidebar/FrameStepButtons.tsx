@@ -17,13 +17,7 @@ export default function FrameStepButtons({
 }: FrameStepButtonsProps) {
   const dispatch = useAppDispatch();
   const frames = useAppSelector(state => state.annotation.frameTimes);
-  // const videoStatus = useAppSelector(state => state.video.status);
   const positionMillis = useAppSelector(state => state.video.positionMillis);
-
-  // const positionMillis =
-  //   videoStatus !== null && videoStatus.isLoaded
-  //     ? videoStatus.positionMillis
-  //     : 0;
 
   const size = 'sm';
   const variant = 'solid';
@@ -32,12 +26,24 @@ export default function FrameStepButtons({
   const color = 'white';
 
   const onPress = (prevOrNext: 'prev' | 'next') => {
-    // //console.log(frames);
+    const MAX_TIME_JUMP = 1000;
     if (frames.length !== 0) {
       if (prevOrNext === 'prev') {
-        VideoService.seek(previousFrameTime(frames, positionMillis), dispatch);
+        const prevTime = previousFrameTime(frames, positionMillis);
+        if (
+          prevTime < positionMillis &&
+          positionMillis - prevTime < MAX_TIME_JUMP
+        ) {
+          VideoService.seek(prevTime, dispatch);
+        } else {
+          VideoService.seek(positionMillis - stepSize, dispatch);
+        }
       } else {
-        VideoService.seek(nextFrameTime(frames, positionMillis), dispatch);
+        const nextTime = nextFrameTime(frames, positionMillis);
+        VideoService.seek(
+          nextTime > positionMillis ? nextTime : positionMillis + stepSize,
+          dispatch
+        );
       }
     }
     if (prevOrNext === 'prev') {

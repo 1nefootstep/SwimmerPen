@@ -1,5 +1,4 @@
 import { ThunkAction } from 'redux-thunk';
-
 import {
   getDefaultMode,
   getModes,
@@ -16,7 +15,8 @@ import {
   clearAnnotationExceptPoolConfig,
   addFrameTimes,
 } from './annotation.actions';
-import { updateDistance, stopRecording } from './recording.actions';
+import { stopRecording as stopRecordingAction } from './recording.actions';
+import { updateDistance } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
 import { UnixTime } from '../../UnixTime';
 import { batch } from 'react-redux';
@@ -66,10 +66,13 @@ export function saveAnnotation(basename?: string): AppThunkAction {
   };
 }
 
-export function saveVideoAndAnnotation(
-  // saveVideoResult: SaveVideoResult,
-  uri: string
-): AppThunkAction {
+export function saveVideoAndAnnotation({
+  uri,
+  stopRecording = false,
+}: {
+  uri: string;
+  stopRecording?: boolean;
+}): AppThunkAction {
   return async (dispatch, getState) => {
     const { annotation } = getState();
     const saveVideoResult: SaveVideoResult = await FileHandler.saveVideo(uri);
@@ -78,6 +81,9 @@ export function saveVideoAndAnnotation(
       annotation.name = baseName;
       FileHandler.saveAnnotation(baseName, annotation);
       dispatch(clearAnnotationExceptPoolConfig());
+      if (stopRecording) {
+        dispatch(stopRecordingAction());
+      }
     }
   };
 }

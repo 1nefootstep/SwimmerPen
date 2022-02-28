@@ -122,7 +122,7 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const cameraRef = useRef<Camera>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
-  const [isRecording, setIsRecording] = useState<boolean>(false);
+  // const [isRecording, setIsRecording] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const [format, setFormat] = useState<CameraDeviceFormat | undefined>(
     undefined
@@ -219,12 +219,7 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
         </Column>
         <Row flex={1} justifyContent="flex-end" mr="3">
           <Column justifyContent="center" alignItems="center">
-            <RecordButton
-              isRecording={isRecording}
-              setIsRecording={setIsRecording}
-              camera={cameraRef.current}
-              isReady={isReady}
-            />
+            <RecordButton camera={cameraRef.current} isReady={isReady} />
             <Center
               position="absolute"
               bottom={0}

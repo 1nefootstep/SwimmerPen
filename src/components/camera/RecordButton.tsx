@@ -1,31 +1,15 @@
-import React, { RefObject } from 'react';
+import React from 'react';
 import { IconButton } from 'native-base';
 import { Entypo } from '@expo/vector-icons';
-// import { Camera, CameraRecordingOptions } from 'expo-camera';
-import { useAppDispatch } from '../../state/redux/hooks';
-import {
-  saveVideoAndAnnotation,
-  startRecording,
-  stopRecording,
-} from '../../state/redux';
+import { useAppDispatch, useAppSelector } from '../../state/redux/hooks';
+import { saveVideoAndAnnotation, startRecording } from '../../state/redux';
 import { Camera } from 'react-native-vision-camera';
 
-export default function RecordButton({
-  isRecording,
-  setIsRecording,
-  camera,
-}: // recordOptions,
-{
-  isRecording: boolean;
-  setIsRecording: React.Dispatch<React.SetStateAction<boolean>>;
-  camera: Camera | null;
-  // recordOptions?: CameraRecordingOptions;
-}) {
-  // const camera = camera.current;
+export default function RecordButton({ camera }: { camera: Camera | null }) {
   const isCameraReady = camera !== null;
 
   const dispatch = useAppDispatch();
-
+  const isRecording = useAppSelector(state => state.recording.isRecording);
   const onPress = () => {
     console.log(`record pressed: isCameraReady: ${isCameraReady}`);
     if (isCameraReady) {
@@ -33,23 +17,17 @@ export default function RecordButton({
         camera!.startRecording({
           flash: 'off',
           onRecordingFinished: video => {
-            dispatch(saveVideoAndAnnotation(video.path))
+            dispatch(
+              saveVideoAndAnnotation({ uri: video.path, stopRecording: true })
+            );
           },
           onRecordingError: e => {
             console.log(`<RecordButton> error: ${e}`);
           },
         });
-        // .then(async ({ uri }) => {
-        //   dispatch(saveVideoAndAnnotation(uri));
-        // })
-        // .catch();
-        // await camera!.takePictureAsync({ skipProcessing: true });
         dispatch(startRecording(Date.now()));
-        setIsRecording(true);
       } else {
         camera!.stopRecording();
-        dispatch(stopRecording());
-        setIsRecording(false);
       }
     }
   };
