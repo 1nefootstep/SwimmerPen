@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Pressable,
   Center,
@@ -11,6 +11,7 @@ import {
 } from 'native-base';
 import { ImageRequireSource } from 'react-native';
 import { NavigatorProps } from '../router';
+import { createDirs } from '../FileHandler';
 
 function ImageButton({
   onPress,
@@ -21,6 +22,11 @@ function ImageButton({
   description: string;
   requireAsset: ImageRequireSource;
 }) {
+  useEffect(() => {
+    (async () => {
+      await createDirs();
+    })();
+  }, []);
   return (
     <VStack flex={1} justifyContent="center" alignItems="center">
       <Pressable onPress={onPress}>
