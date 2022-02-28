@@ -71,9 +71,7 @@ export default function SelectDistance() {
       if (toSeek !== undefined) {
         VideoService.seek(toSeek);
       }
-      if (currentDistance % 50 === 0) {
-        dispatch(saveAnnotation());
-      }
+      dispatch(saveAnnotation());
     }
   };
 

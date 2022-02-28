@@ -4,7 +4,7 @@ import { Column, Row, Button } from 'native-base';
 import { formatTimeFromPosition } from '../../../../../state/Util';
 import { useAppSelector } from '../../../../../state/redux/hooks';
 import { useDispatch } from 'react-redux';
-import { addStrokeCount } from '../../../../../state/redux';
+import { addStrokeCount, saveAnnotation } from '../../../../../state/redux';
 import { StrokeRange } from '../../../../../state/AKB';
 import Hidden from '../../../../Hidden';
 import { getPosition } from '../../../../../state/VideoService';
@@ -34,6 +34,7 @@ export default function SetStrokeTimeButton() {
           scWithTime.strokeCount
         )
       );
+      dispatch(saveAnnotation());
     }
   };
 
@@ -52,6 +53,7 @@ export default function SetStrokeTimeButton() {
           scWithTime.strokeCount
         )
       );
+      dispatch(saveAnnotation());
     }
   };
   const isLapStroke = sr.endRange - sr.startRange >= 25;
