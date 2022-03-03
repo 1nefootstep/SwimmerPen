@@ -12,18 +12,9 @@ import { hideTime, showTime } from '../../../../state/redux';
 export default function VideoProgressBar() {
   const dispatch = useAppDispatch();
   const annotations = useAppSelector(state => state.annotation.annotations);
-  // const videoStatus = useAppSelector(state => state.video.status);
   const isTimeVisible = useAppSelector(state => state.video.isTimeVisible);
   const positionMillis = useAppSelector(state => state.video.positionMillis);
   const durationMillis = useAppSelector(state => state.video.durationMillis);
-  // const positionMillis =
-  //   videoStatus !== null && videoStatus.isLoaded
-  //     ? videoStatus.positionMillis
-  //     : 0;
-  // const durationMillis =
-  //   videoStatus !== null && videoStatus.isLoaded
-  //     ? videoStatus.durationMillis ?? 10000
-  //     : 10000;
   const sliderWidth = useBreakpointValue({
     base: '80%',
     sm: '80%',

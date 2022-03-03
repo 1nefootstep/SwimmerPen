@@ -14,13 +14,9 @@ import * as VideoService from '../../../../state/VideoService';
 import { getDefaultMode, getModes, Modes } from '../../../../state/AKB';
 import { getPosition } from '../../../../state/VideoService';
 
-// const FactoryDropDown = Factory(DropDownPicker);
-
 export default function SelectDistance() {
   const dispatch = useAppDispatch();
-  // const videoStatus = useAppSelector(state => state.video.status);
   const annotations = useAppSelector(state => state.annotation.annotations);
-
   const { poolDistance, raceDistance } = useAppSelector(
     state => state.annotation.poolConfig
   );
@@ -49,9 +45,6 @@ export default function SelectDistance() {
   );
 
   const movePositionToDistance = (distance: number) => {
-    // if (videoStatus === null || !videoStatus.isLoaded) {
-    //   return;
-    // }
     VideoService.seek(annotations[distance], dispatch);
   };
 
@@ -93,9 +86,7 @@ export default function SelectDistance() {
           }}
           open={isOpen}
           setOpen={b => {
-            // if (videoStatus !== null && videoStatus.isLoaded) {
             setIsOpen(b);
-            // }
           }}
           setValue={value => dispatch(setCurrentDistance(value()))}
           onSelectItem={({ label, value }) => {
@@ -111,7 +102,6 @@ export default function SelectDistance() {
         w={8}
         h={8}
         onPress={onPressCheckpoint}
-        // isDisabled={videoStatus === null || !videoStatus.isLoaded}
         leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
       />
     </Row>

@@ -211,16 +211,17 @@ export async function saveAnnotation(
   try {
     const createDirResult = await createDirIfDontExist(APP_ANNOTATION_DIR_PATH);
     if (!createDirResult) {
-      //console.log('create annotation dir failed');
+      console.log('create annotation dir failed');
     }
     annotationInfo.name = basename;
+    // console.log(`saving: ${JSON.stringify(annotationInfo.annotations)}`);
     await FS.writeAsStringAsync(
       getAnnotationUri(basename),
       JSON.stringify(annotationInfo)
     );
     return true;
   } catch (e) {
-    //console.log(`<FileHandler> Failed to save annotation: ${e}`);
+    console.log(`<FileHandler> Failed to save annotation: ${e}`);
     return false;
   }
 }

@@ -23,6 +23,7 @@ import {
   createCsvInCacheDir,
   getAnnotationUri,
   getVideoUri,
+  loadAnnotation,
   saveAnnotation,
 } from '../FileHandler';
 import SendFab from '../components/result/SendFab';
@@ -137,6 +138,10 @@ export default function ResultScreen({ navigation }: NavigatorProps) {
 
   const shareRawAnnotations = async () => {
     if (annotationsInfo.name !== '') {
+      // const ann = await loadAnnotation(annotationsInfo.name);
+      // if (ann.isSuccessful) {
+      //   console.log(`${annotationsInfo.name} annotations: ${JSON.stringify(ann.annotation.annotations)}`);
+      // }      
       shareFile(getAnnotationUri(annotationsInfo.name));
     }
   };

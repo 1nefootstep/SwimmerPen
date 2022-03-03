@@ -64,10 +64,16 @@ export function annotationReducer(
     case ANNOTATION_ACTION_TYPES.ADD_FRAME_TIMES: {
       const { payload } = action as AddFrameTimesAction;
       const { frameTimes } = payload;
-      return {
-        ...state,
-        frameTimes: frameTimes,
-      };
+      const isAscending = frameTimes.every(
+        (e, i) => i === 0 || e >= frameTimes[i - 1]
+      );
+      if (isAscending) {
+        return {
+          ...state,
+          frameTimes: frameTimes,
+        };
+      }
+      return state;
     }
     case ANNOTATION_ACTION_TYPES.UPDATE_POOL_CONFIG: {
       const { payload } = action as UpdatePoolConfigAction;

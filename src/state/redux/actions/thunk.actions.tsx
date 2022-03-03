@@ -62,6 +62,11 @@ export function saveAnnotation(basename?: string): AppThunkAction {
       }
       const { baseName } = breakUri(videoStatus.uri);
       FileHandler.saveAnnotation(baseName, annotation);
+      console.log(
+        `saved at thunk... baseName: ${baseName} ${JSON.stringify(
+          annotation.annotations
+        )}`
+      );
     }
   };
 }
