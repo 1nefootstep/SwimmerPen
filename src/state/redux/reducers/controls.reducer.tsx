@@ -7,11 +7,16 @@ import {
   SetCurrentStrokeRangeAction,
 } from '../types';
 
+export interface Timer {
+  id: number;
+  startTime: number;
+}
+
 export type ControlsInfo = {
   currentDistance: number;
   currentSr: string;
   isLineVisible: boolean;
-  timers: Array<number>;
+  timers: Array<Timer>;
 };
 
 function initState(): ControlsInfo {
@@ -56,26 +61,16 @@ export function controlsReducer(
     case CONTROLS_ACTION_TYPES.ADD_TIMER: {
       const { payload } = action as AddTimerAction;
       const { startTime } = payload;
-      const timeAlreadyExist =
-        state.timers.findIndex(time => time === startTime) !== -1;
-      if (timeAlreadyExist) {
-        return { ...state };
-      }
+      const id = state.timers.reduce((prev, next) => Math.max(prev, next.id), -1) + 1;
       return {
         ...state,
-        timers: [...state.timers, startTime],
+        timers: state.timers.concat({ id: id, startTime: startTime }),
       };
     }
     case CONTROLS_ACTION_TYPES.REMOVE_TIMER: {
       const { payload } = action as RemoveTimerAction;
-      const { startTime } = payload;
-      const index = state.timers.findIndex(time => time === startTime);
-      if (index !== -1) {
-        return { ...state, timers: state.timers.filter(t => t !== startTime) };
-      }
-      return {
-        ...state,
-      };
+      const { id } = payload;
+      return { ...state, timers: state.timers.filter(t => t.id !== id) };
     }
     case CONTROLS_ACTION_TYPES.SET_CURRENT_STROKE_RANGE: {
       const { payload } = action as SetCurrentStrokeRangeAction;

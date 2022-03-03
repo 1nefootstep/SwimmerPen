@@ -57,9 +57,9 @@ export function addTimer(startTime: number): AddTimerAction {
   };
 }
 
-export function removeTimer(startTime: number): RemoveTimerAction {
+export function removeTimer(id: number): RemoveTimerAction {
   return {
     type: CONTROLS_ACTION_TYPES.REMOVE_TIMER,
-    payload: { startTime: startTime },
+    payload: { id: id },
   };
 }

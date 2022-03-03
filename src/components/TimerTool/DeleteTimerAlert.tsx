@@ -1,17 +1,6 @@
 import React, { useRef } from 'react';
-import { AlertDialog, Box, Button } from 'native-base';
-import {
-  PanGestureHandler,
-  PanGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedGestureHandler,
-  useSharedValue,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
-import { THEME_SIZE_RATIO } from '../../constants/Constants';
-import { useAppDispatch, useAppSelector } from '../../state/redux/hooks';
-import { formatTimeFromPosition } from '../../state/Util';
+import { AlertDialog, Button } from 'native-base';
+import { useAppDispatch } from '../../state/redux/hooks';
 import { removeTimer } from '../../state/redux';
 
 const WIDTH_TIMER = 80;
@@ -20,13 +9,13 @@ const HEIGHT_TIMER = 24;
 export interface DeleteTimerProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  startTime: number;
+  id: number;
 }
 
 export default function SingleTimer({
   isOpen,
   setIsOpen,
-  startTime,
+  id,
 }: DeleteTimerProps) {
   const dispatch = useAppDispatch();
 
@@ -57,7 +46,7 @@ export default function SingleTimer({
               colorScheme="danger"
               onPress={() => {
                 onClose();
-                dispatch(removeTimer(startTime));
+                dispatch(removeTimer(id));
               }}
             >
               Delete

@@ -8,8 +8,6 @@ let _seekInfo = {
   isSeeking: false,
   seekBuffer: 0,
 };
-// let _isSeeking: boolean = false;
-// let _seekBuffer = {};
 
 export function setVideo(videoRef: RefObject<Video>) {
   _video = videoRef;

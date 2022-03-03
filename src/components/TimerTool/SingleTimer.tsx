@@ -15,11 +15,13 @@ import DeleteTimerAlert from './DeleteTimerAlert';
 
 export interface SingleTimerProps {
   bounds: { x1: number; y1: number; x2: number; y2: number };
+  id: number;
   startPositionMillis: number;
 }
 
 export default function SingleTimer({
   bounds,
+  id,
   startPositionMillis,
 }: SingleTimerProps) {
   const translateX = useSharedValue(50);
@@ -30,8 +32,6 @@ export default function SingleTimer({
     md: { timerWidth: 84, timerHeight: 36 },
     lg: { timerWidth: 90, timerHeight: 44 },
   });
-
-  //console.log(`w: ${timerWidth} h: ${timerHeight}`);
 
   const onGestureEvent = useAnimatedGestureHandler<
     PanGestureHandlerGestureEvent,
@@ -64,13 +64,8 @@ export default function SingleTimer({
     left: translateX.value,
   }));
 
-  // const videoStatus = useAppSelector(state => state.video.status);
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const positionMillis = useAppSelector(state => state.video.positionMillis);
-  // const positionMillis =
-  //   videoStatus !== null && videoStatus.isLoaded
-  //     ? videoStatus.positionMillis
-  //     : 0;
 
   const difference = positionMillis - startPositionMillis;
   const absoluteDifference = Math.abs(difference);
@@ -99,9 +94,9 @@ export default function SingleTimer({
         </Animated.View>
       </PanGestureHandler>
       <DeleteTimerAlert
+        id={id}
         isOpen={isAlertOpen}
         setIsOpen={setIsAlertOpen}
-        startTime={startPositionMillis}
       />
     </>
   );

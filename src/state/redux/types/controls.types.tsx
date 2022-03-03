@@ -27,7 +27,7 @@ export type AddTimerAction = {
 
 export type RemoveTimerAction = {
   type: string;
-  payload: { startTime: number };
+  payload: { id: number };
 };
 
 export type ControlsActionTypes =
