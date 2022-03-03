@@ -30,7 +30,7 @@ export default function SingleTimer({
     >
       <AlertDialog.Content w={48}>
         <AlertDialog.Header alignItems="center">
-          Delete this timer?
+          Delete this Timer?
         </AlertDialog.Header>
         <AlertDialog.Footer>
           <Button.Group space={2}>

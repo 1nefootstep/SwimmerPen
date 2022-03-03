@@ -4,7 +4,7 @@ import { Box, Button } from 'native-base';
 import { useAppSelector } from '../../state/redux/hooks';
 import { formatTimeFromPosition } from '../../state/Util';
 import DeleteTimerAlert from './DeleteTimerAlert';
-import Drag from 'reanimated-drag-resize';
+import Drag, { Response } from 'reanimated-drag-resize';
 
 export interface SingleTimer2Props {
   bounds: { x1: number; y1: number; x2: number; y2: number };
@@ -32,6 +32,13 @@ export default function SingleTimer2({
   const toDisplay = difference >= 0 ? '+' + formatted : '-' + formatted;
   const fontSize = Math.sqrt((w * h) / 28);
 
+  const updatePositions = (e: Response) => {
+    setX(e.x);
+    setY(e.y);
+    setW(e.width);
+    setH(e.height);
+  };
+
   return (
     <Box style={StyleSheet.absoluteFill}>
       <Drag
@@ -43,18 +50,8 @@ export default function SingleTimer2({
         resizerImageSource={resizeable ? undefined : null}
         limitationHeight={bounds.y2}
         limitationWidth={bounds.x2}
-        onDragEnd={e => {
-          setX(e.x);
-          setY(e.y);
-          setW(e.width);
-          setH(e.height);
-        }}
-        onResizeEnd={e => {
-          setX(e.x);
-          setY(e.y);
-          setW(e.width);
-          setH(e.height);
-        }}
+        onDragEnd={updatePositions}
+        onResizeEnd={updatePositions}
       >
         <Button
           style={{
