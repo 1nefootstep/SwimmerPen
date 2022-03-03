@@ -1,68 +1,27 @@
 import React, { useState } from 'react';
-import { Box, Button, useBreakpointValue } from 'native-base';
-import {
-  PanGestureHandler,
-  PanGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
-import Animated, {
-  useAnimatedGestureHandler,
-  useSharedValue,
-  useAnimatedStyle,
-} from 'react-native-reanimated';
+import { StyleSheet } from 'react-native';
+import { Box, Button } from 'native-base';
 import { useAppSelector } from '../../state/redux/hooks';
 import { formatTimeFromPosition } from '../../state/Util';
 import DeleteTimerAlert from './DeleteTimerAlert';
+import Drag from 'reanimated-drag-resize';
 
-export interface SingleTimerProps {
+export interface SingleTimer2Props {
   bounds: { x1: number; y1: number; x2: number; y2: number };
   id: number;
   startPositionMillis: number;
 }
 
-export default function SingleTimer({
+export default function SingleTimer2({
   bounds,
   id,
   startPositionMillis,
-}: SingleTimerProps) {
-  const translateX = useSharedValue(50);
-  const translateY = useSharedValue(50);
-
-  const { timerWidth, timerHeight } = useBreakpointValue({
-    base: { timerWidth: 80, timerHeight: 32 },
-    md: { timerWidth: 84, timerHeight: 36 },
-    lg: { timerWidth: 90, timerHeight: 44 },
-  });
-
-  const onGestureEvent = useAnimatedGestureHandler<
-    PanGestureHandlerGestureEvent,
-    { x: number; y: number }
-  >({
-    onStart: (_event, ctx) => {
-      ctx.x = translateX.value;
-      ctx.y = translateY.value;
-    },
-    onActive: ({ translationX, translationY }, ctx) => {
-      const targetX = ctx.x + translationX;
-      const targetY = ctx.y + translationY;
-      if (
-        targetX + timerWidth >= bounds.x2 ||
-        targetX <= bounds.x1 ||
-        targetY + timerWidth >= bounds.y2 ||
-        targetY <= bounds.y1
-      ) {
-        return;
-      }
-      translateX.value = targetX;
-      translateY.value = targetY;
-    },
-    onEnd: () => {},
-  });
-
-  const style = useAnimatedStyle(() => ({
-    position: 'absolute',
-    top: translateY.value,
-    left: translateX.value,
-  }));
+}: SingleTimer2Props) {
+  const [x, setX] = useState(50);
+  const [y, setY] = useState(50);
+  const [h, setH] = useState(36);
+  const [w, setW] = useState(84);
+  const [resizeable, setResizable] = useState(false);
 
   const [isAlertOpen, setIsAlertOpen] = useState<boolean>(false);
   const positionMillis = useAppSelector(state => state.video.positionMillis);
@@ -71,33 +30,53 @@ export default function SingleTimer({
   const absoluteDifference = Math.abs(difference);
   const formatted = formatTimeFromPosition(absoluteDifference);
   const toDisplay = difference >= 0 ? '+' + formatted : '-' + formatted;
+  const fontSize = Math.sqrt((w * h) / 28);
 
   return (
-    <>
-      <PanGestureHandler onGestureEvent={onGestureEvent}>
-        <Animated.View style={style}>
-          <Button
-            style={{
-              backgroundColor: '#facc15',
-              borderColor: '#CA8A04',
-              borderWidth: 1,
-              borderRadius: 4,
-              height: timerHeight,
-              width: timerWidth,
-            }}
-            opacity={0.8}
-            size="sm"
-            onLongPress={() => setIsAlertOpen(true)}
-          >
-            {toDisplay}
-          </Button>
-        </Animated.View>
-      </PanGestureHandler>
+    <Box style={StyleSheet.absoluteFill}>
+      <Drag
+        height={h}
+        width={w}
+        x={x}
+        y={y}
+        resizable={resizeable}
+        resizerImageSource={resizeable ? undefined : null}
+        limitationHeight={bounds.y2}
+        limitationWidth={bounds.x2}
+        onDragEnd={e => {
+          setX(e.x);
+          setY(e.y);
+          setW(e.width);
+          setH(e.height);
+        }}
+        onResizeEnd={e => {
+          setX(e.x);
+          setY(e.y);
+          setW(e.width);
+          setH(e.height);
+        }}
+      >
+        <Button
+          style={{
+            backgroundColor: '#facc15',
+            borderColor: '#CA8A04',
+            borderWidth: 1,
+            borderRadius: 4,
+            flex: 1,
+          }}
+          opacity={0.8}
+          onPress={() => setResizable(!resizeable)}
+          onLongPress={() => setIsAlertOpen(true)}
+          _text={{ fontSize: fontSize }}
+        >
+          {toDisplay}
+        </Button>
+      </Drag>
       <DeleteTimerAlert
         id={id}
         isOpen={isAlertOpen}
         setIsOpen={setIsAlertOpen}
       />
-    </>
+    </Box>
   );
 }

@@ -7306,6 +7306,11 @@ readable-stream@~2.3.6:
     string_decoder "~1.1.1"
     util-deprecate "~1.0.1"
 
+reanimated-drag-resize@^0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/reanimated-drag-resize/-/reanimated-drag-resize-0.0.4.tgz#57256abfc5e5ab84afd48f123bbacece3b51460e"
+  integrity sha512-sIvUFk7MO52G/Sh6IRwbXmfjXYyi5TMf8ERY+OEUHgKFEZeR9bqLsu9WOMS8P5iL+IZCWZBgPgtliSPk/RWz6g==
+
 recast@^0.20.3:
   version "0.20.5"
   resolved "https://registry.yarnpkg.com/recast/-/recast-0.20.5.tgz#8e2c6c96827a1b339c634dd232957d230553ceae"
