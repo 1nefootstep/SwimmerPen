@@ -69,7 +69,6 @@ export function seek(
   if (_video.current) {
     if (!_seekInfo.isSeeking) {
       _seekInfo.isSeeking = true;
-      //console.log(`Seeking to ${positionMillis}`);
       const v = _video.current;
       v.setPositionAsync(positionMillis, {
         toleranceMillisAfter: 0,

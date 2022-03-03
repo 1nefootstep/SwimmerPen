@@ -229,7 +229,6 @@ export function nextFrameTime(
   frames: Array<number>,
   frameTime: number
 ): number {
-  console.log(`next frame time from: ${frameTime}`);
   const idx = findIndexTimestamp(frames, frameTime);
   if (idx >= frames.length) {
     return frames[frames.length - 1];

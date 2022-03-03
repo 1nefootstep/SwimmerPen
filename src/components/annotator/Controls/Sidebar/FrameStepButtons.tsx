@@ -45,7 +45,9 @@ export default function FrameStepButtons({
           dispatch
         );
       }
+      return;
     }
+    
     if (prevOrNext === 'prev') {
       VideoService.seek(positionMillis - stepSize, dispatch);
     } else {
