@@ -25,6 +25,11 @@ export type AddTimerAction = {
   payload: { startTime: number };
 };
 
+export type EditTimerAction = {
+  type: string;
+  payload: { id: number; startTime: number };
+};
+
 export type RemoveTimerAction = {
   type: string;
   payload: { id: number };
@@ -36,5 +41,6 @@ export type ControlsActionTypes =
   | ShowLineAction
   | HideLineAction
   | AddTimerAction
+  | EditTimerAction
   | RemoveTimerAction
   | SetCurrentStrokeRangeAction;

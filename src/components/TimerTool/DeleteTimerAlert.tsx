@@ -3,16 +3,13 @@ import { AlertDialog, Button } from 'native-base';
 import { useAppDispatch } from '../../state/redux/hooks';
 import { removeTimer } from '../../state/redux';
 
-const WIDTH_TIMER = 80;
-const HEIGHT_TIMER = 24;
-
 export interface DeleteTimerProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   id: number;
 }
 
-export default function SingleTimer({
+export default function DeleteTimer({
   isOpen,
   setIsOpen,
   id,

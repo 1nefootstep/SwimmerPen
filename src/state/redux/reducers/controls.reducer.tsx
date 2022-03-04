@@ -2,6 +2,7 @@ import { CONTROLS_ACTION_TYPES } from '../actions/controls.actions';
 import {
   AddTimerAction,
   ControlsActionTypes,
+  EditTimerAction,
   RemoveTimerAction,
   SetCurrentDistanceAction,
   SetCurrentStrokeRangeAction,
@@ -61,10 +62,24 @@ export function controlsReducer(
     case CONTROLS_ACTION_TYPES.ADD_TIMER: {
       const { payload } = action as AddTimerAction;
       const { startTime } = payload;
-      const id = state.timers.reduce((prev, next) => Math.max(prev, next.id), -1) + 1;
+      const id =
+        state.timers.reduce((prev, next) => Math.max(prev, next.id), -1) + 1;
       return {
         ...state,
         timers: state.timers.concat({ id: id, startTime: startTime }),
+      };
+    }
+    case CONTROLS_ACTION_TYPES.EDIT_TIMER: {
+      const { payload } = action as EditTimerAction;
+      const { id, startTime } = payload;
+      return {
+        ...state,
+        timers: state.timers.map(e => {
+          if (e.id === id) {
+            return { id: id, startTime: startTime };
+          }
+          return e;
+        }),
       };
     }
     case CONTROLS_ACTION_TYPES.REMOVE_TIMER: {

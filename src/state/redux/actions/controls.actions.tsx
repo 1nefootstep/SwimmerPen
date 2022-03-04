@@ -6,6 +6,7 @@ import {
   SetCurrentDistanceAction,
   SetCurrentStrokeRangeAction,
   ShowLineAction,
+  EditTimerAction,
 } from '../types';
 
 export enum CONTROLS_ACTION_TYPES {
@@ -15,6 +16,7 @@ export enum CONTROLS_ACTION_TYPES {
   SHOW_LINE = 'CONTROLS/SHOW_LINE',
   HIDE_LINE = 'CONTROLS/HIDE_LINE',
   ADD_TIMER = 'CONTROLS/ADD_TIMER',
+  EDIT_TIMER = 'CONTROLS/EDIT_TIMER',
   REMOVE_TIMER = 'CONTROLS/REMOVE_TIMER',
 }
 
@@ -54,6 +56,13 @@ export function addTimer(startTime: number): AddTimerAction {
   return {
     type: CONTROLS_ACTION_TYPES.ADD_TIMER,
     payload: { startTime: startTime },
+  };
+}
+
+export function editTimerStartTime(id: number, startTime: number): EditTimerAction {
+  return {
+    type: CONTROLS_ACTION_TYPES.EDIT_TIMER,
+    payload: { id: id, startTime: startTime },
   };
 }
 

@@ -52,8 +52,8 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
         value={{
           x1: 0,
           y1: 0,
-          x2: width - 100,
-          y2: height - 60,
+          x2: width - 120,
+          y2: height - 80,
         }}
       >
         <Center flex={1} bg="black" safeArea>
