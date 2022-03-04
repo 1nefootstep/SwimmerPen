@@ -2,7 +2,13 @@ import { AVPlaybackStatus } from 'expo-av';
 
 export type UpdateStatusAction = {
   type: string;
-  payload: { status: AVPlaybackStatus };
+  payload: {
+    isLoaded: boolean;
+    isPlaying: boolean;
+    positionMillis: number;
+    durationMillis: number;
+    uri: string;
+  };
 };
 
 export type ClearStatusAction = {
@@ -16,7 +22,6 @@ export type ShowTimeAction = {
 export type HideTimeAction = {
   type: string;
 };
-
 
 export type ShowControlAction = {
   type: string;

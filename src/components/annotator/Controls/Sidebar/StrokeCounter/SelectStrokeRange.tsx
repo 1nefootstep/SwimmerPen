@@ -16,7 +16,6 @@ import * as VideoService from '../../../../../state/VideoService';
 
 export default function SelectStrokeRange() {
   const dispatch = useAppDispatch();
-  // const videoStatus = useAppSelector(state => state.video.status);
 
   const { poolDistance, raceDistance } = useAppSelector(
     state => state.annotation.poolConfig

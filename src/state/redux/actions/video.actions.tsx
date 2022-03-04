@@ -2,17 +2,29 @@ import { AVPlaybackStatus } from 'expo-av';
 
 export enum VIDEO_ACTION_TYPES {
   UPDATE_STATUS = 'VIDEO/UPDATE_STATUS',
-  CLEAR_VIDEO_STATUS = "VIDEO/CLEAR_VIDEO_STATUS",
+  CLEAR_VIDEO_STATUS = 'VIDEO/CLEAR_VIDEO_STATUS',
   SHOW_CONTROL = 'VIDEO/SHOW_CONTROL',
-  HIDE_CONTROL = 'VIDEO/HIDE_CONTROL',  
+  HIDE_CONTROL = 'VIDEO/HIDE_CONTROL',
   SHOW_TIME = 'VIDEO/SHOW_TIME',
-  HIDE_TIME = 'VIDEO/HIDE_TIME',  
+  HIDE_TIME = 'VIDEO/HIDE_TIME',
 }
 
 export function updateVideoStatus(status: AVPlaybackStatus) {
+  const isLoaded = status.isLoaded;
+  const positionMillis = isLoaded ? status.positionMillis : 0;
+  const durationMillis =
+    isLoaded && status.durationMillis !== undefined ? status.durationMillis : 0;
+  const isPlaying = isLoaded && status.isPlaying;
+  const uri = isLoaded ? status.uri : '';
   return {
     type: VIDEO_ACTION_TYPES.UPDATE_STATUS,
-    payload: { status: status },
+    payload: {
+      isLoaded: isLoaded,
+      isPlaying: isPlaying,
+      positionMillis: positionMillis,
+      durationMillis: durationMillis,
+      uri: uri,
+    },
   };
 }
 

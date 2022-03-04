@@ -56,11 +56,10 @@ export function saveAnnotation(basename?: string): AppThunkAction {
     if (basename !== undefined) {
       FileHandler.saveAnnotation(basename, annotation);
     } else {
-      const videoStatus = video.status;
-      if (videoStatus === null || !videoStatus.isLoaded) {
+      if (!video.isLoaded) {
         return;
       }
-      const { baseName } = breakUri(videoStatus.uri);
+      const { baseName } = breakUri(video.uri);
       FileHandler.saveAnnotation(baseName, annotation);
       console.log(
         `saved at thunk... baseName: ${baseName} ${JSON.stringify(

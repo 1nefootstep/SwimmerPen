@@ -30,7 +30,6 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const [height, setHeight] = useState<number>(0);
 
   const video = useRef<Video>(null);
-  const [isControlActive, setIsControlActive] = useState<boolean>(true);
   useEffect(() => {
     (() => {
       VideoService.setVideo(video);
@@ -77,7 +76,6 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
             zoomStep={0.5}
             initialZoom={1}
             bindToBorders={false}
-            onSingleTap={() => setIsControlActive(b => !b)}
           >
             <Video
               ref={video}
@@ -94,9 +92,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
           </Hidden>
           <TimerTool />
         </Center>
-        <Hidden isHidden={!isControlActive}>
-          <AnnotationControls navigation={navigation} />
-        </Hidden>
+        <AnnotationControls navigation={navigation} />
       </VideoBoundContext.Provider>
     </LineContext.Provider>
   );

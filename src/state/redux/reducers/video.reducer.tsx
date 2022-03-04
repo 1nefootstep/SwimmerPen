@@ -1,24 +1,25 @@
-import { AVPlaybackStatus } from 'expo-av';
 import { VIDEO_ACTION_TYPES } from '../actions/video.actions';
 import { UpdateStatusAction, VideoActionTypes } from '../types';
 
 export type VideoInfo = {
   isControlVisible: boolean;
   isTimeVisible: boolean;
-  status: AVPlaybackStatus | null;
+  isPlaying: boolean;
   positionMillis: number;
   durationMillis: number;
   isLoaded: boolean;
+  uri: string;
 };
 
 function initState(): VideoInfo {
   return {
     isControlVisible: false,
     isTimeVisible: false,
-    status: null,
+    isPlaying: false,
     positionMillis: 0,
     durationMillis: 0,
     isLoaded: false,
+    uri: '',
   };
 }
 
@@ -31,24 +32,24 @@ export function videoReducer(
   switch (action.type) {
     case VIDEO_ACTION_TYPES.UPDATE_STATUS: {
       const { payload } = action as UpdateStatusAction;
-      const { status } = payload;
-      const isLoaded = status.isLoaded;
-      const positionMillis = isLoaded ? status.positionMillis : 0;
-      const durationMillis =
-        isLoaded && status.durationMillis !== undefined
-          ? status.durationMillis
-          : 0;
+      const { isLoaded, isPlaying, positionMillis, durationMillis, uri } = payload;
       return {
         ...state,
-        status: status,
+        isLoaded: isLoaded,
         positionMillis: positionMillis,
         durationMillis: durationMillis,
+        isPlaying: isPlaying,
+        uri: uri,
       };
     }
     case VIDEO_ACTION_TYPES.CLEAR_VIDEO_STATUS: {
       return {
         ...state,
-        status: null,
+        isPlaying: false,
+        positionMillis: 0,
+        durationMillis: 0,
+        isLoaded: false,
+        uri: '',
       };
     }
     case VIDEO_ACTION_TYPES.SHOW_CONTROL: {
