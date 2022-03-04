@@ -1,38 +1,31 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dimensions } from 'react-native';
 import { Center } from 'native-base';
-import { Video, AVPlaybackStatus } from 'expo-av';
-import ReactNativeZoomableView from '@openspacelabs/react-native-zoomable-view/src/ReactNativeZoomableView';
-import * as VideoService from '../state/VideoService';
-import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../state/redux/hooks';
 import {
   clearControls,
   saveAnnotation,
-  updateVideoStatus,
-} from '../state/redux';
-import AnnotationControls from '../components/annotator/Controls';
-import Hidden from '../components/Hidden';
-import BackButton from '../components/BackButton';
-import LineTool, { LineContext } from '../components/LineTool';
-import { VideoBoundContext } from '../components/VideoBoundContext';
-import TimerTool from '../components/TimerTool';
+} from '../../state/redux';
+import AnnotationControls from '../../components/annotator/Controls';
+import Hidden from '../../components/Hidden';
+import BackButton from '../../components/BackButton';
+import LineTool, { LineContext } from '../../components/LineTool';
+import { VideoBoundContext } from '../../components/VideoBoundContext';
+import TimerTool from '../../components/TimerTool';
 import { useSharedValue } from 'react-native-reanimated';
-import { NavigatorProps } from '../router';
+import { NavigatorProps } from '../../router';
+import AnnotationVideo from './AnnotationVideo';
+import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 
 export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
-  const updateStatus = (status: AVPlaybackStatus) => {
-    dispatch(updateVideoStatus(status));
-  };
   const isLineVisible = useAppSelector(state => state.controls.isLineVisible);
 
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
 
-  const video = useRef<Video>(null);
   useEffect(() => {
     (() => {
-      VideoService.setVideo(video);
       setHeight(Dimensions.get('window').height);
       setWidth(Dimensions.get('window').width);
     })();
@@ -77,15 +70,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
             initialZoom={1}
             bindToBorders={false}
           >
-            <Video
-              ref={video}
-              style={{ height: '100%', aspectRatio: 1.77, maxWidth: '100%' }}
-              useNativeControls={false}
-              onLoad={updateStatus}
-              isLooping={false}
-              resizeMode="contain"
-              onPlaybackStatusUpdate={updateStatus}
-            />
+            <AnnotationVideo />
           </ReactNativeZoomableView>
           <Hidden isHidden={!isLineVisible}>
             <LineTool />

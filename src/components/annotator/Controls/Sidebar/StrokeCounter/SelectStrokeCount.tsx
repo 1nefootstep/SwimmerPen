@@ -1,11 +1,9 @@
 import React from 'react';
 import { Row } from 'native-base';
-
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../state/redux/hooks';
-
 import { addStrokeCount } from '../../../../../state/redux';
 import { StrokeRange } from '../../../../../state/AKB';
 import NumericInput from 'react-native-numeric-input';

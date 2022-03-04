@@ -14,6 +14,7 @@ export function setVideo(videoRef: RefObject<Video>) {
 }
 
 export function play() {
+  console.log(`VideoService: play`);
   if (_video.current) {
     const v = _video.current;
     v.playAsync();
@@ -21,6 +22,7 @@ export function play() {
 }
 
 export function pause() {
+  console.log(`VideoService: pause`);
   if (_video.current) {
     const v = _video.current;
     v.pauseAsync();
@@ -28,6 +30,7 @@ export function pause() {
 }
 
 export async function pauseSync() {
+  console.log(`VideoService: pauseSync`);
   if (_video.current) {
     const v = _video.current;
     await v.pauseAsync();
@@ -35,6 +38,7 @@ export async function pauseSync() {
 }
 
 export async function loadVideo(uri: string): Promise<boolean> {
+  console.log(`VideoService: load`);
   if (_video.current) {
     const v = _video.current;
     const videoStatus = await v.getStatusAsync();
@@ -61,6 +65,7 @@ export function seek(
   positionMillis: number | undefined,
   dispatch?: AppDispatch
 ) {
+  console.log(`VideoService: seek`);
   if (positionMillis === undefined) {
     return;
   }
@@ -100,6 +105,7 @@ export type GetPositionResult =
     };
 
 export async function getPosition(): Promise<GetPositionResult> {
+  console.log(`VideoService: getPosition`);
   if (_video.current) {
     const v = _video.current;
     const status = await v.getStatusAsync();

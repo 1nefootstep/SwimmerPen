@@ -9,13 +9,25 @@ export enum VIDEO_ACTION_TYPES {
   HIDE_TIME = 'VIDEO/HIDE_TIME',
 }
 
-export function updateVideoStatus(status: AVPlaybackStatus) {
-  const isLoaded = status.isLoaded;
-  const positionMillis = isLoaded ? status.positionMillis : 0;
-  const durationMillis =
-    isLoaded && status.durationMillis !== undefined ? status.durationMillis : 0;
-  const isPlaying = isLoaded && status.isPlaying;
-  const uri = isLoaded ? status.uri : '';
+export function updateVideoStatus({
+  isLoaded,
+  isPlaying,
+  positionMillis,
+  durationMillis,
+  uri,
+}: {
+  isLoaded: boolean;
+  isPlaying: boolean;
+  positionMillis: number;
+  durationMillis: number;
+  uri: string;
+}) {
+  // const isLoaded = status.isLoaded;
+  // const positionMillis = isLoaded ? status.positionMillis : 0;
+  // const durationMillis =
+  //   isLoaded && status.durationMillis !== undefined ? status.durationMillis : 0;
+  // const isPlaying = isLoaded && status.isPlaying;
+  // const uri = isLoaded ? status.uri : '';
   return {
     type: VIDEO_ACTION_TYPES.UPDATE_STATUS,
     payload: {

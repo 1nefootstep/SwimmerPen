@@ -6,12 +6,7 @@ import {
   useAppSelector,
 } from '../../../../../state/redux/hooks';
 import { setCurrentStrokeRange } from '../../../../../state/redux';
-import {
-  getDefaultMode,
-  getModes,
-  Modes,
-  StrokeRange,
-} from '../../../../../state/AKB';
+import { getDefaultMode, getModes, Modes } from '../../../../../state/AKB';
 import * as VideoService from '../../../../../state/VideoService';
 
 export default function SelectStrokeRange() {
