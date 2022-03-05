@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Row, Box } from 'native-base';
+import { Ionicons } from '@expo/vector-icons';
+import { Row, Box, Button, Icon } from 'native-base';
 import DropDownPicker, { ValueType } from 'react-native-dropdown-picker';
 import {
   useAppDispatch,
@@ -43,10 +44,6 @@ export default function SelectStrokeRange() {
   }, []);
 
   const seekToStartTime = (newValue: ValueType | ValueType[] | null) => {
-    // if (videoStatus === null || !videoStatus.isLoaded) {
-    //   return;
-    // }
-
     let s: string;
     if (newValue === null) {
       s = '';
@@ -64,19 +61,30 @@ export default function SelectStrokeRange() {
     }
   };
 
+  const setSr = (sr: string) => {
+    dispatch(setCurrentStrokeRange(sr));
+    seekToStartTime(sr);
+  };
+
   return (
-    <Row justifyContent="center" alignItems="center">
-      <Box maxW={32} mr={1}>
+    <Row alignItems="center" justifyContent="flex-end" mb={2} mr={4}>
+      <Box maxH={8} maxW={24} mb={1} mr={1}>
         <DropDownPicker
           items={items}
           min={0}
           max={3}
           placeholder={items[0].value}
-          style={{ maxHeight: 40, width: 126 }}
-          textStyle={{ fontSize: 12 }}
+          style={{ maxHeight: 36, width: 86 }}
+          textStyle={{ fontSize: 8, flex: 5 }}
           value={currentSr}
           listMode="SCROLLVIEW"
           scrollViewProps={{ nestedScrollEnabled: true }}
+          arrowIconContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          arrowIconStyle={{ height: 10, width: 10 }}
           dropDownContainerStyle={{
             maxHeight: 100,
             zIndex: 20,
@@ -84,18 +92,30 @@ export default function SelectStrokeRange() {
           }}
           open={isOpen}
           setOpen={b => {
-            // if (videoStatus !== null && videoStatus.isLoaded) {
             setIsOpen(b);
-            // }
           }}
           setValue={value => {
             const sr = value() ?? value;
-            dispatch(setCurrentStrokeRange(sr));
-            seekToStartTime(sr);
+            setSr(sr);
           }}
           autoScroll={true}
         />
       </Box>
+      <Button
+        variant="solid"
+        mr={1}
+        size="sm"
+        w={8}
+        h={8}
+        onPress={() => {
+          const currIndex = mode.strokeRanges.findIndex(e => e.toString() === currentSr);
+          if (currIndex !== -1 && currIndex !== mode.strokeRanges.length) {
+            const nextSr = mode.strokeRanges[currIndex + 1];
+            setSr(nextSr.toString());
+          }
+        }}
+        leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
+      />
     </Row>
   );
 }

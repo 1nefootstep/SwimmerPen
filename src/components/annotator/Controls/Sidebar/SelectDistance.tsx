@@ -2,9 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Row, Button, Icon, Box } from 'native-base';
 import { Ionicons } from '@expo/vector-icons';
 import DropDownPicker from 'react-native-dropdown-picker';
-
 import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
-
 import {
   addAnnotation,
   saveAnnotation,
@@ -74,9 +72,18 @@ export default function SelectDistance() {
         <DropDownPicker
           items={items}
           style={{ maxHeight: 36, width: 86 }}
-          textStyle={{ fontSize: 12 }}
+          textStyle={{
+            fontSize: 10,
+            flex: 3,
+          }}
           listMode="SCROLLVIEW"
           scrollViewProps={{ nestedScrollEnabled: true }}
+          arrowIconContainerStyle={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+          arrowIconStyle={{ height: 14, width: 14 }}
           placeholder={`${currentDistance}m`}
           value={currentDistance}
           dropDownContainerStyle={{
