@@ -225,18 +225,20 @@ function findIndexTimestamp(a: Array<number>, num: number) {
   return binarySearch(a, e => Math.floor(e) > Math.floor(num));
 }
 
+// 1 ms is added to return as the frame time is
+// the time of the end of the frame
 export function nextFrameTime(
   frames: Array<number>,
   frameTime: number
 ): number {
   const idx = findIndexTimestamp(frames, frameTime);
   if (idx >= frames.length) {
-    return frames[frames.length - 1];
+    return frames[frames.length - 1] + 1;
   }
   if (idx < 0) {
-    return frames[0];
+    return frames[0] + 1;
   }
-  return frames[idx];
+  return frames[idx] + 1;
 }
 
 export function getStartOfFrameGivenTime(
@@ -245,12 +247,12 @@ export function getStartOfFrameGivenTime(
 ): number {
   const idx = findIndexTimestamp(frames, frameTime) - 1;
   if (idx >= frames.length) {
-    return frames[frames.length - 1];
+    return frames[frames.length - 1] + 1;
   }
   if (idx < 0) {
-    return frames[0];
+    return frames[0] + 1;
   }
-  return frames[idx];
+  return frames[idx] + 1;
 }
 
 export function previousFrameTime(
@@ -260,12 +262,12 @@ export function previousFrameTime(
   console.log(`prev frame time from: ${frameTime}`);
   const idx = findIndexTimestamp(frames, frameTime) - 2;
   if (idx >= frames.length) {
-    return frames[frames.length - 1];
+    return frames[frames.length - 1] + 1;
   }
   if (idx < 0) {
-    return frames[0];
+    return frames[0] + 1;
   }
-  return frames[idx];
+  return frames[idx] + 1;
 }
 
 export function fixAnnotationFrameTimes(

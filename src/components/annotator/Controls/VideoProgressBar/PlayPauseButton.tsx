@@ -7,13 +7,14 @@ import * as VideoService from '../../../../state/VideoService';
 export default function PlayPauseButton() {
   const dispatch = useAppDispatch();
   const isPlaying = useAppSelector(state => state.video.isPlaying);
+  const frames = useAppSelector(state => state.annotation.frameTimes);
 
   return (
     <Button
       variant="unstyled"
       onPress={() => {
         if (isPlaying) {
-          VideoService.pause(dispatch);
+          VideoService.pause(dispatch, frames);
         } else {
           VideoService.play(dispatch);
         }

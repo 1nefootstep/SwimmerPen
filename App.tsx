@@ -10,10 +10,10 @@ import {
 } from 'native-base';
 import { config } from './src/constants/Config';
 import { store } from './src/state/redux';
-import { StatusBar } from 'expo-status-bar';
+import { setStatusBarHidden, StatusBar } from 'expo-status-bar';
 import RootNavigator from './src/router';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
-import Constants from 'expo-constants';
+import * as NavigationBar from 'expo-navigation-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useIsForeground } from './src/hooks/useIsForeground';
 
@@ -24,11 +24,35 @@ export const theme = extendTheme({ config });
 
 export default function App() {
   const appStateVisible = useIsForeground();
+  const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (Constants.appOwnership !== 'expo') {
-      SystemNavigationBar.stickyImmersive();
-    }
+    const sub = NavigationBar.addVisibilityListener(({ visibility }) => {
+      if (visibility === 'visible') {
+        if (timer !== null) {
+          clearTimeout(timer);
+        }
+        setTimer(
+          setTimeout(() => {
+            NavigationBar.setVisibilityAsync('hidden');
+            
+            // SystemNavigationBar.navigationHide();
+          }, 2000)
+        );
+      }
+    });
+    setStatusBarHidden(true, 'slide');
+    NavigationBar.setBehaviorAsync('inset-swipe');
+    // if (Constants.appOwnership !== 'expo') {
+    //   // console.log(`not expo`);
+    //   // SystemNavigationBar.leanBack();
+    // }
+    return () => {
+      sub.remove();
+      if (timer !== null) {
+        clearTimeout(timer);
+      }
+    };
   }, [appStateVisible]);
 
   return (

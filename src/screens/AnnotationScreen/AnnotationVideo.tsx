@@ -19,7 +19,7 @@ export default function AnnotationVideo() {
     if (isPlaying === isP && p !== 0 && p === positionMillis) {
       return;
     }
-    console.log(`update status: ${p}`);
+    // console.log(`update status: ${p}`);
     const durationMillis =
       isLoaded && status.durationMillis !== undefined
         ? status.durationMillis
@@ -53,7 +53,6 @@ export default function AnnotationVideo() {
       isLooping={false}
       resizeMode="contain"
       onPlaybackStatusUpdate={updateStatus}
-      progressUpdateIntervalMillis={500}
     />
   );
 }

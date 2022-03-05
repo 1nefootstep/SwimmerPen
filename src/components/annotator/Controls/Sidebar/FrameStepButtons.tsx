@@ -25,10 +25,18 @@ export default function FrameStepButtons({
   const colorScheme = 'amber';
   const color = 'white';
 
-  const onPress = (prevOrNext: 'prev' | 'next') => {
+  const onPressFixed = (prevOrNext: 'prev' | 'next') => {
+    if (prevOrNext === 'prev') {
+      VideoService.seek(positionMillis - 1, dispatch);
+    } else {
+      VideoService.seek(positionMillis + 1, dispatch);
+    }
+  };
+
+  const onPress = ({ isPrev }: { isPrev: boolean }) => {
     const MAX_TIME_JUMP = 1000;
     if (frames.length !== 0) {
-      if (prevOrNext === 'prev') {
+      if (isPrev) {
         const prevTime = previousFrameTime(frames, positionMillis);
         if (
           prevTime < positionMillis &&
@@ -47,8 +55,8 @@ export default function FrameStepButtons({
       }
       return;
     }
-    
-    if (prevOrNext === 'prev') {
+
+    if (isPrev) {
       VideoService.seek(positionMillis - stepSize, dispatch);
     } else {
       VideoService.seek(positionMillis + stepSize, dispatch);
@@ -63,7 +71,7 @@ export default function FrameStepButtons({
         variant={variant}
         colorScheme={colorScheme}
         mr={spacing}
-        onPress={() => onPress('prev')}
+        onPress={() => onPress({ isPrev: true })}
         _icon={{
           as: AntDesign,
           name: 'stepbackward',
@@ -75,7 +83,7 @@ export default function FrameStepButtons({
         variant={variant}
         colorScheme={colorScheme}
         ml={spacing}
-        onPress={() => onPress('next')}
+        onPress={() => onPress({ isPrev: false })}
         _icon={{
           as: AntDesign,
           name: 'stepforward',

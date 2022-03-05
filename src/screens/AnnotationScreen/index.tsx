@@ -16,6 +16,7 @@ import { useSharedValue } from 'react-native-reanimated';
 import { NavigatorProps } from '../../router';
 import AnnotationVideo from './AnnotationVideo';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
+import { setStatusBarHidden } from 'expo-status-bar';
 
 export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
@@ -28,6 +29,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
     (() => {
       setHeight(Dimensions.get('window').height);
       setWidth(Dimensions.get('window').width);
+      setStatusBarHidden(true, 'slide');
     })();
   }, [setHeight, setWidth]);
 

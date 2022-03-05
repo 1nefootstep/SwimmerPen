@@ -23,7 +23,6 @@ import {
   createCsvInCacheDir,
   getAnnotationUri,
   getVideoUri,
-  loadAnnotation,
   saveAnnotation,
 } from '../FileHandler';
 import SendFab from '../components/result/SendFab';

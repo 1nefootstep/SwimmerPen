@@ -2,6 +2,7 @@ import { Video } from 'expo-av';
 import { RefObject } from 'react';
 import { showTimeForDuration } from '../../components/annotator/Controls/VideoProgressBar/ShowTime';
 import { AppDispatch, updateVideoStatus } from '../redux';
+import { getStartOfFrameGivenTime } from '../StatisticsCalculator';
 
 let _video: RefObject<Video>;
 let _seekInfo = {
@@ -14,7 +15,7 @@ export function setVideo(videoRef: RefObject<Video>) {
 }
 
 export function play(dispatch: AppDispatch) {
-  console.log(`VideoService: play`);
+  // console.log(`VideoService: play`);
   if (_video.current) {
     const v = _video.current;
     v.playAsync().then(() => {
@@ -32,19 +33,25 @@ export function play(dispatch: AppDispatch) {
   }
 }
 
-export function pause(dispatch: AppDispatch) {
-  console.log(`VideoService: pause`);
+export function pause(dispatch: AppDispatch, frames?: Array<number>) {
+  // console.log(`VideoService: pause`);
   if (_video.current) {
     const v = _video.current;
     v.pauseAsync().then(() => {
       _video.current?.getStatusAsync().then(e => {
         if (e.isLoaded) {
-          dispatch(
-            updateVideoStatus({
-              isPlaying: e.isPlaying,
-              positionMillis: e.positionMillis,
-            })
-          );
+          let toSeekTo = e.positionMillis;
+          if (frames !== undefined && frames.length !== 0) {
+            toSeekTo = getStartOfFrameGivenTime(frames, e.positionMillis);
+          }
+          seek(toSeekTo, dispatch);
+          // seek(e.positionMillis, dispatch);
+          // dispatch(
+          //   updateVideoStatus({
+          //     isPlaying: e.isPlaying,
+          //     positionMillis: e.positionMillis,
+          //   })
+          // );
         }
       });
     });
@@ -52,7 +59,7 @@ export function pause(dispatch: AppDispatch) {
 }
 
 export async function loadVideo(uri: string): Promise<boolean> {
-  console.log(`VideoService: load`);
+  // console.log(`VideoService: load`);
   if (_video.current) {
     const v = _video.current;
     const videoStatus = await v.getStatusAsync();
@@ -79,7 +86,7 @@ export function seek(
   positionMillis: number | undefined,
   dispatch?: AppDispatch
 ) {
-  console.log(`VideoService: seek`);
+  // console.log(`VideoService: seek`);
   if (positionMillis === undefined) {
     return;
   }
@@ -121,7 +128,7 @@ export type GetPositionResult =
 export async function getPosition(
   dispatch?: AppDispatch
 ): Promise<GetPositionResult> {
-  console.log(`VideoService: getPosition`);
+  // console.log(`VideoService: getPosition`);
   if (_video.current) {
     const v = _video.current;
     const status = await v.getStatusAsync();
