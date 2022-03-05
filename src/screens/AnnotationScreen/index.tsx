@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import { Dimensions } from 'react-native';
 import { Center } from 'native-base';
 import { useAppDispatch, useAppSelector } from '../../state/redux/hooks';
 import {
+  clearAnnotation,
   clearControls,
+  clearVideoStatus,
   saveAnnotation,
 } from '../../state/redux';
 import AnnotationControls from '../../components/annotator/Controls';
@@ -17,19 +19,31 @@ import { NavigatorProps } from '../../router';
 import AnnotationVideo from './AnnotationVideo';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { setStatusBarHidden } from 'expo-status-bar';
+import { getOrientationAsync, Orientation } from 'expo-screen-orientation';
 
 export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
+
   const isLineVisible = useAppSelector(state => state.controls.isLineVisible);
 
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     (() => {
-      setHeight(Dimensions.get('window').height);
-      setWidth(Dimensions.get('window').width);
-      setStatusBarHidden(true, 'slide');
+      getOrientationAsync().then(orientation => {
+        if (
+          orientation === Orientation.LANDSCAPE_RIGHT ||
+          orientation === Orientation.LANDSCAPE_LEFT
+        ) {
+          setHeight(Dimensions.get('window').height);
+          setWidth(Dimensions.get('window').width);
+        } else {
+          setHeight(Dimensions.get('window').width);
+          setWidth(Dimensions.get('window').height);
+        }
+        setStatusBarHidden(true, 'slide');
+      });
     })();
   }, [setHeight, setWidth]);
 
@@ -55,6 +69,8 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
             goBack={() => {
               dispatch(saveAnnotation());
               dispatch(clearControls());
+              dispatch(clearAnnotation());
+              dispatch(clearVideoStatus());
               navigation.goBack();
             }}
             style={{

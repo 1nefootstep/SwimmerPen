@@ -25,14 +25,6 @@ export default function FrameStepButtons({
   const colorScheme = 'amber';
   const color = 'white';
 
-  const onPressFixed = (prevOrNext: 'prev' | 'next') => {
-    if (prevOrNext === 'prev') {
-      VideoService.seek(positionMillis - 1, dispatch);
-    } else {
-      VideoService.seek(positionMillis + 1, dispatch);
-    }
-  };
-
   const onPress = ({ isPrev }: { isPrev: boolean }) => {
     const MAX_TIME_JUMP = 1000;
     if (frames.length !== 0) {

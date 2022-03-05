@@ -22,12 +22,6 @@ export function updateVideoStatus({
   durationMillis?: number;
   uri?: string;
 }) {
-  // const isLoaded = status.isLoaded;
-  // const positionMillis = isLoaded ? status.positionMillis : 0;
-  // const durationMillis =
-  //   isLoaded && status.durationMillis !== undefined ? status.durationMillis : 0;
-  // const isPlaying = isLoaded && status.isPlaying;
-  // const uri = isLoaded ? status.uri : '';
   return {
     type: VIDEO_ACTION_TYPES.UPDATE_STATUS,
     payload: {

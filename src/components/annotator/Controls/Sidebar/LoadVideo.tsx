@@ -4,6 +4,7 @@ import { Button, Center, Modal } from 'native-base';
 import * as VideoService from '../../../../state/VideoService';
 import { useAppDispatch } from '../../../../state/redux/hooks';
 import {
+  clearControls,
   clearVideoStatus,
   loadAnnotation as reduxLoadAnnotation,
   processFrames,
@@ -25,6 +26,7 @@ export default function LoadVideo() {
       dispatch(reduxLoadAnnotation(loadAnnResult.annotation, baseName));
     }
     dispatch(clearVideoStatus());
+    dispatch(clearControls());
 
     VideoService.loadVideo(uri).then(isSuccessful => {
       if (!isSuccessful) {
