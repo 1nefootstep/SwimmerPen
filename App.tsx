@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import {
   Text,
@@ -12,7 +12,6 @@ import { config } from './src/constants/Config';
 import { store } from './src/state/redux';
 import { setStatusBarHidden, StatusBar } from 'expo-status-bar';
 import RootNavigator from './src/router';
-import SystemNavigationBar from 'react-native-system-navigation-bar';
 import * as NavigationBar from 'expo-navigation-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useIsForeground } from './src/hooks/useIsForeground';
@@ -35,18 +34,13 @@ export default function App() {
         setTimer(
           setTimeout(() => {
             NavigationBar.setVisibilityAsync('hidden');
-            
-            // SystemNavigationBar.navigationHide();
+          
           }, 2000)
         );
       }
     });
     setStatusBarHidden(true, 'slide');
     NavigationBar.setBehaviorAsync('inset-swipe');
-    // if (Constants.appOwnership !== 'expo') {
-    //   // console.log(`not expo`);
-    //   // SystemNavigationBar.leanBack();
-    // }
     return () => {
       sub.remove();
       if (timer !== null) {
