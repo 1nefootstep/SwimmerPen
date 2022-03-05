@@ -3,11 +3,11 @@ import { AVPlaybackStatus } from 'expo-av';
 export type UpdateStatusAction = {
   type: string;
   payload: {
-    isLoaded: boolean;
-    isPlaying: boolean;
-    positionMillis: number;
-    durationMillis: number;
-    uri: string;
+    isLoaded?: boolean;
+    isPlaying?: boolean;
+    positionMillis?: number;
+    durationMillis?: number;
+    uri?: string;
   };
 };
 

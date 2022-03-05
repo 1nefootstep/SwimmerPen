@@ -13,7 +13,6 @@ import { store } from './src/state/redux';
 import { StatusBar } from 'expo-status-bar';
 import RootNavigator from './src/router';
 import SystemNavigationBar from 'react-native-system-navigation-bar';
-import { AppState, AppStateStatus } from 'react-native';
 import Constants from 'expo-constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useIsForeground } from './src/hooks/useIsForeground';
@@ -24,30 +23,7 @@ import { useIsForeground } from './src/hooks/useIsForeground';
 export const theme = extendTheme({ config });
 
 export default function App() {
-  // const appState = useRef(AppState.currentState);
   const appStateVisible = useIsForeground();
-  // const [appStateVisible, setAppStateVisible] = useState(appState.current);
-
-  // useEffect(() => {
-  //   AppState.addEventListener('change', _handleAppStateChange);
-
-  //   return () => {
-  //     AppState.removeEventListener('change', _handleAppStateChange);
-  //   };
-  // }, []);
-
-  // const _handleAppStateChange = (nextAppState: AppStateStatus) => {
-  //   if (
-  //     appState.current.match(/inactive|background/) &&
-  //     nextAppState === 'active'
-  //   ) {
-  //     //console.log('App has come to the foreground!');
-  //   }
-
-  //   appState.current = nextAppState;
-  //   setAppStateVisible(appState.current);
-  //   //console.log('AppState', appState.current);
-  // };
 
   useEffect(() => {
     if (Constants.appOwnership !== 'expo') {

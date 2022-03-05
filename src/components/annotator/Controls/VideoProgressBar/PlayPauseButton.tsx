@@ -1,10 +1,11 @@
 import React from 'react';
 import { Icon, Button } from 'native-base';
 import { FontAwesome } from '@expo/vector-icons';
-import { useAppSelector } from '../../../../state/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 import * as VideoService from '../../../../state/VideoService';
 
 export default function PlayPauseButton() {
+  const dispatch = useAppDispatch();
   const isPlaying = useAppSelector(state => state.video.isPlaying);
 
   return (
@@ -12,9 +13,9 @@ export default function PlayPauseButton() {
       variant="unstyled"
       onPress={() => {
         if (isPlaying) {
-          VideoService.pauseSync();
+          VideoService.pause(dispatch);
         } else {
-          VideoService.play();
+          VideoService.play(dispatch);
         }
       }}
       leftIcon={

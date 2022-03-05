@@ -16,11 +16,11 @@ export function updateVideoStatus({
   durationMillis,
   uri,
 }: {
-  isLoaded: boolean;
-  isPlaying: boolean;
-  positionMillis: number;
-  durationMillis: number;
-  uri: string;
+  isLoaded?: boolean;
+  isPlaying?: boolean;
+  positionMillis?: number;
+  durationMillis?: number;
+  uri?: string;
 }) {
   // const isLoaded = status.isLoaded;
   // const positionMillis = isLoaded ? status.positionMillis : 0;

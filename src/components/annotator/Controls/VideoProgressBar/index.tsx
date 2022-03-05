@@ -43,7 +43,7 @@ export default function VideoProgressBar() {
           if (!isDragging) {
             setIsDraggingAndShowTime(true);
           }
-          VideoService.pause();
+          VideoService.pause(dispatch);
           VideoService.seek(newPos);
         }}
         minValue={0}

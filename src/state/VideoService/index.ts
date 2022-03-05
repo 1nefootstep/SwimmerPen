@@ -1,7 +1,7 @@
 import { Video } from 'expo-av';
 import { RefObject } from 'react';
 import { showTimeForDuration } from '../../components/annotator/Controls/VideoProgressBar/ShowTime';
-import { AppDispatch } from '../redux';
+import { AppDispatch, updateVideoStatus } from '../redux';
 
 let _video: RefObject<Video>;
 let _seekInfo = {
@@ -13,27 +13,41 @@ export function setVideo(videoRef: RefObject<Video>) {
   _video = videoRef;
 }
 
-export function play() {
+export function play(dispatch: AppDispatch) {
   console.log(`VideoService: play`);
   if (_video.current) {
     const v = _video.current;
-    v.playAsync();
+    v.playAsync().then(() => {
+      _video.current?.getStatusAsync().then(e => {
+        if (e.isLoaded) {
+          dispatch(
+            updateVideoStatus({
+              isPlaying: e.isPlaying,
+              positionMillis: e.positionMillis,
+            })
+          );
+        }
+      });
+    });
   }
 }
 
-export function pause() {
+export function pause(dispatch: AppDispatch) {
   console.log(`VideoService: pause`);
   if (_video.current) {
     const v = _video.current;
-    v.pauseAsync();
-  }
-}
-
-export async function pauseSync() {
-  console.log(`VideoService: pauseSync`);
-  if (_video.current) {
-    const v = _video.current;
-    await v.pauseAsync();
+    v.pauseAsync().then(() => {
+      _video.current?.getStatusAsync().then(e => {
+        if (e.isLoaded) {
+          dispatch(
+            updateVideoStatus({
+              isPlaying: e.isPlaying,
+              positionMillis: e.positionMillis,
+            })
+          );
+        }
+      });
+    });
   }
 }
 
@@ -104,11 +118,24 @@ export type GetPositionResult =
       isSuccessful: false;
     };
 
-export async function getPosition(): Promise<GetPositionResult> {
+export async function getPosition(
+  dispatch?: AppDispatch
+): Promise<GetPositionResult> {
   console.log(`VideoService: getPosition`);
   if (_video.current) {
     const v = _video.current;
     const status = await v.getStatusAsync();
+    if (dispatch !== undefined && status.isLoaded) {
+      dispatch(
+        updateVideoStatus({
+          isLoaded: status.isLoaded,
+          isPlaying: status.isPlaying,
+          positionMillis: status.positionMillis,
+          durationMillis: status.durationMillis,
+          uri: status.uri,
+        })
+      );
+    }
     if (status.isLoaded) {
       return { isSuccessful: true, positionMillis: status.positionMillis };
     }

@@ -35,11 +35,11 @@ export function videoReducer(
       const { isLoaded, isPlaying, positionMillis, durationMillis, uri } = payload;
       return {
         ...state,
-        isLoaded: isLoaded,
-        positionMillis: positionMillis,
-        durationMillis: durationMillis,
-        isPlaying: isPlaying,
-        uri: uri,
+        isLoaded: isLoaded ?? state.isLoaded,
+        positionMillis: positionMillis ?? state.positionMillis,
+        durationMillis: durationMillis ?? state.durationMillis,
+        isPlaying: isPlaying ?? state.isPlaying,
+        uri: uri ?? state.uri,
       };
     }
     case VIDEO_ACTION_TYPES.CLEAR_VIDEO_STATUS: {
