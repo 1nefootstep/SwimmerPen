@@ -1,5 +1,6 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { Center } from 'native-base';
+import { Box, Center, Pressable } from 'native-base';
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../state/redux/hooks';
 import {
   clearAnnotation,
@@ -13,22 +14,36 @@ import BackButton from '../../components/BackButton';
 import LineTool, { LineContext } from '../../components/LineTool';
 import { VideoBoundContext } from '../../components/VideoBoundContext';
 import TimerTool from '../../components/TimerTool';
-import { useSharedValue } from 'react-native-reanimated';
+import Animated, {
+  Easing,
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withDecay,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 import { NavigatorProps } from '../../router';
 import AnnotationVideo from './AnnotationVideo';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { setStatusBarHidden } from 'expo-status-bar';
 import { getOrientationAsync, Orientation } from 'expo-screen-orientation';
 import { useLayout } from '@react-native-community/hooks';
+import * as VideoService from '../../state/VideoService';
+import { AnimatedAppearance } from './AnimatedAppearance';
 
 export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
-
   const isLineVisible = useAppSelector(state => state.controls.isLineVisible);
+  const isLoaded = useAppSelector(state => state.video.isLoaded);
+  const isPlaying = useAppSelector(state => state.video.isPlaying);
+  const frames = useAppSelector(state => state.annotation.frameTimes);
 
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
-  const {onLayout, width: w, height: h} = useLayout();
+  const { onLayout, width: w, height: h } = useLayout();
+  const pauseButtonToggle = useSharedValue(false);
+  const playButtonToggle = useSharedValue(false);
 
   useLayoutEffect(() => {
     (() => {
@@ -82,15 +97,44 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
               margin: 12,
             }}
           />
-          <ReactNativeZoomableView
-            maxZoom={5}
-            minZoom={0.5}
-            zoomStep={0.5}
-            initialZoom={1}
-            bindToBorders={false}
-          >
-            <AnnotationVideo />
-          </ReactNativeZoomableView>
+          <Center>
+            <ReactNativeZoomableView
+              maxZoom={5}
+              minZoom={0.5}
+              zoomStep={0.5}
+              initialZoom={1}
+              bindToBorders={false}
+              doubleTapZoomToCenter={false}
+              onSingleTap={() => {
+                if (isLoaded) {
+                  if (isPlaying) {
+                    VideoService.pause(dispatch, frames);
+                    pauseButtonToggle.value = true;
+                  } else {
+                    VideoService.play(dispatch);
+                    playButtonToggle.value = true;
+                  }
+                }
+              }}
+            >
+              <AnimatedAppearance progress={pauseButtonToggle}>
+                <MaterialIcons
+                  name="pause-circle-filled"
+                  size={144}
+                  color="black"
+                />
+              </AnimatedAppearance>
+              <AnimatedAppearance progress={playButtonToggle}>
+                <MaterialCommunityIcons
+                  name="play-circle"
+                  size={144}
+                  color="black"
+                />
+              </AnimatedAppearance>
+
+              <AnnotationVideo />
+            </ReactNativeZoomableView>
+          </Center>
           <Hidden isHidden={!isLineVisible}>
             <LineTool />
           </Hidden>
