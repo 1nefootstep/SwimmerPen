@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, ScrollView, Row, Text } from 'native-base';
+import { Box, ScrollView } from 'native-base';
 import VideoProgressBar from './VideoProgressBar';
-import FineControlBar from './VideoProgressBar/FineControlBar';
 import SelectDistance from './Sidebar/SelectDistance';
 import ToggleLineTool from './Sidebar/ToggleLineTool';
 import AddTimerButton from './Sidebar/AddTimerButton';
@@ -11,7 +10,7 @@ import ToStatisticsButton from './Sidebar/ToStatisticsButton';
 import FrameStepButtons from './Sidebar/FrameStepButtons';
 import { RootStackParamList } from '../../../router';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import TimeDisplay from './VideoProgressBar/TimeDisplay';
+import Hidden from '../../Hidden';
 
 function Spacer() {
   return <Box h={2} />;
@@ -28,7 +27,7 @@ export default function AnnotationControls({
 }: AnnotationControlsProps) {
   const translucentOverlayRgba = `rgba(255, 255, 255, 0.30)`;
   return (
-    <>
+    <Hidden isHidden={width === 0}>
       <Box
         position="absolute"
         bottom={0}
@@ -39,14 +38,6 @@ export default function AnnotationControls({
         }}
       >
         <VideoProgressBar />
-        <Row alignItems="center" pb={3}>
-          <Box ml={2} mr={3}>
-            <TimeDisplay />
-          </Box>
-          <Box flex={1} mr={2}>
-            <FineControlBar />
-          </Box>
-        </Row>
       </Box>
 
       <Box
@@ -77,6 +68,6 @@ export default function AnnotationControls({
           <ToStatisticsButton navigation={navigation} />
         </ScrollView>
       </Box>
-    </>
+    </Hidden>
   );
 }

@@ -188,7 +188,6 @@ export default function LineTool() {
 
   return (
     <Hidden isHidden={!isLineVisible}>
-      <>
         <Animated.View style={lineStyle} />
         <PanGestureHandler onGestureEvent={onGestureEvent1}>
           <Animated.View style={pointStyle1}>{buttonPoint}</Animated.View>
@@ -196,7 +195,6 @@ export default function LineTool() {
         <PanGestureHandler onGestureEvent={onGestureEvent2}>
           <Animated.View style={pointStyle2}>{buttonPoint}</Animated.View>
         </PanGestureHandler>
-      </>
     </Hidden>
   );
 }

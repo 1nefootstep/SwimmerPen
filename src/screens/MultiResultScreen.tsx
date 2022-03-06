@@ -199,44 +199,34 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
             <ViewShot style={{ backgroundColor: '#fff' }} ref={viewShotRef}>
               <Center>
                 <Hidden isHidden={velocityData.length === 0}>
-                  <>
-                    <Box py={4}>
-                      <VelocityChart nameAndVelocities={velocityData} />
-                    </Box>
-                    <Divider thickness={4} bg="muted.300" />
-                  </>
+                  <Box py={4}>
+                    <VelocityChart nameAndVelocities={velocityData} />
+                  </Box>
+                  <Divider thickness={4} bg="muted.300" />
                 </Hidden>
                 <Hidden isHidden={scData.length === 0}>
-                  <>
-                    <Box py={4}>
-                      <StrokeCountChart nameAndStrokeCounts={scData} />
-                    </Box>
-                    <Divider thickness={4} bg="muted.300" />
-                  </>
+                  <Box py={4}>
+                    <StrokeCountChart nameAndStrokeCounts={scData} />
+                  </Box>
+                  <Divider thickness={4} bg="muted.300" />
                 </Hidden>
                 <Hidden isHidden={lapScData.length === 0}>
-                  <>
-                    <Box py={4}>
-                      <StrokeCountChart nameAndStrokeCounts={lapScData} />
-                    </Box>
-                    <Divider thickness={4} bg="muted.300" />
-                  </>
+                  <Box py={4}>
+                    <StrokeCountChart nameAndStrokeCounts={lapScData} />
+                  </Box>
+                  <Divider thickness={4} bg="muted.300" />
                 </Hidden>
                 <Hidden isHidden={srData.length === 0}>
-                  <>
-                    <Box py={4}>
-                      <StrokeRateChart nameAndStrokeRates={srData} />
-                    </Box>
-                    <Divider thickness={4} bg="muted.300" />
-                  </>
+                  <Box py={4}>
+                    <StrokeRateChart nameAndStrokeRates={srData} />
+                  </Box>
+                  <Divider thickness={4} bg="muted.300" />
                 </Hidden>
                 <Hidden isHidden={dpsData.length === 0}>
-                  <>
-                    <Box py={4}>
-                      <DPSChart nameAndDps={dpsData} />
-                    </Box>
-                    <Divider thickness={4} bg="muted.300" />
-                  </>
+                  <Box py={4}>
+                    <DPSChart nameAndDps={dpsData} />
+                  </Box>
+                  <Divider thickness={4} bg="muted.300" />
                 </Hidden>
               </Center>
             </ViewShot>

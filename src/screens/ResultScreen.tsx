@@ -140,7 +140,7 @@ export default function ResultScreen({ navigation }: NavigatorProps) {
       // const ann = await loadAnnotation(annotationsInfo.name);
       // if (ann.isSuccessful) {
       //   console.log(`${annotationsInfo.name} annotations: ${JSON.stringify(ann.annotation.annotations)}`);
-      // }      
+      // }
       shareFile(getAnnotationUri(annotationsInfo.name));
     }
   };
@@ -178,70 +178,60 @@ export default function ResultScreen({ navigation }: NavigatorProps) {
         <ViewShot style={{ backgroundColor: '#fff' }} ref={viewShotRef}>
           <Center>
             <Hidden isHidden={averageVelocities.length === 0}>
-              <>
-                <Box py={4}>
-                  <VelocityChart
-                    nameAndVelocities={[
-                      { name: annotationsInfo.name, stats: averageVelocities },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
+              <Box py={4}>
+                <VelocityChart
+                  nameAndVelocities={[
+                    { name: annotationsInfo.name, stats: averageVelocities },
+                  ]}
+                />
+              </Box>
+              <Divider thickness={4} bg="muted.300" />
             </Hidden>
             <Hidden isHidden={strokeCounts.length === 0}>
-              <>
-                <Box py={4}>
-                  <StrokeCountChart
-                    nameAndStrokeCounts={[
-                      { name: annotationsInfo.name, stats: strokeCounts },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
+              <Box py={4}>
+                <StrokeCountChart
+                  nameAndStrokeCounts={[
+                    { name: annotationsInfo.name, stats: strokeCounts },
+                  ]}
+                />
+              </Box>
+              <Divider thickness={4} bg="muted.300" />
             </Hidden>
             <Hidden isHidden={lapStrokeCounts.length === 0}>
-              <>
-                <Box py={4}>
-                  <StrokeCountChart
-                    nameAndStrokeCounts={[
-                      { name: annotationsInfo.name, stats: lapStrokeCounts },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
+              <Box py={4}>
+                <StrokeCountChart
+                  nameAndStrokeCounts={[
+                    { name: annotationsInfo.name, stats: lapStrokeCounts },
+                  ]}
+                />
+              </Box>
+              <Divider thickness={4} bg="muted.300" />
             </Hidden>
             <Hidden isHidden={strokeRates.length === 0}>
-              <>
-                <Box py={4}>
-                  <StrokeRateChart
-                    nameAndStrokeRates={[
-                      {
-                        name: annotationsInfo.name,
-                        stats: strokeRates,
-                      },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
+              <Box py={4}>
+                <StrokeRateChart
+                  nameAndStrokeRates={[
+                    {
+                      name: annotationsInfo.name,
+                      stats: strokeRates,
+                    },
+                  ]}
+                />
+              </Box>
+              <Divider thickness={4} bg="muted.300" />
             </Hidden>
             <Hidden isHidden={distancePerStroke.length === 0}>
-              <>
-                <Box py={4}>
-                  <DPSChart
-                    nameAndDps={[
-                      {
-                        name: annotationsInfo.name,
-                        stats: distancePerStroke,
-                      },
-                    ]}
-                  />
-                </Box>
-                <Divider thickness={4} bg="muted.300" />
-              </>
+              <Box py={4}>
+                <DPSChart
+                  nameAndDps={[
+                    {
+                      name: annotationsInfo.name,
+                      stats: distancePerStroke,
+                    },
+                  ]}
+                />
+              </Box>
+              <Divider thickness={4} bg="muted.300" />
             </Hidden>
           </Center>
         </ViewShot>
