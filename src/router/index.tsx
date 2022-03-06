@@ -13,7 +13,7 @@ import MultiFilePickerScreen, {
   MultiFilePickerScreenProps,
 } from '../screens/MultiFilePickerScreen';
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Home: undefined;
   CameraScreen: undefined;
   AnnotationScreen: undefined;

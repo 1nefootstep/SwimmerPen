@@ -10,16 +10,23 @@ import LoadVideo from './Sidebar/LoadVideo';
 import StrokeCounter from './Sidebar/StrokeCounter';
 import ToStatisticsButton from './Sidebar/ToStatisticsButton';
 import FrameStepButtons from './Sidebar/FrameStepButtons';
+import { RootStackParamList } from '../../../router';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 function Spacer() {
   return <Box h={2} />;
 }
 
-export default function AnnotationControls({ navigation }) {
-  const width =
-    Platform.OS === 'android'
-      ? Dimensions.get('screen').width - (StatusBar.currentHeight ?? 0)
-      : Dimensions.get('window').width;
+interface AnnotationControlsProps {
+  navigation: NativeStackNavigationProp<RootStackParamList>;
+  width: number;
+}
+
+export default function AnnotationControls({ navigation, width }: AnnotationControlsProps) {
+  // const width =
+  //   Platform.OS === 'android'
+  //     ? Dimensions.get('screen').width - (StatusBar.currentHeight ?? 0)
+  //     : Dimensions.get('window').width;
 
   const translucentOverlayRgba = `rgba(255, 255, 255, 0.30)`;
   return (

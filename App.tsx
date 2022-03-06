@@ -34,7 +34,6 @@ export default function App() {
         setTimer(
           setTimeout(() => {
             NavigationBar.setVisibilityAsync('hidden');
-          
           }, 2000)
         );
       }

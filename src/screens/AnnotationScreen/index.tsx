@@ -1,5 +1,4 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { Dimensions } from 'react-native';
 import { Center } from 'native-base';
 import { useAppDispatch, useAppSelector } from '../../state/redux/hooks';
 import {
@@ -20,6 +19,7 @@ import AnnotationVideo from './AnnotationVideo';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
 import { setStatusBarHidden } from 'expo-status-bar';
 import { getOrientationAsync, Orientation } from 'expo-screen-orientation';
+import { useLayout } from '@react-native-community/hooks';
 
 export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
@@ -28,6 +28,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
 
   const [width, setWidth] = useState<number>(0);
   const [height, setHeight] = useState<number>(0);
+  const {onLayout, width: w, height: h} = useLayout();
 
   useLayoutEffect(() => {
     (() => {
@@ -36,16 +37,16 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
           orientation === Orientation.LANDSCAPE_RIGHT ||
           orientation === Orientation.LANDSCAPE_LEFT
         ) {
-          setHeight(Dimensions.get('window').height);
-          setWidth(Dimensions.get('window').width);
+          setHeight(h);
+          setWidth(w);
         } else {
-          setHeight(Dimensions.get('window').width);
-          setWidth(Dimensions.get('window').height);
+          setHeight(w);
+          setWidth(h);
         }
         setStatusBarHidden(true, 'slide');
       });
     })();
-  }, [setHeight, setWidth]);
+  }, [h, w]);
 
   return (
     <LineContext.Provider
@@ -64,7 +65,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
           y2: height - 80,
         }}
       >
-        <Center flex={1} bg="black" safeArea>
+        <Center flex={1} bg="black" onLayout={onLayout}>
           <BackButton
             goBack={() => {
               dispatch(saveAnnotation());
@@ -95,7 +96,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
           </Hidden>
           <TimerTool />
         </Center>
-        <AnnotationControls navigation={navigation} />
+        <AnnotationControls navigation={navigation} width={width} />
       </VideoBoundContext.Provider>
     </LineContext.Provider>
   );
