@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 import { Button, Center, Modal } from 'native-base';
 
 import * as VideoService from '../../../../state/VideoService';
@@ -46,8 +47,7 @@ export default function LoadVideo() {
   return (
     <>
       <Modal
-        h="100%"
-        size="full"
+        style={StyleSheet.absoluteFill}
         isOpen={isFilePickerVisible}
         onClose={setIsFilePickerVisible}
       >

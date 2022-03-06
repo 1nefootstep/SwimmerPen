@@ -45,7 +45,7 @@ function AppBar({
   return (
     <>
       <StatusBar backgroundColor={COLOR} barStyle="light-content" />
-      <Box safeAreaTop bg={COLOR} />
+      <Box bg={COLOR} />
       <Row
         bg={COLOR}
         px="1"

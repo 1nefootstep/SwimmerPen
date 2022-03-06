@@ -148,7 +148,7 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
     <>
       <Column flex={1} width="100%">
         <StatusBar backgroundColor={COLOR} barStyle="light-content" />
-        <Box safeAreaTop bg={COLOR} />
+        <Box bg={COLOR} />
         <Row
           bg={COLOR}
           px="1"

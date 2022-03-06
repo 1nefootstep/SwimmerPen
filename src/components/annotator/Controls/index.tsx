@@ -1,8 +1,7 @@
 import React from 'react';
-import { Dimensions, Platform, StatusBar } from 'react-native';
-import { Box, ScrollView } from 'native-base';
+import { Box, ScrollView, Row, Text } from 'native-base';
 import VideoProgressBar from './VideoProgressBar';
-import FineControlBar from './FineControlBar';
+import FineControlBar from './VideoProgressBar/FineControlBar';
 import SelectDistance from './Sidebar/SelectDistance';
 import ToggleLineTool from './Sidebar/ToggleLineTool';
 import AddTimerButton from './Sidebar/AddTimerButton';
@@ -12,6 +11,7 @@ import ToStatisticsButton from './Sidebar/ToStatisticsButton';
 import FrameStepButtons from './Sidebar/FrameStepButtons';
 import { RootStackParamList } from '../../../router';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import TimeDisplay from './VideoProgressBar/TimeDisplay';
 
 function Spacer() {
   return <Box h={2} />;
@@ -22,12 +22,10 @@ interface AnnotationControlsProps {
   width: number;
 }
 
-export default function AnnotationControls({ navigation, width }: AnnotationControlsProps) {
-  // const width =
-  //   Platform.OS === 'android'
-  //     ? Dimensions.get('screen').width - (StatusBar.currentHeight ?? 0)
-  //     : Dimensions.get('window').width;
-
+export default function AnnotationControls({
+  navigation,
+  width,
+}: AnnotationControlsProps) {
   const translucentOverlayRgba = `rgba(255, 255, 255, 0.30)`;
   return (
     <>
@@ -41,16 +39,17 @@ export default function AnnotationControls({ navigation, width }: AnnotationCont
         }}
       >
         <VideoProgressBar />
-        <Box pl={4} pr={6} pb={3}>
-          <FineControlBar />
-        </Box>
+        <Row alignItems="center" pb={3}>
+          <Box ml={2} mr={3}>
+            <TimeDisplay />
+          </Box>
+          <Box flex={1} mr={2}>
+            <FineControlBar />
+          </Box>
+        </Row>
       </Box>
 
       <Box
-        position="absolute"
-        onLayout={({ nativeEvent }) => {
-          //console.log(JSON.stringify(nativeEvent.layout));
-        }}
         style={{
           position: 'absolute',
           top: 0,

@@ -79,10 +79,13 @@ function pad(pad: string, num: number, padLeft: boolean) {
   }
 }
 
-export function formatTimeFromPosition(position: number): string {
+export function formatTimeFromPosition(position: number, ignoreMillis = false): string {
   const millis = Math.floor(position % 1000);
   const seconds = Math.floor((position % 60000) / 1000);
   const mins = Math.floor(position / 60000);
+  if (ignoreMillis) {
+    return `${mins}:${pad('00', seconds, true)}`;
+  }
   return `${mins}:${pad('00', seconds, true)}.${pad('000', millis, true)}`;
 }
 
