@@ -30,7 +30,7 @@ import { setStatusBarHidden } from 'expo-status-bar';
 import { getOrientationAsync, Orientation } from 'expo-screen-orientation';
 import { useLayout } from '@react-native-community/hooks';
 import * as VideoService from '../../state/VideoService';
-import { AnimatedAppearance } from './AnimatedAppearance';
+import PlayPauseAnimation from './PlayPauseAnimation';
 
 export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
@@ -117,21 +117,26 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
                 }
               }}
             >
-              <AnimatedAppearance progress={pauseButtonToggle}>
-                <MaterialIcons
-                  name="pause-circle-filled"
-                  size={144}
-                  color="black"
-                />
-              </AnimatedAppearance>
-              <AnimatedAppearance progress={playButtonToggle}>
-                <MaterialCommunityIcons
-                  name="play-circle"
-                  size={144}
-                  color="black"
-                />
-              </AnimatedAppearance>
-
+              <PlayPauseAnimation
+                icon={
+                  <MaterialIcons
+                    name="pause-circle-filled"
+                    size={144}
+                    color="black"
+                  />
+                }
+                progress={pauseButtonToggle}
+              />
+              <PlayPauseAnimation
+                icon={
+                  <MaterialCommunityIcons
+                    name="play-circle"
+                    size={144}
+                    color="black"
+                  />
+                }
+                progress={playButtonToggle}
+              />
               <AnnotationVideo />
             </ReactNativeZoomableView>
           </Center>

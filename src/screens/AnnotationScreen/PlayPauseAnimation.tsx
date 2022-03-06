@@ -10,23 +10,26 @@ import Animated, {
   withSequence,
 } from 'react-native-reanimated';
 
-type Props = {
-  children: ReactElement;
+type PlayPauseAnimationProps = {
+  icon: ReactElement,
   progress: SharedValue<boolean>;
 };
 
-export const AnimatedAppearance = ({ children, progress }: Props) => {
+export default function PlayPauseAnimation({
+  icon,
+  progress,
+}: PlayPauseAnimationProps) {
   const animatedStyle = useAnimatedStyle(() => {
     const opacity = progress.value
       ? withSequence(
-          withTiming(1, { duration: 0 }),
-          withTiming(0, { duration: 750 }, () => {
+          withTiming(0.5, { duration: 0 }),
+          withTiming(0, { duration: 800 }, () => {
             progress.value = false;
           })
         )
       : 0;
-    const s = interpolate(progress.value ? 1 : 0, [0, 1], [0.7, 1.2]);
-    const scale = withTiming(s, { duration: 400 });
+    const s = interpolate(progress.value ? 1 : 0, [0, 1], [0.8, 1.3]);
+    const scale = withTiming(s, { duration: 350 });
     return {
       opacity: opacity,
       transform: [{ scale }],
@@ -35,7 +38,7 @@ export const AnimatedAppearance = ({ children, progress }: Props) => {
 
   return (
     <Animated.View style={[{ zIndex: 2, position: 'absolute' }, animatedStyle]}>
-      {children}
+      {icon}
     </Animated.View>
   );
-};
+}
