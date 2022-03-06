@@ -10,6 +10,7 @@ interface SlidingTopInfoProps {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   millisToDisplay?: number;
+  persistent?: boolean;
 }
 
 function typeToColours(type: AlertType): {
@@ -33,10 +34,11 @@ export default function SlidingTopInfo({
   isOpen,
   setIsOpen,
   millisToDisplay = 1500,
+  persistent = false,
 }: SlidingTopInfoProps) {
   const [timer, setTimer] = useState<NodeJS.Timeout | null>(null);
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !persistent) {
       if (timer !== null) {
         clearTimeout(timer);
       }
@@ -55,7 +57,7 @@ export default function SlidingTopInfo({
   }, [isOpen]);
   const { textColor } = typeToColours(type);
   return (
-    <Slide in={isOpen} placement="right">
+    <Slide in={isOpen} placement="top">
       <Alert justifyContent="center" status={type}>
         <Row alignItems="center">
           <Alert.Icon mr={2} />
