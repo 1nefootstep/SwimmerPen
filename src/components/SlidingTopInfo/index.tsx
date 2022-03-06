@@ -55,7 +55,7 @@ export default function SlidingTopInfo({
   }, [isOpen]);
   const { textColor } = typeToColours(type);
   return (
-    <Slide in={isOpen} placement="top">
+    <Slide in={isOpen} placement="right">
       <Alert justifyContent="center" status={type}>
         <Row alignItems="center">
           <Alert.Icon mr={2} />

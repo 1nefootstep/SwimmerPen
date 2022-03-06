@@ -40,7 +40,7 @@ export function pause(dispatch: AppDispatch, frames?: Array<number>) {
     v.pauseAsync().then(() => {
       _video.current?.getStatusAsync().then(e => {
         if (e.isLoaded) {
-          let toSeekTo = e.positionMillis;
+          let toSeekTo = e.positionMillis - 1;
           if (frames !== undefined && frames.length !== 0) {
             toSeekTo = getStartOfFrameGivenTime(frames, e.positionMillis);
           }
