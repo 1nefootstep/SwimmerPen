@@ -1,25 +1,30 @@
 import { VIDEO_ACTION_TYPES } from '../actions/video.actions';
-import { UpdateStatusAction, VideoActionTypes } from '../types';
+import {
+  FrameLoadingStatus,
+  SetFrameLoadingStatusAction,
+  UpdateStatusAction,
+  VideoActionTypes,
+} from '../types';
 
 export type VideoInfo = {
-  isControlVisible: boolean;
   isTimeVisible: boolean;
   isPlaying: boolean;
   positionMillis: number;
   durationMillis: number;
   isLoaded: boolean;
   uri: string;
+  frameLoadingStatus: FrameLoadingStatus;
 };
 
 function initState(): VideoInfo {
   return {
-    isControlVisible: false,
     isTimeVisible: false,
     isPlaying: false,
     positionMillis: 0,
     durationMillis: 0,
     isLoaded: false,
     uri: '',
+    frameLoadingStatus: 'unknown',
   };
 }
 
@@ -32,7 +37,8 @@ export function videoReducer(
   switch (action.type) {
     case VIDEO_ACTION_TYPES.UPDATE_STATUS: {
       const { payload } = action as UpdateStatusAction;
-      const { isLoaded, isPlaying, positionMillis, durationMillis, uri } = payload;
+      const { isLoaded, isPlaying, positionMillis, durationMillis, uri } =
+        payload;
       return {
         ...state,
         isLoaded: isLoaded ?? state.isLoaded,
@@ -43,26 +49,7 @@ export function videoReducer(
       };
     }
     case VIDEO_ACTION_TYPES.CLEAR_VIDEO_STATUS: {
-      return {
-        ...state,
-        isPlaying: false,
-        positionMillis: 0,
-        durationMillis: 0,
-        isLoaded: false,
-        uri: '',
-      };
-    }
-    case VIDEO_ACTION_TYPES.SHOW_CONTROL: {
-      return {
-        ...state,
-        isControlVisible: true,
-      };
-    }
-    case VIDEO_ACTION_TYPES.HIDE_CONTROL: {
-      return {
-        ...state,
-        isControlVisible: false,
-      };
+      return initState();
     }
     case VIDEO_ACTION_TYPES.SHOW_TIME: {
       return {
@@ -74,6 +61,14 @@ export function videoReducer(
       return {
         ...state,
         isTimeVisible: false,
+      };
+    }
+    case VIDEO_ACTION_TYPES.SET_FRAME_LOADING_STATUS: {
+      const { payload } = action as SetFrameLoadingStatusAction;
+      const { frameLoadingStatus } = payload;
+      return {
+        ...state,
+        frameLoadingStatus: frameLoadingStatus,
       };
     }
     default:

@@ -15,6 +15,9 @@ import {
   clearAnnotationExceptPoolConfig,
   addFrameTimes,
 } from './annotation.actions';
+import {
+  setFrameLoadingStatus
+} from './video.actions';
 import { stopRecording as stopRecordingAction } from './recording.actions';
 import { updateDistance } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
@@ -108,8 +111,10 @@ export function processFrames(uri: string): AppThunkAction {
   return (dispatch, getState) => {
     const { annotation } = getState();
     if (annotation.frameTimes.length !== 0) {
+      dispatch(setFrameLoadingStatus('loaded'));
       return;
     }
+    dispatch(setFrameLoadingStatus('loading'));
     getFrametimes(uri).then(async session => {
       // Console output generated for this execution
       const output: { frames: Array<{ best_effort_timestamp_time: string }> } =
@@ -122,6 +127,9 @@ export function processFrames(uri: string): AppThunkAction {
         return n * 1000;
       });
       dispatch(addFrameTimes(frameTimesInMillis));
+      dispatch(setFrameLoadingStatus('loaded'));
+    }).catch(e => {
+      dispatch(setFrameLoadingStatus('failed'));
     });
   };
 }

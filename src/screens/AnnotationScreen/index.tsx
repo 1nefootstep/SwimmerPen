@@ -31,6 +31,7 @@ import { getOrientationAsync, Orientation } from 'expo-screen-orientation';
 import { useLayout } from '@react-native-community/hooks';
 import * as VideoService from '../../state/VideoService';
 import PlayPauseAnimation from './PlayPauseAnimation';
+import FrameLoadingAlert from './FrameLoadingAlert';
 
 export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
@@ -81,6 +82,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
         }}
       >
         <Center flex={1} bg="black" onLayout={onLayout}>
+          <FrameLoadingAlert />
           <BackButton
             goBack={() => {
               dispatch(saveAnnotation());

@@ -1,4 +1,4 @@
-import { AVPlaybackStatus } from 'expo-av';
+export type FrameLoadingStatus = 'unknown' | 'loading' | 'loaded' | 'failed';
 
 export type UpdateStatusAction = {
   type: string;
@@ -23,12 +23,11 @@ export type HideTimeAction = {
   type: string;
 };
 
-export type ShowControlAction = {
+export type SetFrameLoadingStatusAction = {
   type: string;
-};
-
-export type HideControlAction = {
-  type: string;
+  payload: {
+    frameLoadingStatus: FrameLoadingStatus;
+  };
 };
 
 export type VideoActionTypes =
@@ -36,5 +35,4 @@ export type VideoActionTypes =
   | ClearStatusAction
   | ShowTimeAction
   | HideTimeAction
-  | ShowControlAction
-  | HideControlAction;
+  | SetFrameLoadingStatusAction;

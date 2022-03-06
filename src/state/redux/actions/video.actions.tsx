@@ -1,4 +1,12 @@
-import { AVPlaybackStatus } from 'expo-av';
+import {
+  ClearStatusAction,
+  FrameLoadingStatus,
+  HideControlAction,
+  HideTimeAction,
+  SetFrameLoadingStatusAction,
+  ShowTimeAction,
+  UpdateStatusAction,
+} from '../types';
 
 export enum VIDEO_ACTION_TYPES {
   UPDATE_STATUS = 'VIDEO/UPDATE_STATUS',
@@ -7,6 +15,7 @@ export enum VIDEO_ACTION_TYPES {
   HIDE_CONTROL = 'VIDEO/HIDE_CONTROL',
   SHOW_TIME = 'VIDEO/SHOW_TIME',
   HIDE_TIME = 'VIDEO/HIDE_TIME',
+  SET_FRAME_LOADING_STATUS = 'VIDEO/SET_FRAME_LOADING_STATUS',
 }
 
 export function updateVideoStatus({
@@ -21,7 +30,7 @@ export function updateVideoStatus({
   positionMillis?: number;
   durationMillis?: number;
   uri?: string;
-}) {
+}): UpdateStatusAction {
   return {
     type: VIDEO_ACTION_TYPES.UPDATE_STATUS,
     payload: {
@@ -34,32 +43,31 @@ export function updateVideoStatus({
   };
 }
 
-export function clearVideoStatus() {
+export function clearVideoStatus(): ClearStatusAction {
   return {
     type: VIDEO_ACTION_TYPES.CLEAR_VIDEO_STATUS,
   };
 }
 
-export function showControl() {
-  return {
-    type: VIDEO_ACTION_TYPES.SHOW_CONTROL,
-  };
-}
-
-export function hideControl() {
-  return {
-    type: VIDEO_ACTION_TYPES.HIDE_CONTROL,
-  };
-}
-
-export function showTime() {
+export function showTime(): ShowTimeAction {
   return {
     type: VIDEO_ACTION_TYPES.SHOW_TIME,
   };
 }
 
-export function hideTime() {
+export function hideTime(): HideTimeAction {
   return {
     type: VIDEO_ACTION_TYPES.HIDE_TIME,
+  };
+}
+
+export function setFrameLoadingStatus(
+  frameLoadingStatus: FrameLoadingStatus
+): SetFrameLoadingStatusAction {
+  return {
+    type: VIDEO_ACTION_TYPES.SET_FRAME_LOADING_STATUS,
+    payload: {
+      frameLoadingStatus: frameLoadingStatus,
+    },
   };
 }
