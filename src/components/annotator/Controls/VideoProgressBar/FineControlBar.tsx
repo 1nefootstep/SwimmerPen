@@ -1,19 +1,26 @@
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { RefObject, useRef, useState } from 'react';
 import { Box } from 'native-base';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import {
+  PanGestureHandler,
+  PanGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
+  withDecay,
+  useAnimatedGestureHandler,
+  runOnJS,
+  runOnUI,
+  useDerivedValue,
 } from 'react-native-reanimated';
-
-import {
-  useAppDispatch,
-  useAppSelector,
-} from '../../../../state/redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../state/redux/hooks';
 import * as VideoService from '../../../../state/VideoService';
 import { THEME_SIZE_RATIO } from '../../../../constants/Constants';
 import { useLayout } from '@react-native-community/hooks';
+import { AppDispatch } from '../../../../state/redux';
+import { Video } from 'expo-av';
+import { position } from 'native-base/lib/typescript/theme/styled-system';
 
 export default function FineControlBar({
   dashGap = 2,
@@ -27,8 +34,7 @@ export default function FineControlBar({
   const dispatch = useAppDispatch();
   const positionMillis = useAppSelector(state => state.video.positionMillis);
 
-  const [posAtStartDrag, setPosAtStartDrag] = useState<number>(0);
-  // const [length, setLength] = useState<number>(0);
+  // const [posAtStartDrag, setPosAtStartDrag] = useState<number>(0);
   const { onLayout, width } = useLayout();
   const length = width / THEME_SIZE_RATIO;
   const componentRef = useRef<Animated.View | null>(null);
@@ -41,23 +47,38 @@ export default function FineControlBar({
   const animatedStyles = useAnimatedStyle(() => {
     return {
       marginLeft: displacementShared.value % 8,
+      transform: [],
     };
   });
-  return (
-    <PanGestureHandler
-      onGestureEvent={({ nativeEvent }) => {
-        const invertedTranslation = -Math.round(nativeEvent.translationX);
-        displacementShared.value = withSpring(nativeEvent.translationX);
-        const toSeek =
-          posAtStartDrag +
-          Math.floor(invertedTranslation * MOVEMENT_TO_FRAME_RATIO);
+  console.log(`positionMillis: ${positionMillis}`);
+  const seekCallback = (toSeek: number) => {
+    'worklet';
+    runOnJS(VideoService.seek)(toSeek, dispatch);
+  };
 
-        VideoService.seek(toSeek >= 0 ? toSeek : 0, dispatch);
-      }}
-      onBegan={() => {
-        setPosAtStartDrag(positionMillis);
-      }}
-    >
+  const gestureHandler =
+    useAnimatedGestureHandler<PanGestureHandlerGestureEvent>(
+      {
+        onActive: (event, ctx) => {
+          displacementShared.value = event.translationX;
+          const invertedTranslation = -Math.round(displacementShared.value);
+          const toSeek =
+            positionMillis +
+            Math.floor(invertedTranslation * MOVEMENT_TO_FRAME_RATIO);
+          seekCallback(toSeek);
+        },
+        onEnd: (event, ctx) => {
+          displacementShared.value = withDecay({
+            velocity: event.velocityX,
+            deceleration: 0.9985,
+          });
+        },
+      },
+      [positionMillis]
+    );
+
+  return (
+    <PanGestureHandler onGestureEvent={gestureHandler}>
       <Animated.View
         ref={componentRef}
         onLayout={onLayout}

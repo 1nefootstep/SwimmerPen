@@ -50,7 +50,7 @@ export default function FrameLoadingAlert() {
         textBefore={text}
         textAfter={textAfter}
         placementAfter="left"
-        componentToShowAfter={<Spinner color="warning.600"/>}
+        componentToShowAfter={<Spinner size='sm' color="warning.600"/>}
       />
     );
   }

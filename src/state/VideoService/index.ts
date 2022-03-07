@@ -14,6 +14,10 @@ export function setVideo(videoRef: RefObject<Video>) {
   _video = videoRef;
 }
 
+export function getVideoRef() {
+  return _video;
+}
+
 export function play(dispatch: AppDispatch) {
   // console.log(`VideoService: play`);
   if (_video.current) {
