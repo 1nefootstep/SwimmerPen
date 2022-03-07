@@ -29,10 +29,10 @@ import Hidden from '../components/Hidden';
 import DPSChart from '../components/result/DPSChart';
 import { loadAnnotation, saveAnnotation } from '../FileHandler';
 import SendFab from '../components/result/SendFab';
-import { IconNode } from 'react-native-elements/dist/icons/Icon';
 import { AnnotationInformation } from '../state/AKB';
 import { NavigatorProps } from '../router';
 import MultiFilePickerScreen from './MultiFilePickerScreen';
+import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 
 const COLOR = '#f5f5f4';
 
@@ -105,13 +105,13 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
 
   const items: Array<{
     label: string;
-    icon: IconNode;
-    action: (() => void) | (() => Promise<void>);
+    icon: IconSource;
+    onPress: (() => void) | (() => Promise<void>);
   }> = [
     {
       label: 'Send graph',
-      icon: { name: 'linechart', type: 'antdesign' },
-      action: takeScreenshot,
+      icon: 'chart-line',
+      onPress: takeScreenshot,
     },
   ];
 

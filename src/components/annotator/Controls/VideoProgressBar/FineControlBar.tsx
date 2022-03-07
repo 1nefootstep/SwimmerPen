@@ -50,7 +50,6 @@ export default function FineControlBar({
       transform: [],
     };
   });
-  console.log(`positionMillis: ${positionMillis}`);
   const seekCallback = (toSeek: number) => {
     'worklet';
     runOnJS(VideoService.seek)(toSeek, dispatch);

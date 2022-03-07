@@ -26,8 +26,8 @@ import {
   saveAnnotation,
 } from '../FileHandler';
 import SendFab from '../components/result/SendFab';
-import { IconNode } from 'react-native-elements/dist/icons/Icon';
 import { NavigatorProps } from '../router';
+import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 
 export default function ResultScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
@@ -147,28 +147,28 @@ export default function ResultScreen({ navigation }: NavigatorProps) {
 
   const items: Array<{
     label: string;
-    icon: IconNode;
-    action: (() => void) | (() => Promise<void>);
+    icon: IconSource;
+    onPress: (() => void) | (() => Promise<void>);
   }> = [
     {
       label: 'Send graph',
-      icon: { name: 'linechart', type: 'antdesign' },
-      action: takeScreenshot,
+      icon: 'chart-line',
+      onPress: takeScreenshot,
     },
     {
       label: 'Send csv',
-      icon: { name: 'file-csv', type: 'font-awesome-5' },
-      action: shareCsv,
+      icon: 'file-excel',
+      onPress: shareCsv,
     },
     {
       label: 'Send video',
-      icon: { name: 'file-video', type: 'font-awesome-5' },
-      action: shareVideo,
+      icon: 'file-video',
+      onPress: shareVideo,
     },
     {
       label: 'Send annotations',
-      icon: { name: 'file-word', type: 'font-awesome-5' },
-      action: shareRawAnnotations,
+      icon: 'file-word',
+      onPress: shareRawAnnotations,
     },
   ];
 

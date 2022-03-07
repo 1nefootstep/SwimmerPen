@@ -1,40 +1,29 @@
 import React from 'react';
-import { SpeedDial } from 'react-native-elements';
-import { IconNode } from 'react-native-elements/dist/icons/Icon';
+import { FAB, Portal, Provider } from 'react-native-paper';
+import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 
 interface SendFabProps {
   items: Array<{
     label: string;
-    icon: IconNode;
-    action: (() => void) | (() => Promise<void>);
+    icon: IconSource;
+    onPress: (() => void) | (() => Promise<void>);
   }>;
 }
 
 export default function SendFab({ items }: SendFabProps) {
   const [open, setOpen] = React.useState(false);
+  const onStateChange = ({ open }: { open: boolean }) => setOpen(open);
   return (
-    <SpeedDial
-      isOpen={open}
-      buttonStyle={{ backgroundColor: '#22d3ee' }}
-      icon={{
-        name: 'send-o',
-        type: 'font-awesome',
-        color: '#fff',
-        backgroundColor: '#22d3ee',
-      }}
-      openIcon={{ name: 'close', color: '#fff', backgroundColor: '#22d3ee' }}
-      onOpen={() => setOpen(!open)}
-      onClose={() => setOpen(!open)}
-    >
-      {items.map(e => (
-        <SpeedDial.Action
-          buttonStyle={{ backgroundColor: '#fff' }}
-          key={e.label}
-          icon={e.icon}
-          title={e.label}
-          onPress={e.action}
+    <Provider>
+      <Portal>
+        <FAB.Group
+          visible={true}
+          open={open}
+          icon={open ? 'close' : 'send'}
+          actions={items}
+          onStateChange={onStateChange}
         />
-      ))}
-    </SpeedDial>
+      </Portal>
+    </Provider>
   );
 }
