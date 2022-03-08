@@ -47,20 +47,19 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const playButtonToggle = useSharedValue(false);
 
   useLayoutEffect(() => {
-    (() => {
-      getOrientationAsync().then(orientation => {
-        if (
-          orientation === Orientation.LANDSCAPE_RIGHT ||
-          orientation === Orientation.LANDSCAPE_LEFT
-        ) {
-          setHeight(h);
-          setWidth(w);
-        } else {
-          setHeight(w);
-          setWidth(h);
-        }
-        setStatusBarHidden(true, 'slide');
-      });
+    (async () => {
+      const orientation = await getOrientationAsync();
+      if (
+        orientation === Orientation.LANDSCAPE_RIGHT ||
+        orientation === Orientation.LANDSCAPE_LEFT
+      ) {
+        setHeight(h);
+        setWidth(w);
+      } else {
+        setHeight(w);
+        setWidth(h);
+      }
+      setStatusBarHidden(true, 'slide');
     })();
   }, [h, w]);
 

@@ -7,6 +7,7 @@ export interface DPSChartProps {
     name: string;
     stats: Array<DPSStatistic>;
   }>;
+  width?: number;
 }
 
 const colors = [
@@ -16,7 +17,7 @@ const colors = [
   (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
 ];
 
-export default function DPSChart({ nameAndDps }: DPSChartProps) {
+export default function DPSChart({ nameAndDps, width }: DPSChartProps) {
   return (
     <MultiLineChart
       nameAndStats={nameAndDps.map(e => ({
@@ -30,6 +31,7 @@ export default function DPSChart({ nameAndDps }: DPSChartProps) {
       colors={colors}
       lineType="Dist/stroke"
       unit={'m'}
+      width={width}
     />
   );
 }

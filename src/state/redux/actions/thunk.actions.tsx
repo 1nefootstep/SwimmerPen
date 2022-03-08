@@ -15,9 +15,7 @@ import {
   clearAnnotationExceptPoolConfig,
   addFrameTimes,
 } from './annotation.actions';
-import {
-  setFrameLoadingStatus
-} from './video.actions';
+import { setFrameLoadingStatus } from './video.actions';
 import { stopRecording as stopRecordingAction } from './recording.actions';
 import { updateDistance } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
@@ -107,18 +105,14 @@ export function updatePoolConfigAndResetCurrentDistance(
   };
 }
 
-export function processFrames(uri: string): AppThunkAction {
-  return (dispatch, getState) => {
-    const { annotation } = getState();
-    if (annotation.frameTimes.length !== 0) {
-      dispatch(setFrameLoadingStatus('loaded'));
-      return;
-    }
-    dispatch(setFrameLoadingStatus('loading'));
-    getFrametimes(uri).then(async session => {
+function fn(uri: string, dispatch: any) {
+  'worklet';
+  getFrametimes(uri)
+    .then(async session => {
       // Console output generated for this execution
-      const output: { frames: Array<{ best_effort_timestamp_time: string }> } =
-        JSON.parse(await session.getOutput());
+      const output: {
+        frames: Array<{ best_effort_timestamp_time: string }>;
+      } = JSON.parse(await session.getOutput());
       const frameTimesInMillis = output.frames.map(e => {
         const n = Number(e.best_effort_timestamp_time);
         if (isNaN(n) || n === undefined || n === null) {
@@ -128,8 +122,21 @@ export function processFrames(uri: string): AppThunkAction {
       });
       dispatch(addFrameTimes(frameTimesInMillis));
       dispatch(setFrameLoadingStatus('loaded'));
-    }).catch(e => {
+    })
+    .catch(e => {
       dispatch(setFrameLoadingStatus('failed'));
     });
+}
+
+
+export function processFrames(uri: string): AppThunkAction {
+  return (dispatch, getState) => {
+    const { annotation } = getState();
+    if (annotation.frameTimes.length !== 0) {
+      dispatch(setFrameLoadingStatus('loaded'));
+      return;
+    }
+    dispatch(setFrameLoadingStatus('loading'));
+    fn(uri, dispatch);
   };
 }

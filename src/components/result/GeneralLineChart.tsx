@@ -5,19 +5,33 @@ import { Dimensions } from 'react-native';
 import { AbstractChartConfig } from 'react-native-chart-kit/dist/AbstractChart';
 import { LineChartData } from 'react-native-chart-kit/dist/line-chart/LineChart';
 
+const TARGET_SPACE_PER_X_LABEL = 80;
+
 export interface GeneralLineChartProps {
   data: LineChartData;
   precision?: number;
   unit?: string;
+  width?: number;
 }
 
 export default function GeneralLineChart({
   data,
   precision,
   unit,
+  width,
 }: GeneralLineChartProps) {
-  const screenWidth = Dimensions.get('window').width;
+  const screenWidth = width ?? Dimensions.get('window').width;
   const numXLabels = data.labels.length;
+  const spacePerXLabel = screenWidth / numXLabels;
+  const skipXLabel = Math.max(
+    Math.ceil(TARGET_SPACE_PER_X_LABEL / spacePerXLabel),
+    1
+  );
+  const formattedData = {
+    ...data,
+    labels: data.labels.map((e, i) => (i % skipXLabel === 0 ? e : '')),
+  };
+  console.log(`spacePerXLabel: ${spacePerXLabel} skipXLabel: ${skipXLabel}`);
 
   const fontSize = () => {
     if (numXLabels < 10) {
@@ -64,7 +78,7 @@ export default function GeneralLineChart({
 
   return (
     <LineChart
-      data={data}
+      data={formattedData}
       width={screenWidth - 40}
       height={250}
       xLabelsOffset={-10}

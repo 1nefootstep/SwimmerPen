@@ -7,6 +7,7 @@ export interface VelocityChartProps {
     name: string;
     stats: Array<VelocityAtRangeStatistic>;
   }>;
+  width?: number;
 }
 
 const colors = [
@@ -18,6 +19,7 @@ const colors = [
 
 export default function VelocityChart({
   nameAndVelocities,
+  width,
 }: VelocityChartProps) {
   return (
     <MultiLineChart
@@ -32,6 +34,7 @@ export default function VelocityChart({
       colors={colors}
       lineType="Velocity"
       unit={'m/s'}
+      width={width}
     />
   );
 }

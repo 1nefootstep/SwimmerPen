@@ -7,6 +7,7 @@ export interface StrokeRateChartProps {
     name: string;
     stats: Array<StrokeRateStatistic>;
   }>;
+  width?: number;
 }
 
 const colors = [
@@ -18,6 +19,7 @@ const colors = [
 
 export default function StrokeRateChart({
   nameAndStrokeRates,
+  width,
 }: StrokeRateChartProps) {
   return (
     <MultiLineChart
@@ -32,6 +34,7 @@ export default function StrokeRateChart({
       colors={colors}
       lineType="Stroke rate"
       unit={'st/min'}
+      width={width}
     />
   );
 }

@@ -7125,6 +7125,11 @@ react-native-numeric-input@^1.9.0:
     prop-types "^15.6.1"
     react-native-pixel-perfect "^1.0.1"
 
+react-native-paper-tabs@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/react-native-paper-tabs/-/react-native-paper-tabs-0.7.0.tgz#97ae5838f8a2d3ac2826cf1dee065364d7c3bad8"
+  integrity sha512-TXz1G1hLJNvykJ57VhjKFVRgRDC2bxzb/bwPJ59POK9nGO0yD+Rx7+W5D0i5/ZQF1uKSV92IMv+eowd/BRM46Q==
+
 react-native-paper@^4.11.2:
   version "4.11.2"
   resolved "https://registry.yarnpkg.com/react-native-paper/-/react-native-paper-4.11.2.tgz#4ae73282da9be3bf20760c609d3273643d1dd4a9"

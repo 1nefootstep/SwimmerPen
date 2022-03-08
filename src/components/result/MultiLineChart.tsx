@@ -9,6 +9,7 @@ export interface MultiLineChartProps {
   colors: Array<(opacity?: number) => string>;
   lineType: string;
   unit?: string;
+  width?: number;
 }
 
 export default function MultiLineChart({
@@ -16,6 +17,7 @@ export default function MultiLineChart({
   colors,
   lineType,
   unit,
+  width,
 }: MultiLineChartProps) {
   const data = useMemo(() => {
     const labels = nameAndStats.map(e =>
@@ -44,5 +46,5 @@ export default function MultiLineChart({
     };
   }, [nameAndStats, colors, lineType]);
 
-  return <GeneralLineChart data={data} unit={unit} />;
+  return <GeneralLineChart width={width} data={data} unit={unit} />;
 }
