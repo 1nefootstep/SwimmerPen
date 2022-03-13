@@ -7,11 +7,8 @@ import {
 import CameraScreen from '../screens/CameraScreen';
 import Home from '../screens/Home';
 import AnnotationScreen from '../screens/AnnotationScreen';
-import ResultScreen from '../screens/ResultScreen_copy';
+import ResultScreen from '../screens/ResultScreen';
 import MultiResultScreen from '../screens/MultiResultScreen';
-import MultiFilePickerScreen, {
-  MultiFilePickerScreenProps,
-} from '../screens/MultiFilePickerScreen';
 
 export type RootStackParamList = {
   Home: undefined;

@@ -15,6 +15,7 @@ import {
   Camera,
   CameraDeviceFormat,
   useCameraDevices,
+  useFrameProcessor,
 } from 'react-native-vision-camera';
 import { useIsForeground } from '../hooks/useIsForeground';
 import SelectFormat from '../components/camera/SelectFormat';
@@ -183,6 +184,15 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
       setFormat(f);
     }
   };
+  
+  const frameProcessor = useFrameProcessor(
+    frame => {
+      'worklet';
+      console.log(frame.toString());
+      
+    },
+    []
+  );
 
   if (hasPermission === null) {
     return (
