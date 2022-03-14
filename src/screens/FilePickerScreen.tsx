@@ -28,9 +28,11 @@ import { default as FilePickerCard } from '../components/filepicker/Card';
 function AppBar({
   onPressBack,
   onImport,
+  setIsLoading,
 }: {
   onPressBack: () => void;
   onImport: () => void;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const COLOR = '#f5f5f4';
   return (
@@ -59,6 +61,7 @@ function AppBar({
             size="lg"
             variant="unstyled"
             onPress={() => {
+              setIsLoading(true);
               importVideoAndAnnotation()
                 .then(isSuccessful => {
                   console.log(isSuccessful);
@@ -66,7 +69,10 @@ function AppBar({
                     onImport();
                   }
                 })
-                .catch(err => console.error(`importing video error: ${err}`));
+                .catch(err => {
+                  console.error(`importing video error: ${err}`);
+                  setIsLoading(false);
+                });
             }}
           >
             Import
@@ -174,6 +180,7 @@ export default function FilePickerScreen({
       <AppBar
         onPressBack={() => setIsVisible(false)}
         onImport={() => updateVideoUris()}
+        setIsLoading={setIsLoading}
       />
       {isLoading ? (
         <Center h="100%">
