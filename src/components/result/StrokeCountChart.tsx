@@ -1,6 +1,7 @@
 import React from 'react';
 import { StrokeCountStatistic } from '../../state/StatisticsCalculator';
 import MultiLineChart from './MultiLineChart';
+import { scDataToGeneral } from './ResultUtil';
 
 export interface StrokeCountChartProps {
   nameAndStrokeCounts: Array<{
@@ -21,14 +22,7 @@ export default function StrokeCountChart({
 }: StrokeCountChartProps) {
   return (
     <MultiLineChart
-      nameAndStats={nameAndStrokeCounts.map(e => ({
-        name: e.name,
-        stats: e.stats.map(i => ({
-          startRange: i.startRange,
-          endRange: i.endRange,
-          stat: i.strokeCount,
-        })),
-      }))}
+      nameAndStats={scDataToGeneral(nameAndStrokeCounts)}
       colors={colors}
       lineType="Stroke count"
     />

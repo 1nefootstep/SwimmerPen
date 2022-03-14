@@ -1,6 +1,7 @@
 import React from 'react';
 import { StrokeRateStatistic } from '../../state/StatisticsCalculator';
 import MultiLineChart from './MultiLineChart';
+import { srDataToGeneral } from './ResultUtil';
 
 export interface StrokeRateChartProps {
   nameAndStrokeRates: Array<{
@@ -23,14 +24,7 @@ export default function StrokeRateChart({
 }: StrokeRateChartProps) {
   return (
     <MultiLineChart
-      nameAndStats={nameAndStrokeRates.map(e => ({
-        name: e.name,
-        stats: e.stats.map(i => ({
-          startRange: i.startRange,
-          endRange: i.endRange,
-          stat: i.strokeRate,
-        })),
-      }))}
+      nameAndStats={srDataToGeneral(nameAndStrokeRates)}
       colors={colors}
       lineType="Stroke rate"
       unit={'st/min'}

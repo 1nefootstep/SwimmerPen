@@ -7,7 +7,7 @@ import {
 import CameraScreen from '../screens/CameraScreen';
 import Home from '../screens/Home';
 import AnnotationScreen from '../screens/AnnotationScreen';
-import ResultScreen from '../screens/ResultScreen';
+import SingleResultScreen from '../screens/ResultScreen/SingleResultScreen';
 import MultiResultScreen from '../screens/MultiResultScreen';
 import MultiFilePickerScreen, {
   MultiFilePickerScreenProps,
@@ -49,7 +49,7 @@ export default function RootNavigator() {
           <Stack.Screen name="CameraScreen" component={CameraScreen} />
           <Stack.Screen name="AnnotationScreen" component={AnnotationScreen} />
           <Stack.Screen name="MultiStatistics" component={MultiResultScreen} />
-          <Stack.Screen name="Statistics" component={ResultScreen} />
+          <Stack.Screen name="Statistics" component={SingleResultScreen} />
         </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>

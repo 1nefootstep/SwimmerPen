@@ -1,9 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
-  Center,
-  Box,
-  Divider,
-  ScrollView,
   StatusBar,
   Row,
   IconButton,
@@ -22,17 +18,12 @@ import {
   computeResult,
   fixAnnotationFrameTimes,
 } from '../state/StatisticsCalculator';
-import VelocityChart from '../components/result/VelocityChart';
-import StrokeCountChart from '../components/result/StrokeCountChart';
-import StrokeRateChart from '../components/result/StrokeRateChart';
-import Hidden from '../components/Hidden';
-import DPSChart from '../components/result/DPSChart';
 import { loadAnnotation, saveAnnotation } from '../FileHandler';
-import SendFab from '../components/result/SendFab';
 import { AnnotationInformation } from '../state/AKB';
 import { NavigatorProps } from '../router';
 import MultiFilePickerScreen from './MultiFilePickerScreen';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
+import BaseResultScreen from './ResultScreen/BaseResultScreen';
 
 const COLOR = '#f5f5f4';
 
@@ -44,7 +35,7 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
   const [computedData, setComputedData] = useState<
     Array<{ name: string; result: ComputedResult }>
   >([]);
-  const [isLandscape, setIsLandscape] = useState(true);
+  // const [isLandscape, setIsLandscape] = useState(true);
 
   const viewShotRef = useRef<ViewShot | null>(null);
   useEffect(() => {
@@ -148,7 +139,6 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
     <>
       <Column flex={1} width="100%">
         <StatusBar backgroundColor={COLOR} barStyle="light-content" />
-        <Box bg={COLOR} />
         <Row
           bg={COLOR}
           px="1"
@@ -189,51 +179,23 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
                 isVisible={isFilePickerVisible}
                 goBack={onBackFromPicker}
                 onSelect={onSelectInPicker}
-                setIsLandscape={setIsLandscape}
+                // setIsLandscape={setIsLandscape}
               />
             </Modal>
           </Row>
         </Row>
-        <Hidden isHidden={!isLandscape}>
-          <ScrollView flex={1} alwaysBounceVertical={true}>
-            <ViewShot style={{ backgroundColor: '#fff' }} ref={viewShotRef}>
-              <Center>
-                <Hidden isHidden={velocityData.length === 0}>
-                  <Box py={4}>
-                    <VelocityChart nameAndVelocities={velocityData} />
-                  </Box>
-                  <Divider thickness={4} bg="muted.300" />
-                </Hidden>
-                <Hidden isHidden={scData.length === 0}>
-                  <Box py={4}>
-                    <StrokeCountChart nameAndStrokeCounts={scData} />
-                  </Box>
-                  <Divider thickness={4} bg="muted.300" />
-                </Hidden>
-                <Hidden isHidden={lapScData.length === 0}>
-                  <Box py={4}>
-                    <StrokeCountChart nameAndStrokeCounts={lapScData} />
-                  </Box>
-                  <Divider thickness={4} bg="muted.300" />
-                </Hidden>
-                <Hidden isHidden={srData.length === 0}>
-                  <Box py={4}>
-                    <StrokeRateChart nameAndStrokeRates={srData} />
-                  </Box>
-                  <Divider thickness={4} bg="muted.300" />
-                </Hidden>
-                <Hidden isHidden={dpsData.length === 0}>
-                  <Box py={4}>
-                    <DPSChart nameAndDps={dpsData} />
-                  </Box>
-                  <Divider thickness={4} bg="muted.300" />
-                </Hidden>
-              </Center>
-            </ViewShot>
-          </ScrollView>
-        </Hidden>
+        <BaseResultScreen
+          navigation={navigation}
+          velocityData={velocityData}
+          dpsData={dpsData}
+          lapScData={lapScData}
+          scData={scData}
+          srData={srData}
+          fabItems={items}
+          viewShotRef={viewShotRef}
+          withAppbar={false}
+        />
       </Column>
-      <SendFab items={items} />
     </>
   );
 }

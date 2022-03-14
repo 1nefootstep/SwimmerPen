@@ -1,6 +1,7 @@
 import React from 'react';
 import { VelocityAtRangeStatistic } from '../../state/StatisticsCalculator';
 import MultiLineChart from './MultiLineChart';
+import { velocityDataToGeneral } from './ResultUtil';
 
 export interface VelocityChartProps {
   nameAndVelocities: Array<{
@@ -23,14 +24,7 @@ export default function VelocityChart({
 }: VelocityChartProps) {
   return (
     <MultiLineChart
-      nameAndStats={nameAndVelocities.map(e => ({
-        name: e.name,
-        stats: e.stats.map(i => ({
-          startRange: i.startRange,
-          endRange: i.endRange,
-          stat: i.velocity,
-        })),
-      }))}
+      nameAndStats={velocityDataToGeneral(nameAndVelocities)}
       colors={colors}
       lineType="Velocity"
       unit={'m/s'}

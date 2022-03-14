@@ -17,7 +17,7 @@ export interface GeneralLineChartProps {
 export default function GeneralLineChart({
   data,
   precision,
-  unit,
+  unit = '',
   width,
 }: GeneralLineChartProps) {
   const screenWidth = width ?? Dimensions.get('window').width;
@@ -40,13 +40,10 @@ export default function GeneralLineChart({
     return 6;
   };
   const verticalLabelFontSize = () => {
-    if (unit !== undefined) {
-      if (unit.length < 4) {
-        return 10;
-      }
-      return 8;
+    if (unit.length < 4) {
+      return 10;
     }
-    return 10;
+    return 8;
   };
   const rotation = () => {
     if (numXLabels < 10) {
@@ -82,7 +79,7 @@ export default function GeneralLineChart({
       width={screenWidth - 40}
       height={250}
       xLabelsOffset={-10}
-      yAxisSuffix={unit !== undefined ? ` ${unit}` : ''}
+      yAxisSuffix={` ${unit}`}
       yLabelsOffset={16}
       verticalLabelRotation={rotation()}
       withVerticalLines={false}

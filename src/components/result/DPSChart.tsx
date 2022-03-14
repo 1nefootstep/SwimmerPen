@@ -1,6 +1,7 @@
 import React from 'react';
 import { DPSStatistic } from '../../state/StatisticsCalculator';
 import MultiLineChart from './MultiLineChart';
+import { dpsDataToGeneral } from './ResultUtil';
 
 export interface DPSChartProps {
   nameAndDps: Array<{
@@ -20,14 +21,7 @@ const colors = [
 export default function DPSChart({ nameAndDps, width }: DPSChartProps) {
   return (
     <MultiLineChart
-      nameAndStats={nameAndDps.map(e => ({
-        name: e.name,
-        stats: e.stats.map(i => ({
-          startRange: i.startRange,
-          endRange: i.endRange,
-          stat: i.distancePerStroke,
-        })),
-      }))}
+      nameAndStats={dpsDataToGeneral(nameAndDps)}
       colors={colors}
       lineType="Dist/stroke"
       unit={'m'}
