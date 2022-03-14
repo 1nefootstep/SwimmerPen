@@ -28,15 +28,18 @@ export default function SetTimeModal({
   positionMillis,
 }: SetTimeModalProps) {
   const dispatch = useAppDispatch();
+  const [currInput, setCurrInput] = useState('');
   const [time, setTime] = useState<number | undefined>(undefined);
-  const [isInvalid, setIsInvalid] = useState(true);
+  const [isInvalid, setIsInvalid] = useState(false);
   const handleChange = (text: string) => {
-    if (onlyNumberRegex.test(text)) {
-      setIsInvalid(false);
-      setTime(parseInt(text));
-    } else {
+    const num = Number(text);
+    if (isNaN(num)) {
       setIsInvalid(true);
+    } else {
+      setIsInvalid(false);
+      setTime(num * 1000);
     }
+    setCurrInput(text);
   };
 
   return (
@@ -44,21 +47,22 @@ export default function SetTimeModal({
       <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <Modal.Content maxWidth={200}>
           <Modal.CloseButton />
-          <Modal.Header>Set Timer's time</Modal.Header>
+          <Modal.Header>Set Time</Modal.Header>
           <Modal.Body>
             <FormControl isInvalid={isInvalid}>
               <InputGroup>
                 <Input
-                  value={time?.toFixed()}
+                  keyboardType="decimal-pad"
+                  value={currInput}
                   onChangeText={handleChange}
-                  w={100}
+                  w={120}
                 />
-                <InputRightAddon children={'ms'} />
+                <InputRightAddon children={'s'} />
               </InputGroup>
               <FormControl.ErrorMessage
                 leftIcon={<WarningOutlineIcon size="xs" />}
               >
-                Only enter numbers.
+                Enter time in seconds.
               </FormControl.ErrorMessage>
             </FormControl>
           </Modal.Body>
