@@ -13,7 +13,6 @@ import {
 } from '../../../../state/redux';
 import * as FileHandler from '../../../../FileHandler';
 import FilePickerScreen from '../../../../screens/FilePickerScreen';
-import { getFrametimes } from '../../../../state/VideoProcessor';
 import { getDefaultMode, getModes } from '../../../../state/AKB';
 
 export default function LoadVideo() {
@@ -37,6 +36,16 @@ export default function LoadVideo() {
         //console.log('LoadVideo: load unsuccessful');
       } else {
         if (loadAnnResult.isSuccessful) {
+          console.log(
+            `loaded pool config: ${JSON.stringify(
+              loadAnnResult.annotation.poolConfig
+            )}`
+          );
+          console.log(
+            `loaded stroke count: ${JSON.stringify(
+              loadAnnResult.annotation.strokeCounts
+            )}`
+          );
           const toSeek = loadAnnResult.annotation.annotations[0];
           if (toSeek !== undefined) {
             VideoService.seek(toSeek, dispatch);

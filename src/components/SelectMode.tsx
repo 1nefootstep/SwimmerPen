@@ -15,14 +15,17 @@ import {
   strToPoolDistance,
   strToRaceDistance,
 } from '../state/AKB/PoolConfig';
-import {
-  updatePoolConfig,
-} from '../state/redux';
+import { updatePoolConfig } from '../state/redux';
 
-export default function SelectMode() {
+interface SelectModeProps {
+  needIsRecording?: boolean;
+}
+
+export default function SelectMode({ needIsRecording }: SelectModeProps) {
   const dispatch = useAppDispatch();
   const poolConfig = useAppSelector(state => state?.annotation.poolConfig);
   const isRecording = useAppSelector(state => state?.recording.isRecording);
+  const isDisabled = (needIsRecording ?? true) && isRecording;
 
   const [modes, setModes] = useState<Modes | null>(null);
 
@@ -61,7 +64,7 @@ export default function SelectMode() {
         <Button
           w={[12, 16, 20, 32, 40]}
           variant="subtle"
-          isDisabled={isRecording}
+          isDisabled={isDisabled}
           onPress={() => setShowModal(true)}
         >
           <Text fontSize={[6, 8, 10, 14, 18]}>
