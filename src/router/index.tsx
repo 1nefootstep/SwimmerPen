@@ -8,7 +8,7 @@ import CameraScreen from '../screens/CameraScreen';
 import Home from '../screens/Home';
 import AnnotationScreen from '../screens/AnnotationScreen';
 import SingleResultScreen from '../screens/ResultScreen/SingleResultScreen';
-import MultiResultScreen from '../screens/MultiResultScreen';
+import MultiResultScreen from '../screens/ResultScreen/MultiResultScreen';
 
 export type RootStackParamList = {
   Home: undefined;

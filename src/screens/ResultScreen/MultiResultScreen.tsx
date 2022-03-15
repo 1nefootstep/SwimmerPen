@@ -17,13 +17,13 @@ import {
   ComputedResult,
   computeResult,
   fixAnnotationFrameTimes,
-} from '../state/StatisticsCalculator';
-import { loadAnnotation, saveAnnotation } from '../FileHandler';
-import { AnnotationInformation } from '../state/AKB';
-import { NavigatorProps } from '../router';
-import MultiFilePickerScreen from './MultiFilePickerScreen';
+} from '../../state/StatisticsCalculator';
+import { loadAnnotation, saveAnnotation } from '../../FileHandler';
+import { AnnotationInformation } from '../../state/AKB';
+import { NavigatorProps } from '../../router';
+import MultiFilePickerScreen from '../MultiFilePickerScreen';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
-import BaseResultScreen from './ResultScreen/BaseResultScreen';
+import BaseResultScreen from './BaseResultScreen';
 
 const COLOR = '#f5f5f4';
 
@@ -137,7 +137,7 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
 
   return (
     <>
-      <Column flex={1} width="100%">
+      <Column safeAreaTop flex={1} width="100%">
         <StatusBar backgroundColor={COLOR} barStyle="light-content" />
         <Row
           bg={COLOR}

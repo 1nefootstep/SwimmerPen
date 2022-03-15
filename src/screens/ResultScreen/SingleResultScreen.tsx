@@ -22,6 +22,7 @@ import {
 import { NavigatorProps } from '../../router';
 import { IconSource } from 'react-native-paper/lib/typescript/components/Icon';
 import BaseResultScreen from './BaseResultScreen';
+import { Column } from 'native-base';
 
 export default function SingleResultScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
@@ -188,15 +189,17 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
   ];
 
   return (
-    <BaseResultScreen
-      navigation={navigation}
-      velocityData={velocityData}
-      dpsData={dpsData}
-      lapScData={lapScData}
-      scData={scData}
-      srData={srData}
-      fabItems={items}
-      viewShotRef={viewShotRef}
-    />
+    <Column safeAreaTop w="100%" flex={1}>
+      <BaseResultScreen
+        navigation={navigation}
+        velocityData={velocityData}
+        dpsData={dpsData}
+        lapScData={lapScData}
+        scData={scData}
+        srData={srData}
+        fabItems={items}
+        viewShotRef={viewShotRef}
+      />
+    </Column>
   );
 }
