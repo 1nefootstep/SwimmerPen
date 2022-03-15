@@ -5,6 +5,7 @@ import { Button, Center, Modal } from 'native-base';
 import * as VideoService from '../../../../state/VideoService';
 import { useAppDispatch } from '../../../../state/redux/hooks';
 import {
+  clearAnnotation,
   clearControls,
   clearVideoStatus,
   loadAnnotation as reduxLoadAnnotation,
@@ -22,6 +23,7 @@ export default function LoadVideo() {
 
   const onSelectVideo = async (uri: string) => {
     const { baseName } = FileHandler.breakUri(uri);
+    dispatch(clearAnnotation());
     const loadAnnResult = await FileHandler.loadAnnotation(baseName);
     //console.log(JSON.stringify(loadAnnResult));
     if (loadAnnResult.isSuccessful) {
