@@ -5,14 +5,16 @@ import { Button, Center, Modal } from 'native-base';
 import * as VideoService from '../../../../state/VideoService';
 import { useAppDispatch } from '../../../../state/redux/hooks';
 import {
+  clearAnnotation,
   clearControls,
   clearVideoStatus,
   loadAnnotation as reduxLoadAnnotation,
   processFrames,
+  setCurrentStrokeRange,
 } from '../../../../state/redux';
 import * as FileHandler from '../../../../FileHandler';
 import FilePickerScreen from '../../../../screens/FilePickerScreen';
-import { getFrametimes } from '../../../../state/VideoProcessor';
+import { getDefaultMode, getModes } from '../../../../state/AKB';
 
 export default function LoadVideo() {
   const [isFilePickerVisible, setIsFilePickerVisible] =
@@ -21,6 +23,7 @@ export default function LoadVideo() {
 
   const onSelectVideo = async (uri: string) => {
     const { baseName } = FileHandler.breakUri(uri);
+    dispatch(clearAnnotation());
     const loadAnnResult = await FileHandler.loadAnnotation(baseName);
     //console.log(JSON.stringify(loadAnnResult));
     if (loadAnnResult.isSuccessful) {
@@ -30,16 +33,35 @@ export default function LoadVideo() {
     dispatch(clearControls());
 
     VideoService.loadVideo(uri).then(isSuccessful => {
+      let mode = getDefaultMode();
       if (!isSuccessful) {
         //console.log('LoadVideo: load unsuccessful');
       } else {
         if (loadAnnResult.isSuccessful) {
+          console.log(
+            `loaded pool config: ${JSON.stringify(
+              loadAnnResult.annotation.poolConfig
+            )}`
+          );
+          console.log(
+            `loaded stroke count: ${JSON.stringify(
+              loadAnnResult.annotation.strokeCounts
+            )}`
+          );
           const toSeek = loadAnnResult.annotation.annotations[0];
           if (toSeek !== undefined) {
             VideoService.seek(toSeek, dispatch);
           }
+          const { poolDistance, raceDistance } =
+            loadAnnResult.annotation.poolConfig;
+          if (poolDistance !== undefined && raceDistance !== undefined) {
+            mode = getModes()[poolDistance][raceDistance];
+          }
+          const startSr = mode.strokeRanges[0].toString();
         }
       }
+      const startSr = mode.strokeRanges[0].toString();
+      dispatch(setCurrentStrokeRange(startSr));
     });
     dispatch(processFrames(uri));
   };

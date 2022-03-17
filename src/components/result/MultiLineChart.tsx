@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { shortenText } from '../../state/Util';
 import GeneralLineChart from './GeneralLineChart';
 
 export interface MultiLineChartProps {
@@ -30,7 +31,7 @@ export default function MultiLineChart({
     const toPick = labels.map(e => e.every(i => mainLabel.includes(i)));
     const legends = nameAndStats
       .filter((e, i) => toPick[i])
-      .map(e => `${lineType}(${e.name})`);
+      .map(e => `${lineType}(${shortenText(e.name)})`);
     const datasets = nameAndStats
       .filter((e, i) => toPick[i])
       .map(e => e.stats.map(i => i.stat));

@@ -112,14 +112,14 @@ export interface MultiFilePickerScreenProps {
   // setIsVisible: React.Dispatch<React.SetStateAction<boolean>>;
   goBack: () => void;
   onSelect: (baseNames: string[]) => void;
-  setIsLandscape: React.Dispatch<React.SetStateAction<boolean>>;
+  // setIsLandscape: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function MultiFilePickerScreen({
   onSelect,
   isVisible,
   goBack,
-  setIsLandscape,
+  // setIsLandscape,
 }: MultiFilePickerScreenProps) {
   const [videoUris, setVideoUris] = useState<Array<string>>([]);
   const [thumbnailUris, setThumbnailUris] = useState<Array<ImageSource>>([]);
@@ -168,33 +168,33 @@ export default function MultiFilePickerScreen({
   };
 
   useEffect(() => {
-    ScreenOrientation.getOrientationAsync()
-      .then(currOrientation => {
-        currOrientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
-        currOrientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT
-          ? ScreenOrientation.lockAsync(
-              ScreenOrientation.OrientationLock.PORTRAIT
-            )
-          : null;
-        setIsLandscape(false);
-      })
-      .catch(err => console.error(err));
+    // ScreenOrientation.getOrientationAsync()
+    //   .then(currOrientation => {
+    //     currOrientation === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
+    //     currOrientation === ScreenOrientation.Orientation.LANDSCAPE_RIGHT
+    //       ? ScreenOrientation.lockAsync(
+    //           ScreenOrientation.OrientationLock.PORTRAIT
+    //         )
+    //       : null;
+    //     setIsLandscape(false);
+    //   })
+    //   .catch(err => console.error(err));
     if (isVisible) {
       updateVideoUris();
     }
-    return () => {
-      ScreenOrientation.getOrientationAsync()
-        .then(currOrientation => {
-          currOrientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
-          currOrientation === ScreenOrientation.Orientation.PORTRAIT_DOWN
-            ? ScreenOrientation.lockAsync(
-                ScreenOrientation.OrientationLock.LANDSCAPE
-              )
-            : null;
-          setIsLandscape(true);
-        })
-        .catch(err => console.error(err));
-    };
+    // return () => {
+    //   ScreenOrientation.getOrientationAsync()
+    //     .then(currOrientation => {
+    //       currOrientation === ScreenOrientation.Orientation.PORTRAIT_UP ||
+    //       currOrientation === ScreenOrientation.Orientation.PORTRAIT_DOWN
+    //         ? ScreenOrientation.lockAsync(
+    //             ScreenOrientation.OrientationLock.LANDSCAPE
+    //           )
+    //         : null;
+    //       setIsLandscape(true);
+    //     })
+    //     .catch(err => console.error(err));
+    // };
   }, [isVisible]);
 
   const onPressCard = (baseName: string) => {

@@ -37,7 +37,7 @@ export default function Select() {
         inputStyle={{backgroundColor: 'white'}}
         leftButtonBackgroundColor="#f43f5e"
         rightButtonBackgroundColor="#10b981"
-        step={1}
+        step={0.5}
         iconStyle={{ color: 'white' }}
         valueType="integer"
         rounded

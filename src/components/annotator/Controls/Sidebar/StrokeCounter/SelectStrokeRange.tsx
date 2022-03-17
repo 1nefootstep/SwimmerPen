@@ -68,7 +68,7 @@ export default function SelectStrokeRange() {
 
   return (
     <Row alignItems="center" justifyContent="flex-end" mb={2} mr={4}>
-      <Box maxH={8} maxW={24} mb={1} mr={1}>
+      <Box maxH={8} maxW={24} mb={1} mr={1} flex={1}>
         <DropDownPicker
           items={items}
           min={0}
@@ -108,8 +108,10 @@ export default function SelectStrokeRange() {
         w={8}
         h={8}
         onPress={() => {
-          const currIndex = mode.strokeRanges.findIndex(e => e.toString() === currentSr);
-          if (currIndex !== -1 && currIndex !== mode.strokeRanges.length) {
+          const currIndex = mode.strokeRanges.findIndex(
+            e => e.toString() === currentSr
+          );
+          if (currIndex !== -1 && currIndex !== mode.strokeRanges.length - 1) {
             const nextSr = mode.strokeRanges[currIndex + 1];
             setSr(nextSr.toString());
           }
