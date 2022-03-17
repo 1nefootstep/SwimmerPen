@@ -34,19 +34,7 @@ import {
 } from '../detectSwimmer';
 import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { DistanceOrDone } from '../state/AnnotationMode';
-
-/**
- * Returns true if a is closer to idealRatio compared to b.
- */
-function ratioIsCloser(
-  a: { width: number; height: number },
-  b: { width: number; height: number },
-  idealRatio: number
-) {
-  const ratioA = a.width / a.height;
-  const ratioB = b.width / b.height;
-  return Math.abs(ratioB - idealRatio) - Math.abs(ratioA - idealRatio) > 0;
-}
+import AiToggleButton from '../components/camera/AiToggleButton';
 
 function filterFormats({
   formats,
@@ -88,6 +76,7 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
   const [format, setFormat] = useState<CameraDeviceFormat | undefined>(
     undefined
   );
+  const [withFrameProcessor, setWithFrameProcessor] = useState<boolean>(false);
   const [ocr, setOcr] = React.useState<DetectionResult | null>(null);
   const [pixelRatio, setPixelRatio] = useState<number>(1);
   const [scWithTimestamp, setScWithTimestamp] = useState<DistanceToScWithTime>(
@@ -319,8 +308,9 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
         isActive={isActive}
         enableZoomGesture={true}
         onInitialized={() => setIsReady(true)}
-        frameProcessorFps={5}
-        frameProcessor={frameProcessor}
+        fps={30}
+        frameProcessorFps={withFrameProcessor ? 5 : undefined}
+        frameProcessor={withFrameProcessor ? frameProcessor : undefined}
       />
       {renderOverlay()}
       <Row flex={1}>
@@ -333,6 +323,10 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
           />
           <SelectMode />
           <Column flex={2} />
+          <AiToggleButton
+            isToggled={withFrameProcessor}
+            setIsToggled={setWithFrameProcessor}
+          />
           <MuteButton isMute={isMute} setIsMute={setIsMute} />
           <SelectFormat
             formats={formats}
