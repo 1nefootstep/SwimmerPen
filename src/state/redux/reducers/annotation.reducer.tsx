@@ -6,6 +6,7 @@ import {
   UpdatePoolConfigAction,
   LoadAnnotationAction,
   AddFrameTimesAction,
+  AddManyStrokeCountAction,
 } from '../types';
 import { ANNOTATION_ACTION_TYPES } from '../actions';
 import { AnnotationInformation } from '../../AKB/AnnotationKnowledgeBank';
@@ -48,6 +49,18 @@ export function annotationReducer(
       const { strokeRange, scWithTime } = payload;
       const copiedStrokeCounts = { ...state.strokeCounts };
       copiedStrokeCounts[strokeRange.toString()] = scWithTime;
+      return {
+        ...state,
+        strokeCounts: copiedStrokeCounts,
+      };
+    }
+    case ANNOTATION_ACTION_TYPES.ADD_MANY_STROKE_COUNT: {
+      const { payload } = action as AddManyStrokeCountAction;
+      const copiedStrokeCounts = { ...state.strokeCounts };
+      payload.forEach(e => {
+        const { strokeRange, scWithTime } = e;        
+        copiedStrokeCounts[strokeRange.toString()] = scWithTime;
+      })
       return {
         ...state,
         strokeCounts: copiedStrokeCounts,

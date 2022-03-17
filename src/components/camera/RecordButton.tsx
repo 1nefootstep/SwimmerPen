@@ -2,7 +2,11 @@ import React from 'react';
 import { IconButton } from 'native-base';
 import { Entypo } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../state/redux/hooks';
-import { saveVideoAndAnnotation, startRecording } from '../../state/redux';
+import {
+  clearAnnotationExceptPoolConfig,
+  saveVideoAndAnnotation,
+  startRecording,
+} from '../../state/redux';
 import { Camera } from 'react-native-vision-camera';
 
 export default function RecordButton({ camera }: { camera: Camera | null }) {
@@ -14,6 +18,9 @@ export default function RecordButton({ camera }: { camera: Camera | null }) {
     console.log(`record pressed: isCameraReady: ${isCameraReady}`);
     if (isCameraReady) {
       if (!isRecording) {
+        // clear annotations before start record
+        dispatch(clearAnnotationExceptPoolConfig());
+
         camera!.startRecording({
           flash: 'off',
           onRecordingFinished: video => {

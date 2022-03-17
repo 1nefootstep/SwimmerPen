@@ -9,7 +9,12 @@ import CheckpointButton from '../components/camera/CheckpointButton';
 import LoadingScreen from './LoadingScreen';
 import ErrorScreen from './ErrorScreen';
 import { createDirs } from '../FileHandler';
-import { clearAnnotation } from '../state/redux';
+import {
+  addAiEstimatedSc,
+  clearAnnotation,
+  clearAnnotationExceptPoolConfig,
+  DistanceToScWithTime,
+} from '../state/redux';
 import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
 import {
   Camera,
@@ -21,7 +26,11 @@ import { useIsForeground } from '../hooks/useIsForeground';
 import SelectFormat from '../components/camera/SelectFormat';
 import { getMaxFps } from '../state/Util';
 import { NavigatorProps } from '../router';
-import { detectSwimmers, BoundingFrame } from '../detectSwimmer';
+import {
+  detectSwimmers,
+  BoundingFrame,
+  BoundingFrameTrio,
+} from '../detectSwimmer';
 import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { DistanceOrDone } from '../state/AnnotationMode';
 
@@ -67,10 +76,6 @@ function filterFormats({
     }
   });
   return Object.entries(result).map(e => e[1]);
-}
-
-interface DistanceToScWithTime {
-  [distance: number | string]: { sc: number; time: number };
 }
 
 export default function CameraScreen({ navigation }: NavigatorProps) {
@@ -190,7 +195,8 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
     sharedIsRecording.value = isRecording;
     sharedCurrentDistance.value = currentDistance;
     if (isStoppingRecording) {
-      console.log(`scWithTime: ${JSON.stringify(scWithTimestamp)}`);
+      // console.log(`scWithTime: ${JSON.stringify(scWithTimestamp)}`);
+      dispatch(addAiEstimatedSc(scWithTimestamp));
       strokeCounted.value = 0;
       setScWithTimestamp({});
     }
@@ -321,7 +327,12 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
       />
       <Row flex={1}>
         <Column justifyContent="space-around" m={3}>
-          <BackButton goBack={navigation.goBack} />
+          <BackButton
+            goBack={() => {
+              dispatch(clearAnnotationExceptPoolConfig());
+              navigation.goBack();
+            }}
+          />
           <SelectMode />
           <Column flex={2} />
           <MuteButton isMute={isMute} setIsMute={setIsMute} />

@@ -13,6 +13,11 @@ export type AddStrokeCountAction = {
   payload: { strokeRange: StrokeRange; scWithTime: StrokeCountWithTimes };
 };
 
+export type AddManyStrokeCountAction = {
+  type: string;
+  payload: { strokeRange: StrokeRange; scWithTime: StrokeCountWithTimes }[];
+};
+
 export type ClearAnnotatationAction = {
   type: string;
 };
@@ -56,6 +61,7 @@ export type AnnotationActionTypes =
   | ClearAnnotatationAction
   | ClearAnnotationExceptPoolConfigAction
   | AddStrokeCountAction
+  | AddManyStrokeCountAction
   | AddFrameTimesAction
   | UpdateNameAction
   | UpdatePoolConfigAction
