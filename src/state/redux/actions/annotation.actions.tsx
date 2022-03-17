@@ -9,6 +9,7 @@ import {
 import {
   AddAnnotationAction,
   AddFrameTimesAction,
+  AddManyStrokeCountAction,
   AddStrokeCountAction,
   ClearAnnotatationAction,
   ClearAnnotationExceptPoolConfigAction,
@@ -19,6 +20,7 @@ import {
 export enum ANNOTATION_ACTION_TYPES {
   ADD_ANNOTATION = 'ANNOTATION/ADD_ANNOTATION',
   ADD_STROKE_COUNT = 'ANNOTATION/ADD_STROKE_COUNT',
+  ADD_MANY_STROKE_COUNT = 'ANNOTATION/ADD_MANY_STROKE_COUNT',
   CLEAR_ANNOTATION = 'ANNOTATION/CLEAR_ANNOTATION',
   CLEAR_ANNOTATION_EXCEPT_POOL_CONFIG = 'ANNOTATION/CLEAR_ANNOTATION_EXCEPT_POOL_CONFIG',
   UPDATE_NAME = 'ANNOTATION/UPDATE_NAME',
@@ -73,6 +75,28 @@ export function addStrokeCount(
         strokeCount: strokeCount,
       },
     },
+  };
+}
+
+export function addManyStrokeCount(
+  manyStrokeCounts: {
+    startRange: Distance;
+    endRange: Distance;
+    startTime: Timestamp;
+    endTime: Timestamp;
+    strokeCount: number;
+  }[]
+): AddManyStrokeCountAction {
+  return {
+    type: ANNOTATION_ACTION_TYPES.ADD_MANY_STROKE_COUNT,
+    payload: manyStrokeCounts.map(e => ({
+      strokeRange: new StrokeRange(e.startRange, e.endRange),
+      scWithTime: {
+        startTime: e.startTime,
+        endTime: e.endTime,
+        strokeCount: e.strokeCount,
+      },
+    })),
   };
 }
 

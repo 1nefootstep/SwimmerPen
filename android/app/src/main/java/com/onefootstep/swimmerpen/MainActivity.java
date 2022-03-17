@@ -2,12 +2,12 @@ package com.onefootstep.swimmerpen;
 
 import android.os.Build;
 import android.os.Bundle;
-
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
-
+import com.mrousavy.camera.frameprocessor.FrameProcessorPlugin;
 import expo.modules.ReactActivityDelegateWrapper;
+
 
 public class MainActivity extends ReactActivity {
   @Override
@@ -17,6 +17,8 @@ public class MainActivity extends ReactActivity {
     // This is required for expo-splash-screen.
     setTheme(R.style.AppTheme);
     super.onCreate(null);
+    FrameProcessorPlugin.register(
+        new SwimmerDetectionPlugin(getApplicationContext()));
   }
 
   /**

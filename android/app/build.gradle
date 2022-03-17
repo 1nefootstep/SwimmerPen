@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
-
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 import com.android.build.OutputFile
 
 /**
@@ -135,8 +136,8 @@ android {
         applicationId 'com.onefootstep.swimmerpen'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
-        versionName "0.0.7"
+        versionCode 8
+        versionName "0.0.8"
     }
     splits {
         abi {
@@ -181,12 +182,19 @@ android {
 
         }
     }
+
+    packagingOptions {
+        pickFirst '**/*.so'
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
+    implementation "androidx.camera:camera-core:1.1.0-alpha08"
+    implementation "org.tensorflow:tensorflow-lite-task-vision:0.3.1"
 
     def isGifEnabled = (findProperty('expo.gif.enabled') ?: "") == "true";
     def isWebpEnabled = (findProperty('expo.webp.enabled') ?: "") == "true";

@@ -2,8 +2,10 @@ import { ThunkAction } from 'redux-thunk';
 import {
   getDefaultMode,
   getModes,
+  Modes,
   PoolDistance,
   RaceDistance,
+  StrokeRange,
 } from '../../AKB';
 import { findNextDistance } from '../../AnnotationMode';
 import { RootState } from '../reducers';
@@ -17,6 +19,7 @@ import {
 } from './annotation.actions';
 import { setFrameLoadingStatus } from './video.actions';
 import { stopRecording as stopRecordingAction } from './recording.actions';
+import { addManyStrokeCount } from './annotation.actions';
 import { updateDistance } from './recording.actions';
 import { setCurrentDistance } from './controls.actions';
 import { UnixTime } from '../../UnixTime';
@@ -30,6 +33,10 @@ export type AppThunkAction = ThunkAction<
   unknown,
   AppActionTypes
 >;
+
+export interface DistanceToScWithTime {
+  [distance: number | string]: { sc: number; time: number };
+}
 
 export function addAnnotationWhileRecording(
   currentTime: UnixTime
@@ -48,6 +55,67 @@ export function addAnnotationWhileRecording(
       const nextDistance = findNextDistance(mode, recording.currentDistance);
       dispatch(updateDistance(nextDistance));
     }
+  };
+}
+
+export function addAiEstimatedSc(
+  distToSc: DistanceToScWithTime
+): AppThunkAction {
+  return (dispatch, getState) => {
+    const { annotation, recording } = getState();
+    const startRecordTime = recording.startRecordTime;
+    const { poolDistance, raceDistance } = annotation.poolConfig;
+    const modes: Modes = getModes();
+    const mode = modes[poolDistance][raceDistance];
+    const shifted = Object.fromEntries(
+      Object.entries(distToSc)
+        .filter(e => e[0] !== 'DONE')
+        .map(e => {
+          const [key, value] = e;
+          const nextDist = findNextDistance(mode, parseInt(key));
+          return [key, distToSc[nextDist]];
+        })
+    );
+    console.log(`ai sc annotations: ${JSON.stringify(shifted)}`);
+    const formattedScWithTime = mode.strokeRanges
+      .filter(sr => {
+        const first = shifted[sr.startRange];
+        const second = shifted[sr.endRange];
+        return first !== undefined && second !== undefined;
+      })
+      .map(sr => {
+        const first = shifted[sr.startRange];
+        const second = shifted[sr.endRange];
+        return {
+          startRange: sr.startRange,
+          endRange: sr.endRange,
+          startTime: first.time - startRecordTime,
+          endTime: second.time - startRecordTime,
+          strokeCount: second.sc - first.sc,
+        };
+      });
+    console.log(`formatted: ${JSON.stringify(formattedScWithTime)}`);
+    dispatch(addManyStrokeCount(formattedScWithTime));
+    const basename = annotation.name;
+    const copied = { ...annotation };
+    formattedScWithTime
+      .map(e => ({
+        strokeRange: new StrokeRange(e.startRange, e.endRange),
+        scWithTime: {
+          startTime: e.startTime,
+          endTime: e.endTime,
+          strokeCount: e.strokeCount,
+        },
+      }))
+      .forEach(e => {
+        copied.strokeCounts[e.strokeRange.toString()] = e.scWithTime;
+      });
+    FileHandler.saveAnnotation(basename, copied);
+    console.log(
+      `saved at thunk... baseName: ${basename} ${JSON.stringify(
+        copied.annotations
+      )} \n${JSON.stringify(copied.strokeCounts)}`
+    );
   };
 }
 
@@ -85,7 +153,7 @@ export function saveVideoAndAnnotation({
       const { baseName } = FileHandler.breakUri(saveVideoResult.filename);
       annotation.name = baseName;
       FileHandler.saveAnnotation(baseName, annotation);
-      dispatch(clearAnnotationExceptPoolConfig());
+      // dispatch(clearAnnotationExceptPoolConfig());
       if (stopRecording) {
         dispatch(stopRecordingAction());
       }
@@ -127,7 +195,6 @@ function fn(uri: string, dispatch: any) {
       dispatch(setFrameLoadingStatus('failed'));
     });
 }
-
 
 export function processFrames(uri: string): AppThunkAction {
   return (dispatch, getState) => {

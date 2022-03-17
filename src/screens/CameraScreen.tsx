@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Box, Row, Center, Column } from 'native-base';
-import { StyleSheet } from 'react-native';
+import { Box, Row, Center, Column, Text, Pressable, Button } from 'native-base';
+import { LayoutChangeEvent, PixelRatio, StyleSheet } from 'react-native';
 import RecordButton from '../components/camera/RecordButton';
 import SelectMode from '../components/SelectMode';
 import BackButton from '../components/BackButton';
@@ -9,30 +9,32 @@ import CheckpointButton from '../components/camera/CheckpointButton';
 import LoadingScreen from './LoadingScreen';
 import ErrorScreen from './ErrorScreen';
 import { createDirs } from '../FileHandler';
-import { clearAnnotation } from '../state/redux';
-import { useAppDispatch } from '../state/redux/hooks';
+import {
+  addAiEstimatedSc,
+  clearAnnotation,
+  clearAnnotationExceptPoolConfig,
+  DistanceToScWithTime,
+} from '../state/redux';
+import { useAppDispatch, useAppSelector } from '../state/redux/hooks';
 import {
   Camera,
   CameraDeviceFormat,
   useCameraDevices,
+  useFrameProcessor,
 } from 'react-native-vision-camera';
 import { useIsForeground } from '../hooks/useIsForeground';
 import SelectFormat from '../components/camera/SelectFormat';
 import { getMaxFps } from '../state/Util';
 import { NavigatorProps } from '../router';
-
-/**
- * Returns true if a is closer to idealRatio compared to b.
- */
-function ratioIsCloser(
-  a: { width: number; height: number },
-  b: { width: number; height: number },
-  idealRatio: number
-) {
-  const ratioA = a.width / a.height;
-  const ratioB = b.width / b.height;
-  return Math.abs(ratioB - idealRatio) - Math.abs(ratioA - idealRatio) > 0;
-}
+import {
+  detectSwimmers,
+  BoundingFrame,
+  BoundingFrameTrio,
+  DetectionResult,
+} from '../detectSwimmer';
+import { runOnJS, useSharedValue } from 'react-native-reanimated';
+import { DistanceOrDone } from '../state/AnnotationMode';
+import AiToggleButton from '../components/camera/AiToggleButton';
 
 function filterFormats({
   formats,
@@ -65,68 +67,130 @@ function filterFormats({
   return Object.entries(result).map(e => e[1]);
 }
 
-function sortFormats(
-  left: CameraDeviceFormat,
-  right: CameraDeviceFormat,
-  idealResolution = [1920, 1080],
-  idealFps = 60
-): number {
-  // in this case, points aren't "normalized" (e.g. higher resolution = 1 point, lower resolution = -1 points)
-  // the closer to 0, the more points
-  function inversePoints({
-    value,
-    numerator = 1,
-    denominator = 0.1,
-  }: {
-    value: number;
-    numerator?: number;
-    denominator?: number;
-  }) {
-    return numerator / (denominator + Math.abs(value));
-  }
-  const idealRatio = idealResolution[0] / idealResolution[1];
-  const idealPixelCount = idealResolution[0] * idealResolution[1];
-  let leftPoints = inversePoints({
-    value: left.videoWidth / left.videoHeight - idealRatio,
-  });
-  let rightPoints = inversePoints({
-    value: right.videoWidth / right.videoHeight - idealRatio,
-  });
-
-  leftPoints += inversePoints({
-    value: getMaxFps(left) - idealFps,
-    denominator: idealFps / 10,
-    numerator: idealFps,
-  });
-  rightPoints += inversePoints({
-    value: getMaxFps(right) - idealFps,
-    denominator: idealFps / 10,
-    numerator: idealFps,
-  });
-  leftPoints += inversePoints({
-    value: left.videoWidth * left.videoHeight - idealPixelCount,
-    denominator: idealPixelCount / 10,
-    numerator: idealPixelCount,
-  });
-  rightPoints += inversePoints({
-    value: right.videoWidth * right.videoHeight - idealPixelCount,
-    denominator: idealPixelCount / 10,
-    numerator: idealPixelCount,
-  });
-
-  return rightPoints - leftPoints;
-}
-
 export default function CameraScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const cameraRef = useRef<Camera>(null);
   const [isReady, setIsReady] = useState<boolean>(false);
-  // const [isRecording, setIsRecording] = useState<boolean>(false);
   const [isMute, setIsMute] = useState<boolean>(false);
   const [format, setFormat] = useState<CameraDeviceFormat | undefined>(
     undefined
   );
+  const [withFrameProcessor, setWithFrameProcessor] = useState<boolean>(false);
+  const [ocr, setOcr] = React.useState<DetectionResult | null>(null);
+  const [pixelRatio, setPixelRatio] = useState<number>(1);
+  const [scWithTimestamp, setScWithTimestamp] = useState<DistanceToScWithTime>(
+    {}
+  );
+  const isRecording = useAppSelector(state => state.recording.isRecording);
+  const currentDistance = useAppSelector(
+    state => state.recording.currentDistance
+  );
+  const initBf = useSharedValue<BoundingFrame | null>(null);
+  const bfTrio = useSharedValue<BoundingFrameTrio>({});
+  const time = useSharedValue<number>(0);
+  const strokeCounted = useSharedValue<number>(0);
+  const sharedIsRecording = useSharedValue<boolean>(isRecording);
+  const sharedCurrentDistance = useSharedValue<DistanceOrDone>(currentDistance);
+
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet';
+    if (
+      sharedIsRecording.value &&
+      sharedCurrentDistance.value !== 'DONE'
+      // sharedCurrentDistance.value > 0
+    ) {
+      const results = detectSwimmers(frame);
+      if (results === null || results === undefined) {
+        return;
+      }
+      if (initBf.value === null) {
+        const timeNow = Date.now();
+        if (timeNow > time.value + 1000) {
+          runOnJS(setOcr)(results);
+          time.value = timeNow;
+        }
+      }
+      if (results.result.length === 0) {
+        return;
+      }
+      const { prevPrevBf, prevBf, currBf } = bfTrio.value;
+      const newBfTrio: BoundingFrameTrio = {
+        prevPrevBf: prevBf,
+        prevBf: currBf,
+      };
+      const resultBf = results.result.map(e => e.frame);
+      let c: BoundingFrame | undefined;
+      if (currBf === undefined) {
+        // set initial bf
+        if (initBf.value === null) {
+          return;
+        }
+        newBfTrio.currBf = initBf.value;
+        // c = resultBf.reduce((prev, next) => (next.y > prev.y ? next : prev));
+        // newBfTrio.currBf = c;
+        bfTrio.value = newBfTrio;
+        return;
+      }
+      c = resultBf.reduce((prev, curr) => {
+        const cx1 = prev.x + prev.width / 2;
+        const cy1 = prev.y + prev.height / 2;
+        const cx2 = curr.x + curr.width / 2;
+        const cy2 = curr.y + curr.height / 2;
+        const cx3 = currBf.x + currBf.width / 2;
+        const cy3 = currBf.y + currBf.height / 2;
+        const dist1 = Math.sqrt(
+          Math.pow(cx1 - cx3, 2) + Math.pow(cy1 - cy3, 2)
+        );
+        const dist2 = Math.sqrt(
+          Math.pow(cx2 - cx3, 2) + Math.pow(cy2 - cy3, 2)
+        );
+        if (dist2 < dist1) {
+          return curr;
+        } else {
+          return prev;
+        }
+      });
+      newBfTrio.currBf = c;
+      if (prevBf !== undefined) {
+        const bfTrioIsPeak =
+          newBfTrio.prevBf === undefined ||
+          newBfTrio.prevPrevBf === undefined ||
+          newBfTrio.currBf === undefined
+            ? false
+            : newBfTrio.prevBf.height > newBfTrio.prevPrevBf.height &&
+              newBfTrio.prevBf.height >= newBfTrio.currBf.height;
+        if (bfTrioIsPeak) {
+          strokeCounted.value += 0.5;
+        }
+      }
+      bfTrio.value = newBfTrio;
+    }
+  }, []);
+
+  useEffect(() => {
+    const isStoppingRecording = sharedIsRecording.value && !isRecording;
+    sharedIsRecording.value = isRecording;
+    sharedCurrentDistance.value = currentDistance;
+    if (initBf.value !== null) {
+      setOcr(null);
+    }
+    if (isStoppingRecording) {
+      // console.log(`scWithTime: ${JSON.stringify(scWithTimestamp)}`);
+      dispatch(addAiEstimatedSc(scWithTimestamp));
+      strokeCounted.value = 0;
+      setScWithTimestamp({});
+      initBf.value = null;
+    }
+    setScWithTimestamp(prev => {
+      if (prev[currentDistance] !== undefined) {
+        return prev;
+      }
+      const copied = { ...prev };
+      copied[currentDistance] = { sc: strokeCounted.value, time: Date.now() };
+      return copied;
+    });
+  }, [isRecording, currentDistance]);
   const isActive = useIsForeground();
 
   const devices = useCameraDevices();
@@ -184,6 +248,38 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
     }
   };
 
+  const renderOverlay = () => {
+    return (
+      <>
+        {ocr?.result.map((e, i) => {
+          const width = e.frame.width * pixelRatio;
+          const height = e.frame.height * pixelRatio;
+          return (
+            <Button
+              variant="unstyled"
+              key={`${e.label}-${JSON.stringify(e.frame)}`}
+              onPress={() => {
+                initBf.value = e.frame;
+                setOcr(null);
+              }}
+              style={{
+                position: 'absolute',
+                left: e.frame.x * pixelRatio,
+                top: e.frame.y * pixelRatio,
+                backgroundColor: 'transparent',
+                width: width,
+                height: height,
+                borderColor: 'red',
+                borderWidth: 2,
+                borderRadius: 6,
+              }}
+            />
+          );
+        })}
+      </>
+    );
+  };
+
   if (hasPermission === null) {
     return (
       <ErrorScreen failReason="Do not have camera permissions or microphone permission." />
@@ -193,7 +289,15 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
     return <LoadingScreen itemThatIsLoading="camera" />;
   }
   return (
-    <Box flex={1}>
+    <Box
+      flex={1}
+      onLayout={(event: LayoutChangeEvent) => {
+        setPixelRatio(
+          event.nativeEvent.layout.width /
+            PixelRatio.getPixelSizeForLayoutSize(event.nativeEvent.layout.width)
+        );
+      }}
+    >
       <Camera
         style={StyleSheet.absoluteFill}
         device={device}
@@ -204,12 +308,25 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
         isActive={isActive}
         enableZoomGesture={true}
         onInitialized={() => setIsReady(true)}
+        fps={30}
+        frameProcessorFps={withFrameProcessor ? 5 : undefined}
+        frameProcessor={withFrameProcessor ? frameProcessor : undefined}
       />
+      {renderOverlay()}
       <Row flex={1}>
         <Column justifyContent="space-around" m={3}>
-          <BackButton goBack={navigation.goBack} />
+          <BackButton
+            goBack={() => {
+              dispatch(clearAnnotationExceptPoolConfig());
+              navigation.goBack();
+            }}
+          />
           <SelectMode />
           <Column flex={2} />
+          <AiToggleButton
+            isToggled={withFrameProcessor}
+            setIsToggled={setWithFrameProcessor}
+          />
           <MuteButton isMute={isMute} setIsMute={setIsMute} />
           <SelectFormat
             formats={formats}
