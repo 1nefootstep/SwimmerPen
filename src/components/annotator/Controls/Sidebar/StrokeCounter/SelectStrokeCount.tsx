@@ -24,6 +24,7 @@ export default function Select() {
         minValue={0}
         onChange={value => {
           if (currentSr !== '') {
+            console.log(`value: ${value}`);
             const { startRange, endRange } = StrokeRange.fromString(currentSr);
             dispatch(
               addStrokeCount(startRange, endRange, startTime, endTime, value)
@@ -39,7 +40,7 @@ export default function Select() {
         rightButtonBackgroundColor="#10b981"
         step={0.5}
         iconStyle={{ color: 'white' }}
-        valueType="integer"
+        valueType="real"
         rounded
       />
     </Row>
