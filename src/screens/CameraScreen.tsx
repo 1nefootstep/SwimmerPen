@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Box, Row, Center, Column, Text } from 'native-base';
+import { Box, Row, Center, Column, Text, Pressable, Button } from 'native-base';
 import { LayoutChangeEvent, PixelRatio, StyleSheet } from 'react-native';
 import RecordButton from '../components/camera/RecordButton';
 import SelectMode from '../components/SelectMode';
@@ -30,6 +30,7 @@ import {
   detectSwimmers,
   BoundingFrame,
   BoundingFrameTrio,
+  DetectionResult,
 } from '../detectSwimmer';
 import { runOnJS, useSharedValue } from 'react-native-reanimated';
 import { DistanceOrDone } from '../state/AnnotationMode';
@@ -87,6 +88,7 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
   const [format, setFormat] = useState<CameraDeviceFormat | undefined>(
     undefined
   );
+  const [ocr, setOcr] = React.useState<DetectionResult | null>(null);
   const [pixelRatio, setPixelRatio] = useState<number>(1);
   const [scWithTimestamp, setScWithTimestamp] = useState<DistanceToScWithTime>(
     {}
@@ -95,7 +97,9 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
   const currentDistance = useAppSelector(
     state => state.recording.currentDistance
   );
+  const initBf = useSharedValue<BoundingFrame | null>(null);
   const bfTrio = useSharedValue<BoundingFrameTrio>({});
+  const time = useSharedValue<number>(0);
   const strokeCounted = useSharedValue<number>(0);
   const sharedIsRecording = useSharedValue<boolean>(isRecording);
   const sharedCurrentDistance = useSharedValue<DistanceOrDone>(currentDistance);
@@ -104,15 +108,21 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
     'worklet';
     if (
       sharedIsRecording.value &&
-      sharedCurrentDistance.value !== 'DONE' &&
-      sharedCurrentDistance.value > 0
+      sharedCurrentDistance.value !== 'DONE'
+      // sharedCurrentDistance.value > 0
     ) {
       const results = detectSwimmers(frame);
-      if (
-        results === null ||
-        results === undefined ||
-        results.result.length === 0
-      ) {
+      if (results === null || results === undefined) {
+        return;
+      }
+      if (initBf.value === null) {
+        const timeNow = Date.now();
+        if (timeNow > time.value + 1000) {
+          runOnJS(setOcr)(results);
+          time.value = timeNow;
+        }
+      }
+      if (results.result.length === 0) {
         return;
       }
       const { prevPrevBf, prevBf, currBf } = bfTrio.value;
@@ -124,8 +134,12 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
       let c: BoundingFrame | undefined;
       if (currBf === undefined) {
         // set initial bf
-        c = resultBf.reduce((prev, next) => (next.y > prev.y ? next : prev));
-        newBfTrio.currBf = c;
+        if (initBf.value === null) {
+          return;
+        }
+        newBfTrio.currBf = initBf.value;
+        // c = resultBf.reduce((prev, next) => (next.y > prev.y ? next : prev));
+        // newBfTrio.currBf = c;
         bfTrio.value = newBfTrio;
         return;
       }
@@ -162,43 +176,22 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
         }
       }
       bfTrio.value = newBfTrio;
-      // runOnJS(setOcr)(results);
     }
   }, []);
-  // const addToLsOfBf = (resultBf: Array<BoundingFrame>) => {
-  //   console.log(`new`);
-  //   if (resultBf.length === 0) {
-  //     return;
-  //   }
-  //   setLsOfBf(prev => {
-  //     let nextBf: BoundingFrame | null = null;
-  //     if (prev.length === 0) {
-  //       nextBf = resultBf.reduce((prev, next) =>
-  //         next.y > prev.y ? next : prev
-  //       );
-  //     } else {
-  //       const prevBf = prev[prev.length - 1];
-  //       nextBf = findNearestBoundingFrame(prevBf, resultBf);
-  //     }
-  //     if (nextBf !== null) {
-  //       return prev.concat(nextBf);
-  //     }
-  //     return prev;
-  //   });
-  // };
-  // const addResultToResultList = (result: DetectionResult) => {
-  //   setResultList(resultList.concat(result));
-  // }
 
   useEffect(() => {
     const isStoppingRecording = sharedIsRecording.value && !isRecording;
     sharedIsRecording.value = isRecording;
     sharedCurrentDistance.value = currentDistance;
+    if (initBf.value !== null) {
+      setOcr(null);
+    }
     if (isStoppingRecording) {
       // console.log(`scWithTime: ${JSON.stringify(scWithTimestamp)}`);
       dispatch(addAiEstimatedSc(scWithTimestamp));
       strokeCounted.value = 0;
       setScWithTimestamp({});
+      initBf.value = null;
     }
     setScWithTimestamp(prev => {
       if (prev[currentDistance] !== undefined) {
@@ -266,33 +259,37 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
     }
   };
 
-  console.log(`stroke count: ${strokeCounted.value}`);
-  // const renderOverlay = () => {
-  //   return (
-  //     <>
-  //       {ocr?.result.map((e, i) => {
-  //         const width = e.frame.width * pixelRatio;
-  //         const height = e.frame.height * pixelRatio;
-  //         return (
-  //           <Box
-  //             key={`${e.label}-${JSON.stringify(e.frame)}`}
-  //             style={{
-  //               position: 'absolute',
-  //               left: e.frame.x * pixelRatio,
-  //               top: e.frame.y * pixelRatio,
-  //               backgroundColor: 'transparent',
-  //               width: width,
-  //               height: height,
-  //               borderColor: 'red',
-  //               borderWidth: 1,
-  //               borderRadius: 6,
-  //             }}
-  //           />
-  //         );
-  //       })}
-  //     </>
-  //   );
-  // };
+  const renderOverlay = () => {
+    return (
+      <>
+        {ocr?.result.map((e, i) => {
+          const width = e.frame.width * pixelRatio;
+          const height = e.frame.height * pixelRatio;
+          return (
+            <Button
+              variant="unstyled"
+              key={`${e.label}-${JSON.stringify(e.frame)}`}
+              onPress={() => {
+                initBf.value = e.frame;
+                setOcr(null);
+              }}
+              style={{
+                position: 'absolute',
+                left: e.frame.x * pixelRatio,
+                top: e.frame.y * pixelRatio,
+                backgroundColor: 'transparent',
+                width: width,
+                height: height,
+                borderColor: 'red',
+                borderWidth: 2,
+                borderRadius: 6,
+              }}
+            />
+          );
+        })}
+      </>
+    );
+  };
 
   if (hasPermission === null) {
     return (
@@ -325,6 +322,7 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
         frameProcessorFps={5}
         frameProcessor={frameProcessor}
       />
+      {renderOverlay()}
       <Row flex={1}>
         <Column justifyContent="space-around" m={3}>
           <BackButton
