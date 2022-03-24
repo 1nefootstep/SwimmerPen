@@ -98,10 +98,15 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
   ) => {
     const header: Array<string> = [];
     const values: Array<string> = [];
-    td.forEach(e => {
-      header.push(`${e.distance}m`);
-      values.push(formatTimeFromPositionSeconds(e.time));
-    });
+    if (td.length > 0) {
+      td.map(e => ({
+        distance: e.distance,
+        time: e.time - td[0].time,
+      })).forEach(e => {
+        header.push(`${e.distance}m`);
+        values.push(formatTimeFromPositionSeconds(e.time));
+      });
+    }
     sc.forEach(e => {
       header.push(`SC ${e.startRange}-${e.endRange}m`);
       values.push(e.strokeCount.toFixed(2));
