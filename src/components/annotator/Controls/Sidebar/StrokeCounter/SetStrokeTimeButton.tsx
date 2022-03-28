@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Column, Row, Button } from 'native-base';
 
 import { formatTimeFromPosition } from '../../../../../state/Util';
 import { useAppSelector } from '../../../../../state/redux/hooks';
 import { useDispatch } from 'react-redux';
 import { addStrokeCount, saveAnnotation } from '../../../../../state/redux';
-import { StrokeRange } from '../../../../../state/AKB';
+import {
+  getDefaultMode,
+  getModes,
+  Modes,
+  StrokeRange,
+} from '../../../../../state/AKB';
 import Hidden from '../../../../Hidden';
 import { getPosition } from '../../../../../state/VideoService';
 
@@ -17,8 +22,19 @@ export default function SetStrokeTimeButton() {
     currentSr in strokeCounts
       ? strokeCounts[currentSr]
       : { strokeCount: 0, startTime: 0, endTime: 0 };
-
+  const [modes, setModes] = useState<Modes | null>(null);
   const sr = StrokeRange.fromString(currentSr);
+  const { poolDistance, raceDistance } = useAppSelector(
+    state => state.annotation.poolConfig
+  );
+  const mode =
+    modes !== null ? modes[poolDistance][raceDistance] : getDefaultMode();
+
+  useEffect(() => {
+    const modes: Modes = getModes();
+    setModes(modes);
+  }, []);
+
   const onPressLeft = async (sr: StrokeRange) => {
     if (currentSr === '') {
       return;
@@ -53,6 +69,24 @@ export default function SetStrokeTimeButton() {
           scWithTime.strokeCount
         )
       );
+      const nextSrIndexStartEndRangeSame = mode.strokeRanges.findIndex(
+        e => e.startRange === sr.endRange
+      );
+      if (nextSrIndexStartEndRangeSame !== -1) {
+        const nextSr = mode.strokeRanges[nextSrIndexStartEndRangeSame];
+        const nextScWithTime = strokeCounts[nextSr.toString()];
+        if (nextScWithTime === undefined || nextScWithTime.startTime === 0) {
+          dispatch(
+            addStrokeCount(
+              nextSr.startRange,
+              nextSr.endRange,
+              posResult.positionMillis,
+              nextScWithTime?.endTime ?? 0,
+              nextScWithTime?.strokeCount ?? 0
+            )
+          );
+        }
+      }
       dispatch(saveAnnotation());
     }
   };
