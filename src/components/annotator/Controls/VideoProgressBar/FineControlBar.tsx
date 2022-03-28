@@ -40,7 +40,7 @@ export default function FineControlBar({
   const componentRef = useRef<Animated.View | null>(null);
   const numOfDashes = Math.ceil(length / (dashGap + dashThickness));
 
-  const MOVEMENT_TO_FRAME_RATIO = 4;
+  const MOVEMENT_TO_FRAME_RATIO = 2;
 
   const displacementShared = useSharedValue(0);
 
@@ -61,10 +61,12 @@ export default function FineControlBar({
         onActive: (event, ctx) => {
           displacementShared.value = event.translationX;
           const invertedTranslation = -Math.round(displacementShared.value);
-          const toSeek =
-            positionMillis +
-            Math.floor(invertedTranslation * MOVEMENT_TO_FRAME_RATIO);
-          seekCallback(toSeek);
+          if (Math.abs(invertedTranslation) > 20) {
+            const toSeek =
+              positionMillis +
+              Math.floor(invertedTranslation * MOVEMENT_TO_FRAME_RATIO);
+            seekCallback(toSeek);
+          }
         },
         onEnd: (event, ctx) => {
           displacementShared.value = withDecay({

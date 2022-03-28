@@ -107,7 +107,7 @@ export function seek(
           if (_seekInfo.seekBuffer !== 0) {
             const copiedBuffer = _seekInfo.seekBuffer;
             _seekInfo.seekBuffer = 0;
-            seek(copiedBuffer);
+            seek(copiedBuffer, dispatch);
           }
         })
         .catch(e => console.log(`error: ${e}`));
