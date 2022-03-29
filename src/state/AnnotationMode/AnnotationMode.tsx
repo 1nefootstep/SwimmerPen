@@ -29,7 +29,7 @@ export function findNextDistance(
   );
   const lastIndexOfMode = mode.checkpoints.length - 1;
   const nextIndex = currIndex + 1;
-  if (currentDistance === -1) {
+  if (currIndex === -1) {
     return currentDistance;
   }
   if (nextIndex > lastIndexOfMode) {

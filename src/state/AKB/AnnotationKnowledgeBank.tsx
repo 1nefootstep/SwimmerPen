@@ -36,12 +36,16 @@ const modes: Modes = {
     '100m': createAnnotationMode25m(100),
     '200m': createAnnotationMode25m(200),
     '400m': createAnnotationMode25m(400),
+    '800m': createAnnotationMode25m(800),
+    '1500m': createAnnotationMode25m(1500),
   },
   '50m': {
     '50m': createAnnotationMode50m(50),
     '100m': createAnnotationMode50m(100),
     '200m': createAnnotationMode50m(200),
     '400m': createAnnotationMode50m(400),
+    '800m': createAnnotationMode50m(800),
+    '1500m': createAnnotationMode50m(1500),
   },
 };
 

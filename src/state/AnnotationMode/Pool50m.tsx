@@ -12,6 +12,18 @@ function firstLapCheckpoint(startDistance: number): Array<Checkpoint> {
   ];
 }
 
+function subsequentLapCheckpointWith35(
+  startDistance: number
+): Array<Checkpoint> {
+  return [
+    { name: `${startDistance + 15}m`, distanceMeter: startDistance + 15 },
+    { name: `${startDistance + 25}m`, distanceMeter: startDistance + 25 },
+    { name: `${startDistance + 35}m`, distanceMeter: startDistance + 35 },
+    { name: `${startDistance + 45}m`, distanceMeter: startDistance + 45 },
+    { name: `${startDistance + 50}m`, distanceMeter: startDistance + 50 },
+  ];
+}
+
 function subsequentLapCheckpoint(startDistance: number): Array<Checkpoint> {
   return [
     { name: `${startDistance + 15}m`, distanceMeter: startDistance + 15 },
@@ -45,9 +57,14 @@ export function createAnnotationMode50m(totalDistance: number): AnnotationMode {
   const POOL_DISTANCE = 50;
   let lastDistance = 0;
   while (distanceLeft > 0) {
-    if (checkpoints.length < 2) {
+    if (lastDistance === 0) {
       strokeRanges = strokeRanges.concat(firstStrokeRangePerLap(lastDistance));
-      checkpoints = checkpoints.concat(firstLapCheckpoint(0));
+      checkpoints = checkpoints.concat(firstLapCheckpoint(lastDistance));
+    } else if (lastDistance < 100) {
+      strokeRanges = strokeRanges.concat(firstStrokeRangePerLap(lastDistance));
+      checkpoints = checkpoints.concat(
+        subsequentLapCheckpointWith35(lastDistance)
+      );
     } else {
       strokeRanges = strokeRanges.concat(strokeRangePerLap(lastDistance));
       checkpoints = checkpoints.concat(subsequentLapCheckpoint(lastDistance));
@@ -55,6 +72,7 @@ export function createAnnotationMode50m(totalDistance: number): AnnotationMode {
     lastDistance += POOL_DISTANCE;
     distanceLeft -= POOL_DISTANCE;
   }
+  console.log(`${totalDistance}m: ${JSON.stringify(checkpoints)}`);
   return {
     name: `50m Pool-${totalDistance}m`,
     checkpoints: checkpoints,
