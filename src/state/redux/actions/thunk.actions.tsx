@@ -46,7 +46,6 @@ export function addAnnotationWhileRecording(
       const { poolDistance, raceDistance } = annotation.poolConfig;
       const mode = getModes()[poolDistance][raceDistance] ?? getDefaultMode();
       const nextDistance = findNextDistance(mode, recording.currentDistance);
-      console.log(`nextDistance: ${nextDistance} mode: ${JSON.stringify(mode)}`)
       dispatch(updateDistance(nextDistance));
     }
   };

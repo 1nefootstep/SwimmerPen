@@ -135,11 +135,14 @@ export default function BaseResultScreen({
     };
   }, []);
 
-  const isVelocityDataAvailable = velocityData[0].stats.length !== 0;
-  const isScDataAvailable = scData[0].stats.length !== 0;
-  const isLapScDataAvailable = lapScData[0].stats.length !== 0;
-  const isDpsDataAvailable = dpsData[0].stats.length !== 0;
-  const isSrDataAvailable = srData[0].stats.length !== 0;
+  const isVelocityDataAvailable =
+    velocityData.length > 0 && velocityData[0].stats.length !== 0;
+  const isScDataAvailable = scData.length > 0 && scData[0].stats.length !== 0;
+  const isLapScDataAvailable =
+    lapScData.length > 0 && lapScData[0].stats.length !== 0;
+  const isDpsDataAvailable =
+    dpsData.length > 0 && dpsData[0].stats.length !== 0;
+  const isSrDataAvailable = srData.length > 0 && srData[0].stats.length !== 0;
   const paperTheme = {
     ...DefaultTheme,
     colors: { ...DefaultTheme.colors, primary: '#0891b2' },

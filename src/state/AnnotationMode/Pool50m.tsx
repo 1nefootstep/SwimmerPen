@@ -72,7 +72,6 @@ export function createAnnotationMode50m(totalDistance: number): AnnotationMode {
     lastDistance += POOL_DISTANCE;
     distanceLeft -= POOL_DISTANCE;
   }
-  console.log(`${totalDistance}m: ${JSON.stringify(checkpoints)}`);
   return {
     name: `50m Pool-${totalDistance}m`,
     checkpoints: checkpoints,
