@@ -208,7 +208,7 @@ export default function BaseResultScreen({
                 />
                 <Divider thickness={4} bg="muted.300" />
               </Hidden>
-              <Hidden isHidden={!isTurnInAvailable}>
+              <Hidden isHidden={!isTurnOutAvailable}>
                 <MultiTable
                   nameAndStats={turnDataToGeneral(turnOutData)}
                   tableName="Turn out"

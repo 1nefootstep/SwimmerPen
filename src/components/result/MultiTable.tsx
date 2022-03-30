@@ -18,8 +18,8 @@ export default function MultiTable({
   unit,
 }: MultiTableProps) {
   const data = useMemo(() => {
-    const labels = nameAndStats.map(e =>
-      e.stats.map(i => i.label)
+    const labels = nameAndStats.map(
+      e => e.stats.map(i => i.label)
       // e.stats.map(i => `${i.startRange}m-${i.endRange}m`)
     );
     const mainLabel = labels.reduce(
