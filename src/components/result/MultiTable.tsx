@@ -5,7 +5,8 @@ import Table from './Table';
 export interface MultiTableProps {
   nameAndStats: Array<{
     name: string;
-    stats: Array<{ startRange: number; endRange: number; stat: number }>;
+    // stats: Array<{ startRange: number; endRange: number; stat: number }>;
+    stats: Array<{ label: string; stat: number }>;
   }>;
   tableName: string;
   unit?: string;
@@ -18,7 +19,8 @@ export default function MultiTable({
 }: MultiTableProps) {
   const data = useMemo(() => {
     const labels = nameAndStats.map(e =>
-      e.stats.map(i => `${i.startRange}m-${i.endRange}m`)
+      e.stats.map(i => i.label)
+      // e.stats.map(i => `${i.startRange}m-${i.endRange}m`)
     );
     const mainLabel = labels.reduce(
       (prev, curr) => (prev.length >= curr.length ? prev : curr),

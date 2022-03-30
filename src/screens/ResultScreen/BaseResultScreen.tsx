@@ -16,6 +16,8 @@ import {
   DPSStatistic,
   StrokeCountStatistic,
   StrokeRateStatistic,
+  TimeDistStatistic,
+  Turn,
   VelocityAtRangeStatistic,
 } from '../../state/StatisticsCalculator';
 import VelocityChart from '../../components/result/VelocityChart';
@@ -34,6 +36,8 @@ import {
   dpsDataToGeneral,
   scDataToGeneral,
   srDataToGeneral,
+  tdDataToGeneral,
+  turnDataToGeneral,
   velocityDataToGeneral,
 } from '../../components/result/ResultUtil';
 import MultiTable from '../../components/result/MultiTable';
@@ -67,9 +71,21 @@ function AppBar({ onPressBack }: { onPressBack: () => void }) {
 
 interface BaseResultScreenProps {
   navigation: NativeStackNavigationProp<RootStackParamList>;
+  tdData: {
+    name: string;
+    stats: TimeDistStatistic[];
+  }[];
   velocityData: {
     name: string;
     stats: VelocityAtRangeStatistic[];
+  }[];
+  turnInData: {
+    name: string;
+    stats: Turn[];
+  }[];
+  turnOutData: {
+    name: string;
+    stats: Turn[];
   }[];
   dpsData: {
     name: string;
@@ -98,7 +114,10 @@ interface BaseResultScreenProps {
 
 export default function BaseResultScreen({
   navigation,
+  tdData,
   velocityData,
+  turnInData,
+  turnOutData,
   dpsData,
   lapScData,
   scData,
@@ -135,8 +154,13 @@ export default function BaseResultScreen({
     };
   }, []);
 
+  const isTdDataAvailable = tdData.length > 0 && tdData[0].stats.length !== 0;
   const isVelocityDataAvailable =
     velocityData.length > 0 && velocityData[0].stats.length !== 0;
+  const isTurnInAvailable =
+    turnInData.length > 0 && turnInData[0].stats.length !== 0;
+  const isTurnOutAvailable =
+    turnOutData.length > 0 && turnOutData[0].stats.length !== 0;
   const isScDataAvailable = scData.length > 0 && scData[0].stats.length !== 0;
   const isLapScDataAvailable =
     lapScData.length > 0 && lapScData[0].stats.length !== 0;
@@ -168,7 +192,31 @@ export default function BaseResultScreen({
         <TabScreen label="Table">
           <ScrollView onLayout={onLayout} alwaysBounceVertical={true}>
             <Center>
-              <Hidden isHidden={!isVelocityDataAvailable}>
+              <Hidden isHidden={!isTdDataAvailable}>
+                <MultiTable
+                  nameAndStats={tdDataToGeneral(tdData)}
+                  tableName="Times"
+                  unit={'s'}
+                />
+                <Divider thickness={4} bg="muted.300" />
+              </Hidden>
+              <Hidden isHidden={!isTurnInAvailable}>
+                <MultiTable
+                  nameAndStats={turnDataToGeneral(turnInData)}
+                  tableName="Turn in"
+                  unit={'s'}
+                />
+                <Divider thickness={4} bg="muted.300" />
+              </Hidden>
+              <Hidden isHidden={!isTurnInAvailable}>
+                <MultiTable
+                  nameAndStats={turnDataToGeneral(turnOutData)}
+                  tableName="Turn out"
+                  unit={'s'}
+                />
+                <Divider thickness={4} bg="muted.300" />
+              </Hidden>
+              <Hidden isHidden={!isTurnOutAvailable}>
                 <MultiTable
                   nameAndStats={velocityDataToGeneral(velocityData)}
                   tableName="Velocity"

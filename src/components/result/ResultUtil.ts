@@ -2,8 +2,40 @@ import {
   DPSStatistic,
   StrokeCountStatistic,
   StrokeRateStatistic,
+  TimeDistStatistic,
+  Turn,
   VelocityAtRangeStatistic,
 } from '../../state/StatisticsCalculator';
+
+export function tdDataToGeneral(
+  nameAndTd: Array<{
+    name: string;
+    stats: Array<TimeDistStatistic>;
+  }>
+) {
+  return nameAndTd.map(e => ({
+    name: e.name,
+    stats: e.stats.map(i => ({
+      label: `${i.distance}m`,
+      stat: i.time,
+    })),
+  }));
+}
+
+export function turnDataToGeneral(
+  nameAndTd: Array<{
+    name: string;
+    stats: Array<Turn>;
+  }>
+) {
+  return nameAndTd.map(e => ({
+    name: e.name,
+    stats: e.stats.map(i => ({
+      label: `${i.startRange}m-${i.endRange}m`,
+      stat: i.time,
+    })),
+  }));
+}
 
 export function velocityDataToGeneral(
   nameAndVelocities: Array<{
@@ -14,8 +46,9 @@ export function velocityDataToGeneral(
   return nameAndVelocities.map(e => ({
     name: e.name,
     stats: e.stats.map(i => ({
-      startRange: i.startRange,
-      endRange: i.endRange,
+      label: `${i.startRange}m-${i.endRange}m`,
+      // startRange: i.startRange,
+      // endRange: i.endRange,
       stat: i.velocity,
     })),
   }));
@@ -30,8 +63,9 @@ export function scDataToGeneral(
   return nameAndStrokeCounts.map(e => ({
     name: e.name,
     stats: e.stats.map(i => ({
-      startRange: i.startRange,
-      endRange: i.endRange,
+      label: `${i.startRange}m-${i.endRange}m`,
+      // startRange: i.startRange,
+      // endRange: i.endRange,
       stat: i.strokeCount,
     })),
   }));
@@ -46,8 +80,9 @@ export function srDataToGeneral(
   return nameAndStrokeRates.map(e => ({
     name: e.name,
     stats: e.stats.map(i => ({
-      startRange: i.startRange,
-      endRange: i.endRange,
+      label: `${i.startRange}m-${i.endRange}m`,
+      // startRange: i.startRange,
+      // endRange: i.endRange,
       stat: i.strokeRate,
     })),
   }));
@@ -62,8 +97,9 @@ export function dpsDataToGeneral(
   return nameAndDps.map(e => ({
     name: e.name,
     stats: e.stats.map(i => ({
-      startRange: i.startRange,
-      endRange: i.endRange,
+      label: `${i.startRange}m-${i.endRange}m`,
+      // startRange: i.startRange,
+      // endRange: i.endRange,
       stat: i.distancePerStroke,
     })),
   }));

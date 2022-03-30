@@ -1,6 +1,44 @@
 export type PoolDistance = '25m' | '50m';
 export type RaceDistance = '50m' | '100m' | '200m' | '400m' | '800m' | '1500m';
 
+export function poolDistanceToNumber(pd: PoolDistance): number {
+  switch (pd) {
+    case '25m': {
+      return 25;
+    }
+    case '50m': {
+      return 50;
+    }
+    default:
+      return 50;
+  }
+}
+
+export function raceDistanceToNumber(rd: RaceDistance): number {
+  switch (rd) {
+    case '50m': {
+      return 50;
+    }
+    case '100m': {
+      return 100;
+    }
+    case '200m': {
+      return 200;
+    }
+    case '400m': {
+      return 400;
+    }
+    case '800m': {
+      return 800;
+    }
+    case '1500m': {
+      return 1500;
+    }
+    default:
+      return 100;
+  }
+}
+
 export function strToPoolDistance(s:string): PoolDistance {
   switch (s) {
     case('20'):

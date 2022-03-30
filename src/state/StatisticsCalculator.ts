@@ -1,4 +1,9 @@
-import { AnnotationInformation, Annotations } from './AKB';
+import {
+  AnnotationInformation,
+  Annotations,
+  PoolDistance,
+  poolDistanceToNumber,
+} from './AKB';
 import { StrokeCounts, StrokeRange } from './AKB/StrokeCounts';
 import { AppDispatch, loadAnnotation } from './redux';
 import { binarySearch } from './Util';
@@ -19,7 +24,11 @@ function getTimeAtDistance(annotations: Annotations): Array<TimeDistStatistic> {
     timeDistStatistics.push({ time: value / 1000, distance: parseInt(key) });
   }
   timeDistStatistics.sort((a, b) => a.distance - b.distance);
-  return timeDistStatistics;
+  const zeroed = timeDistStatistics.map(e => ({
+    time: e.time - timeDistStatistics[0].time,
+    distance: e.distance,
+  }));
+  return zeroed;
 }
 
 // metres per second
@@ -57,6 +66,51 @@ function computeAverageVelocities(
     });
   }
   return velocities;
+}
+
+export interface TurnStatistics {
+  turnIns: Array<Turn>;
+  turnOuts: Array<Turn>;
+}
+
+export interface Turn {
+  startRange: number;
+  endRange: number;
+  time: number;
+}
+
+/**
+ * Computes the turn times "Turn in (5m)" = 50m time minus 45m time, "Turn out (15m)" = 65m time minus 50m time.
+ */
+function computeTurnTimes(
+  timeDistStatistics: Array<TimeDistStatistic>,
+  poolDistance: PoolDistance
+): TurnStatistics {
+  const pdInNumber = poolDistanceToNumber(poolDistance);
+  const turnIns: Array<Turn> = [];
+  const turnOuts: Array<Turn> = [];
+  // find velocity between each adjacent pair of time distance
+  timeDistStatistics.forEach((e, i) => {
+    if (e.distance % pdInNumber === 0) {
+      const isTurninAvailable = i - 1 >= 0;
+      const isTurnoutAvailable = i + 1 < timeDistStatistics.length;
+      if (isTurninAvailable && isTurnoutAvailable) {
+        const prev = timeDistStatistics[i - 1];
+        const next = timeDistStatistics[i + 1];
+        turnIns.push({
+          startRange: prev.distance,
+          endRange: e.distance,
+          time: e.time - prev.time,
+        });
+        turnOuts.push({
+          startRange: e.distance,
+          endRange: next.distance,
+          time: next.time - e.time,
+        });
+      }
+    }
+  });
+  return { turnIns: turnIns, turnOuts: turnOuts };
 }
 
 // strokeRate: strokes per minute
@@ -181,6 +235,7 @@ function computeDPS(
 
 export interface ComputedResult {
   timeAndDistances: Array<TimeDistStatistic>;
+  turnTimes: TurnStatistics;
   strokeCounts: Array<StrokeCountStatistic>;
   lapStrokeCounts: Array<StrokeCountStatistic>;
   strokeRates: Array<StrokeRateStatistic>;
@@ -198,6 +253,7 @@ export function computeResult(
   ) {
     return {
       timeAndDistances: [],
+      turnTimes: { turnIns: [], turnOuts: [] },
       strokeCounts: [],
       lapStrokeCounts: [],
       strokeRates: [],
@@ -206,6 +262,10 @@ export function computeResult(
     };
   }
   const timeDists = getTimeAtDistance(annotations);
+  const turnTimes = computeTurnTimes(
+    timeDists,
+    annotationsInfo.poolConfig.poolDistance
+  );
   const velocities = computeAverageVelocities(timeDists);
   const sr = computeStrokeRate(strokeCounts);
   const lapSc = getLapStrokeCounts(strokeCounts);
@@ -213,6 +273,7 @@ export function computeResult(
   const dps = computeDPS(scAtRange);
   return {
     timeAndDistances: timeDists,
+    turnTimes: turnTimes,
     strokeCounts: scAtRange,
     strokeRates: sr,
     averageVelocities: velocities,

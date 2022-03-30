@@ -107,9 +107,21 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
   ];
 
   const onPressBack = navigation.goBack;
+  const tdData = computedData.map(e => ({
+    name: e.name,
+    stats: e.result.timeAndDistances,
+  }));
   const velocityData = computedData.map(e => ({
     name: e.name,
     stats: e.result.averageVelocities,
+  }));
+  const turnInData = computedData.map(e => ({
+    name: e.name,
+    stats: e.result.turnTimes.turnIns,
+  }));
+  const turnOutData = computedData.map(e => ({
+    name: e.name,
+    stats: e.result.turnTimes.turnOuts,
   }));
   const dpsData = computedData.map(e => ({
     name: e.name,
@@ -186,7 +198,10 @@ export default function MultiResultScreen({ navigation }: NavigatorProps) {
         </Row>
         <BaseResultScreen
           navigation={navigation}
+          tdData={tdData}
           velocityData={velocityData}
+          turnInData={turnInData}
+          turnOutData={turnOutData}
           dpsData={dpsData}
           lapScData={lapScData}
           scData={scData}

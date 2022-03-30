@@ -10,6 +10,7 @@ import {
   StrokeCountStatistic,
   StrokeRateStatistic,
   TimeDistStatistic,
+  TurnStatistics,
   VelocityAtRangeStatistic,
 } from '../../state/StatisticsCalculator';
 import { formatTimeFromPositionSeconds } from '../../state/Util';
@@ -30,6 +31,7 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
 
   const {
     timeAndDistances,
+    turnTimes,
     averageVelocities,
     strokeRates,
     lapStrokeCounts,
@@ -37,9 +39,21 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
     distancePerStroke,
   } = useMemo(() => computeResult(annotationsInfo), [annotationsInfo]);
 
+  const tdData = useMemo(
+    () => [{ name: annotationsInfo.name, stats: timeAndDistances }],
+    [timeAndDistances]
+  );
   const velocityData = useMemo(
     () => [{ name: annotationsInfo.name, stats: averageVelocities }],
     [averageVelocities]
+  );
+  const turnInData = useMemo(
+    () => [{ name: annotationsInfo.name, stats: turnTimes.turnIns }],
+    [turnTimes]
+  );
+  const turnOutData = useMemo(
+    () => [{ name: annotationsInfo.name, stats: turnTimes.turnOuts }],
+    [turnTimes]
   );
   const srData = useMemo(
     () => [{ name: annotationsInfo.name, stats: strokeRates }],
@@ -91,6 +105,7 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
 
   const toCsv = (
     td: Array<TimeDistStatistic>,
+    tt: TurnStatistics,
     sc: Array<StrokeCountStatistic>,
     v: Array<VelocityAtRangeStatistic>,
     sr: Array<StrokeRateStatistic>,
@@ -98,18 +113,30 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
   ) => {
     const header: Array<string> = [];
     const values: Array<string> = [];
-    if (td.length > 0) {
-      td.map(e => ({
-        distance: e.distance,
-        time: e.time - td[0].time,
-      })).forEach(e => {
-        header.push(`${e.distance}m`);
-        values.push(formatTimeFromPositionSeconds(e.time));
-      });
-    }
+    td.forEach(e => {
+      header.push(`${e.distance}m`);
+      values.push(formatTimeFromPositionSeconds(e.time));
+    });
+    // if (td.length > 0) {
+    //   td.map(e => ({
+    //     distance: e.distance,
+    //     time: e.time - td[0].time,
+    //   })).forEach(e => {
+    //     header.push(`${e.distance}m`);
+    //     values.push(formatTimeFromPositionSeconds(e.time));
+    //   });
+    // }
     sc.forEach(e => {
       header.push(`SC ${e.startRange}-${e.endRange}m`);
       values.push(e.strokeCount.toFixed(2));
+    });
+    tt.turnIns.forEach(e => {
+      header.push(`Turn in ${e.startRange}-${e.endRange}m`);
+      values.push(e.time.toFixed(2));
+    });
+    tt.turnOuts.forEach(e => {
+      header.push(`Turn out ${e.startRange}-${e.endRange}m`);
+      values.push(e.time.toFixed(2));
     });
     v.forEach(e => {
       header.push(`Velocity ${e.startRange}-${e.endRange}m`);
@@ -130,6 +157,7 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
     const uri = await createCsvInCacheDir(
       toCsv(
         timeAndDistances,
+        turnTimes,
         strokeCounts,
         averageVelocities,
         strokeRates,
@@ -197,7 +225,10 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
     <Column safeAreaTop w="100%" flex={1}>
       <BaseResultScreen
         navigation={navigation}
+        tdData={tdData}
         velocityData={velocityData}
+        turnInData={turnInData}
+        turnOutData={turnOutData}
         dpsData={dpsData}
         lapScData={lapScData}
         scData={scData}

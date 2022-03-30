@@ -5,7 +5,8 @@ import GeneralLineChart from './GeneralLineChart';
 export interface MultiLineChartProps {
   nameAndStats: Array<{
     name: string;
-    stats: Array<{ startRange: number; endRange: number; stat: number }>;
+    // stats: Array<{ startRange: number; endRange: number; stat: number }>;
+    stats: Array<{ label: string; stat: number }>;
   }>;
   colors: Array<(opacity?: number) => string>;
   lineType: string;
@@ -21,8 +22,9 @@ export default function MultiLineChart({
   width,
 }: MultiLineChartProps) {
   const data = useMemo(() => {
-    const labels = nameAndStats.map(e =>
-      e.stats.map(i => `${i.startRange}m-${i.endRange}m`)
+    const labels = nameAndStats.map(
+      e => e.stats.map(i => i.label)
+      // e.stats.map(i => `${i.startRange}m-${i.endRange}m`)
     );
     const mainLabel = labels.reduce(
       (prev, curr) => (prev.length >= curr.length ? prev : curr),
