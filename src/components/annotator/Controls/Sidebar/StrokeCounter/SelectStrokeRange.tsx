@@ -6,7 +6,7 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../state/redux/hooks';
-import { setCurrentStrokeRange } from '../../../../../state/redux';
+import { setCurrentStrokeRange, saveAnnotation  } from '../../../../../state/redux';
 import { getDefaultMode, getModes, Modes } from '../../../../../state/AKB';
 import * as VideoService from '../../../../../state/VideoService';
 
@@ -115,6 +115,7 @@ export default function SelectStrokeRange() {
             const nextSr = mode.strokeRanges[currIndex + 1];
             setSr(nextSr.toString());
           }
+          dispatch(saveAnnotation());
         }}
         leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
       />

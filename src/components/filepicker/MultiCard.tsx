@@ -74,7 +74,7 @@ export default function MultiCard({
             Vibration.vibrate(300);
           }
         }}
-        delayLongPress={600}
+        delayLongPress={250}
       >
         <Box h={200} w={width / 2 - 16}>
           <Image

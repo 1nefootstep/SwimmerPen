@@ -21,8 +21,8 @@ export default function TableRow({ row, isHeader = false }: TableRowProps) {
   }
   return (
     <DataTable.Row>
-      {row.map(({ label, numeric }) => (
-        <DataTable.Cell numeric={numeric ?? false} key={label}>
+      {row.map(({ label, numeric }, i) => (
+        <DataTable.Cell numeric={numeric ?? false} key={i}>
           {label}
         </DataTable.Cell>
       ))}

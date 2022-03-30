@@ -31,9 +31,10 @@ export default function MultiLineChart({
       []
     );
     const toPick = labels.map(e => e.every(i => mainLabel.includes(i)));
-    const legends = nameAndStats
-      .filter((e, i) => toPick[i])
-      .map(e => `${lineType}(${shortenText(e.name)})`);
+    const legends = nameAndStats.filter((e, i) => toPick[i])
+    // .map(e => `${lineType}(${shortenText(e.name)})`);
+    // .map(e => `${lineType}(${e.name})`);
+    .map(e => e.name);
     const datasets = nameAndStats
       .filter((e, i) => toPick[i])
       .map(e => e.stats.map(i => i.stat));
@@ -49,5 +50,5 @@ export default function MultiLineChart({
     };
   }, [nameAndStats, colors, lineType]);
 
-  return <GeneralLineChart width={width} data={data} unit={unit} />;
+  return <GeneralLineChart chartName={lineType} width={width} data={data} unit={unit} />;
 }
