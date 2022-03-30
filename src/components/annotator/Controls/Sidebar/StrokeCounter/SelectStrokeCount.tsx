@@ -16,6 +16,8 @@ export default function Select() {
     currentSr in strokeCounts
       ? strokeCounts[currentSr]
       : { strokeCount: 0, startTime: 0, endTime: 0 };
+  const sr = StrokeRange.fromString(currentSr);
+  const isLapStroke = sr.endRange - sr.startRange >= 25;
   return (
     <Row justifyContent="center" mb={2}>
       <NumericInput
@@ -34,13 +36,12 @@ export default function Select() {
         totalWidth={120}
         totalHeight={30}
         iconSize={12}
-        inputStyle={{backgroundColor: 'white'}}
+        inputStyle={{ backgroundColor: 'white' }}
         leftButtonBackgroundColor="#f43f5e"
         rightButtonBackgroundColor="#10b981"
-        step={1}
+        step={isLapStroke ? 0.5 : 1}
         iconStyle={{ color: 'white' }}
-        valueType="integer"
-        rounded
+        valueType="real"
       />
     </Row>
   );
