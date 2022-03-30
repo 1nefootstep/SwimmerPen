@@ -11,12 +11,12 @@ export interface StrokeRateChartProps {
   width?: number;
 }
 
-const colors = [
-  (opacity = 1) => `rgba(101, 163, 13, ${opacity})`,
-  (opacity = 1) => `rgba(2, 132, 199, ${opacity})`,
-  (opacity = 1) => `rgba(234, 88, 12, ${opacity})`,
-  (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
-];
+// const colors = [
+//   (opacity = 1) => `rgba(101, 163, 13, ${opacity})`,
+//   (opacity = 1) => `rgba(2, 132, 199, ${opacity})`,
+//   (opacity = 1) => `rgba(234, 88, 12, ${opacity})`,
+//   (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+// ];
 
 export default function StrokeRateChart({
   nameAndStrokeRates,
@@ -25,7 +25,7 @@ export default function StrokeRateChart({
   return (
     <MultiLineChart
       nameAndStats={srDataToGeneral(nameAndStrokeRates)}
-      colors={colors}
+      // colors={colors}
       lineType="Stroke rate"
       unit={'st/min'}
       width={width}

@@ -6,15 +6,20 @@ export interface MultiLineChartProps {
     name: string;
     stats: Array<{ label: string; stat: number }>;
   }>;
-  colors: Array<(opacity?: number) => string>;
   lineType: string;
   unit?: string;
   width?: number;
 }
 
+const colors = [
+  (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+  (opacity = 1) => `rgba(101, 163, 13, ${opacity})`,
+  (opacity = 1) => `rgba(2, 132, 199, ${opacity})`,
+  (opacity = 1) => `rgba(234, 88, 12, ${opacity})`,
+];
+
 export default function MultiLineChart({
   nameAndStats,
-  colors,
   lineType,
   unit,
   width,

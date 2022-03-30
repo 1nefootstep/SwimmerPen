@@ -11,12 +11,12 @@ export interface VelocityChartProps {
   width?: number;
 }
 
-const colors = [
-  (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
-  (opacity = 1) => `rgba(101, 163, 13, ${opacity})`,
-  (opacity = 1) => `rgba(2, 132, 199, ${opacity})`,
-  (opacity = 1) => `rgba(234, 88, 12, ${opacity})`,
-];
+// const colors = [
+//   (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+//   (opacity = 1) => `rgba(101, 163, 13, ${opacity})`,
+//   (opacity = 1) => `rgba(2, 132, 199, ${opacity})`,
+//   (opacity = 1) => `rgba(234, 88, 12, ${opacity})`,
+// ];
 
 export default function VelocityChart({
   nameAndVelocities,
@@ -25,7 +25,7 @@ export default function VelocityChart({
   return (
     <MultiLineChart
       nameAndStats={velocityDataToGeneral(nameAndVelocities)}
-      colors={colors}
+      // colors={colors}
       lineType="Velocity"
       unit={'m/s'}
       width={width}
