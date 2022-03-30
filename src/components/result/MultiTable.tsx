@@ -42,7 +42,7 @@ export default function MultiTable({
     const rows = mainLabel.map((e, i) => {
       let row = [{ label: e }];
       row = row.concat(
-        datasets.map(data => ({ label: `${data[i].toFixed(1)}` }))
+        datasets.map(data => ({ label: `${data[i]?.toFixed(1) ?? ''}` }))
       );
       return row;
     });
