@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { Box, Center, Pressable } from 'native-base';
+import { Center } from 'native-base';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useAppDispatch, useAppSelector } from '../../state/redux/hooks';
 import {
@@ -14,15 +14,7 @@ import BackButton from '../../components/BackButton';
 import LineTool, { LineContext } from '../../components/LineTool';
 import { VideoBoundContext } from '../../components/VideoBoundContext';
 import TimerTool from '../../components/TimerTool';
-import Animated, {
-  Easing,
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withDecay,
-  withSequence,
-  withTiming,
-} from 'react-native-reanimated';
+import { useSharedValue } from 'react-native-reanimated';
 import { NavigatorProps } from '../../router';
 import AnnotationVideo from './AnnotationVideo';
 import { ReactNativeZoomableView } from '@openspacelabs/react-native-zoomable-view';
@@ -32,6 +24,7 @@ import { useLayout } from '@react-native-community/hooks';
 import * as VideoService from '../../state/VideoService';
 import PlayPauseAnimation from './PlayPauseAnimation';
 import FrameLoadingAlert from './FrameLoadingAlert';
+import AnnotationDoneAlert from './AnnotationDoneAlert';
 
 export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const dispatch = useAppDispatch();
@@ -82,6 +75,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
       >
         <Center flex={1} bg="black" onLayout={onLayout}>
           <FrameLoadingAlert />
+          <AnnotationDoneAlert />
           <BackButton
             goBack={() => {
               dispatch(saveAnnotation());

@@ -17,6 +17,7 @@ export type ControlsInfo = {
   currentDistance: number;
   currentSr: string;
   isLineVisible: boolean;
+  annotationDoneAlertNonce: number;
   timers: Array<Timer>;
 };
 
@@ -25,6 +26,7 @@ function initState(): ControlsInfo {
     currentDistance: 0,
     currentSr: '',
     isLineVisible: false,
+    annotationDoneAlertNonce: 0,
     timers: [],
   };
 }
@@ -91,6 +93,13 @@ export function controlsReducer(
       const { payload } = action as SetCurrentStrokeRangeAction;
       const { sr } = payload;
       return { ...state, currentSr: sr };
+    }
+    case CONTROLS_ACTION_TYPES.SHOW_ANNOTATION_DONE_ALERT: {
+      return {
+        ...state,
+        annotationDoneAlertNonce:
+          state.annotationDoneAlertNonce + 1,
+      };
     }
     default:
       return state;

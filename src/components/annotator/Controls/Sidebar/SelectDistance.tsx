@@ -7,14 +7,21 @@ import {
   addAnnotation,
   saveAnnotation,
   setCurrentDistance,
+  showAnnotationDoneAlert,
 } from '../../../../state/redux';
 import * as VideoService from '../../../../state/VideoService';
-import { getDefaultMode, getModes, Modes } from '../../../../state/AKB';
+import {
+  annotationIsDone,
+  getDefaultMode,
+  getModes,
+  Modes,
+} from '../../../../state/AKB';
 import { getPosition } from '../../../../state/VideoService';
 
 export default function SelectDistance() {
   const dispatch = useAppDispatch();
-  const annotations = useAppSelector(state => state.annotation.annotations);
+  const annotationInfo = useAppSelector(state => state.annotation);
+  const annotations = annotationInfo.annotations;
   const { poolDistance, raceDistance } = useAppSelector(
     state => state.annotation.poolConfig
   );
@@ -55,7 +62,7 @@ export default function SelectDistance() {
       );
       const nextIndex =
         currIndex + 1 > mode.checkpoints.length - 1 ? currIndex : currIndex + 1;
-
+      const isLastCheckpoint = currIndex === nextIndex;
       const d = mode.checkpoints[nextIndex].distanceMeter;
       dispatch(setCurrentDistance(d));
       const toSeek = annotations[d];
@@ -63,6 +70,12 @@ export default function SelectDistance() {
         VideoService.seek(toSeek);
       }
       dispatch(saveAnnotation());
+
+      if (isLastCheckpoint) {
+        if (annotationIsDone({ mode: mode, annotationInfo: annotationInfo })) {
+          dispatch(showAnnotationDoneAlert());
+        }
+      }
     }
   };
 

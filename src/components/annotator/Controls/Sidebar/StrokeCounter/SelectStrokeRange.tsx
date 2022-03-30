@@ -6,8 +6,17 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../../../../state/redux/hooks';
-import { setCurrentStrokeRange, saveAnnotation  } from '../../../../../state/redux';
-import { getDefaultMode, getModes, Modes } from '../../../../../state/AKB';
+import {
+  setCurrentStrokeRange,
+  saveAnnotation,
+  showAnnotationDoneAlert,
+} from '../../../../../state/redux';
+import {
+  annotationIsDone,
+  getDefaultMode,
+  getModes,
+  Modes,
+} from '../../../../../state/AKB';
 import * as VideoService from '../../../../../state/VideoService';
 
 export default function SelectStrokeRange() {
@@ -17,7 +26,8 @@ export default function SelectStrokeRange() {
     state => state.annotation.poolConfig
   );
   const currentSr = useAppSelector(state => state.controls.currentSr);
-  const strokeCounts = useAppSelector(state => state.annotation.strokeCounts);
+  const annotationInfo = useAppSelector(state => state.annotation);
+  const strokeCounts = annotationInfo.strokeCounts;
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [modes, setModes] = useState<Modes | null>(null);
@@ -66,6 +76,30 @@ export default function SelectStrokeRange() {
     seekToStartTime(sr);
   };
 
+  const onPressNextSr = () => {
+    const currIndex = mode.strokeRanges.findIndex(
+      e => e.toString() === currentSr
+    );
+    const nextIndex =
+      currIndex !== mode.strokeRanges.length - 1 ? currIndex + 1 : currIndex;
+    const isLastSr = currIndex !== -1 && nextIndex === currIndex;
+    if (currIndex !== -1 && currIndex !== mode.strokeRanges.length - 1) {
+      const nextSr = mode.strokeRanges[currIndex + 1];
+      setSr(nextSr.toString());
+    }
+    dispatch(saveAnnotation());
+    if (isLastSr) {
+      if (
+        annotationIsDone({
+          mode: mode,
+          annotationInfo: annotationInfo,
+        })
+      ) {
+        dispatch(showAnnotationDoneAlert());
+      }
+    }
+  };
+
   return (
     <Row alignItems="center" justifyContent="flex-end" mb={2} mr={4}>
       <Box maxH={8} maxW={24} mb={1} mr={1} flex={1}>
@@ -107,16 +141,7 @@ export default function SelectStrokeRange() {
         size="sm"
         w={8}
         h={8}
-        onPress={() => {
-          const currIndex = mode.strokeRanges.findIndex(
-            e => e.toString() === currentSr
-          );
-          if (currIndex !== -1 && currIndex !== mode.strokeRanges.length - 1) {
-            const nextSr = mode.strokeRanges[currIndex + 1];
-            setSr(nextSr.toString());
-          }
-          dispatch(saveAnnotation());
-        }}
+        onPress={onPressNextSr}
         leftIcon={<Icon as={Ionicons} name="checkmark" size="sm" />}
       />
     </Row>

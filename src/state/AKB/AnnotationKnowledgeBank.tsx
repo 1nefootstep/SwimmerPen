@@ -4,7 +4,7 @@ import {
   createAnnotationMode50m,
 } from '../AnnotationMode';
 import { Annotations, Timestamp } from './Annotations';
-import { StrokeCounts } from './StrokeCounts';
+import { StrokeCounts, StrokeRange } from './StrokeCounts';
 import { PoolConfig, PoolDistance, RaceDistance } from './PoolConfig';
 
 export type AnnotationInformation = {
@@ -55,4 +55,21 @@ export function getModes(): Modes {
 
 export function getDefaultMode(): AnnotationMode {
   return modes['50m']['100m'];
+}
+
+export function annotationIsDone({
+  mode,
+  annotationInfo,
+}: {
+  mode: AnnotationMode;
+  annotationInfo: AnnotationInformation;
+}): boolean {
+  const allCheckpointsPresent = mode.checkpoints.every(
+    e => e.distanceMeter in annotationInfo.annotations
+  );
+  const allStrokeCountPresent = mode.strokeRanges.every(e => {
+    const sr = new StrokeRange(e.startRange, e.endRange).toString();
+    return sr in annotationInfo.strokeCounts;
+  });
+  return allCheckpointsPresent && allStrokeCountPresent;
 }

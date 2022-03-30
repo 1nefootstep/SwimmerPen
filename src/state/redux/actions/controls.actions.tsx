@@ -7,6 +7,7 @@ import {
   SetCurrentStrokeRangeAction,
   ShowLineAction,
   EditTimerAction,
+  ShowAnnotationDoneAlertAction,
 } from '../types';
 
 export enum CONTROLS_ACTION_TYPES {
@@ -18,6 +19,7 @@ export enum CONTROLS_ACTION_TYPES {
   ADD_TIMER = 'CONTROLS/ADD_TIMER',
   EDIT_TIMER = 'CONTROLS/EDIT_TIMER',
   REMOVE_TIMER = 'CONTROLS/REMOVE_TIMER',
+  SHOW_ANNOTATION_DONE_ALERT = 'CONTROLS/SHOW_ANNOTATION_DONE_ALERT',
 }
 
 export function clearControls(): ClearControlsAction {
@@ -59,7 +61,10 @@ export function addTimer(startTime: number): AddTimerAction {
   };
 }
 
-export function editTimerStartTime(id: number, startTime: number): EditTimerAction {
+export function editTimerStartTime(
+  id: number,
+  startTime: number
+): EditTimerAction {
   return {
     type: CONTROLS_ACTION_TYPES.EDIT_TIMER,
     payload: { id: id, startTime: startTime },
@@ -70,5 +75,11 @@ export function removeTimer(id: number): RemoveTimerAction {
   return {
     type: CONTROLS_ACTION_TYPES.REMOVE_TIMER,
     payload: { id: id },
+  };
+}
+
+export function showAnnotationDoneAlert(): ShowAnnotationDoneAlertAction {
+  return {
+    type: CONTROLS_ACTION_TYPES.SHOW_ANNOTATION_DONE_ALERT,
   };
 }

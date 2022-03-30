@@ -35,6 +35,10 @@ export type RemoveTimerAction = {
   payload: { id: number };
 };
 
+export type ShowAnnotationDoneAlertAction = {
+  type: string;
+}
+
 export type ControlsActionTypes =
   | ClearControlsAction
   | SetCurrentDistanceAction
@@ -43,4 +47,5 @@ export type ControlsActionTypes =
   | AddTimerAction
   | EditTimerAction
   | RemoveTimerAction
-  | SetCurrentStrokeRangeAction;
+  | SetCurrentStrokeRangeAction
+  | ShowAnnotationDoneAlertAction;
