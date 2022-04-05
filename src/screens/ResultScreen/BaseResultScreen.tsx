@@ -196,6 +196,7 @@ export default function BaseResultScreen({
                 <MultiTable
                   nameAndStats={tdDataToGeneral(tdData)}
                   tableName="Times"
+                  roundingDp={2}
                   unit={'s'}
                 />
                 <Divider thickness={4} bg="muted.300" />

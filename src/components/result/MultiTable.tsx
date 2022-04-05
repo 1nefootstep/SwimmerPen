@@ -10,12 +10,14 @@ export interface MultiTableProps {
   }>;
   tableName: string;
   unit?: string;
+  roundingDp?: number;
 }
 
 export default function MultiTable({
   nameAndStats,
   tableName,
   unit,
+  roundingDp = 1,
 }: MultiTableProps) {
   const data = useMemo(() => {
     const labels = nameAndStats.map(
@@ -42,7 +44,7 @@ export default function MultiTable({
     const rows = mainLabel.map((e, i) => {
       let row = [{ label: e }];
       row = row.concat(
-        datasets.map(data => ({ label: `${data[i]?.toFixed(1) ?? ''}` }))
+        datasets.map(data => ({ label: `${data[i]?.toFixed(roundingDp) ?? ''}` }))
       );
       return row;
     });
