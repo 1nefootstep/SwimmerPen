@@ -179,10 +179,10 @@ export default function LineTool() {
       borderWidth={2}
       borderColor={fixedDrag ? 'yellow.300' : 'primary.200'}
       borderRadius={RADIUS_OF_POINT}
-      onLongPress={() => {
-        setFixedDrag(!fixedDrag);
-        Vibration.vibrate(100);
-      }}
+      // onLongPress={() => {
+      //   setFixedDrag(!fixedDrag);
+      //   Vibration.vibrate(100);
+      // }}
     />
   );
 

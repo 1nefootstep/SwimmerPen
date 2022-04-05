@@ -62,7 +62,11 @@ export default function SelectDistance() {
       );
       const nextIndex =
         currIndex + 1 > mode.checkpoints.length - 1 ? currIndex : currIndex + 1;
-      const isLastCheckpoint = currIndex === nextIndex;
+      const isLastCheckpoint =
+        mode.checkpoints[mode.checkpoints.length - 1].distanceMeter ===
+          mode.checkpoints[currIndex].distanceMeter || 
+          currIndex === nextIndex;
+          
       const d = mode.checkpoints[nextIndex].distanceMeter;
       dispatch(setCurrentDistance(d));
       const toSeek = annotations[d];

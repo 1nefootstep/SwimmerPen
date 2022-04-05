@@ -36,8 +36,9 @@ function subsequentLapCheckpoint(startDistance: number): Array<Checkpoint> {
 function firstStrokeRangePerLap(startDistance: number): Array<StrokeRange> {
   return [
     new StrokeRange(startDistance + 15, startDistance + 25),
-    new StrokeRange(startDistance + 25, startDistance + 35),
-    new StrokeRange(startDistance + 35, startDistance + 45),
+    new StrokeRange(startDistance + 25, startDistance + 45),
+    // new StrokeRange(startDistance + 25, startDistance + 35),
+    // new StrokeRange(startDistance + 35, startDistance + 45),
     new StrokeRange(startDistance, startDistance + 50),
   ];
 }
@@ -60,11 +61,11 @@ export function createAnnotationMode50m(totalDistance: number): AnnotationMode {
     if (lastDistance === 0) {
       strokeRanges = strokeRanges.concat(firstStrokeRangePerLap(lastDistance));
       checkpoints = checkpoints.concat(firstLapCheckpoint(lastDistance));
-    } else if (lastDistance < 100) {
-      strokeRanges = strokeRanges.concat(firstStrokeRangePerLap(lastDistance));
-      checkpoints = checkpoints.concat(
-        subsequentLapCheckpointWith35(lastDistance)
-      );
+    // } else if (lastDistance < 100) {
+    //   strokeRanges = strokeRanges.concat(firstStrokeRangePerLap(lastDistance));
+    //   checkpoints = checkpoints.concat(
+    //     subsequentLapCheckpointWith35(lastDistance)
+    //   );
     } else {
       strokeRanges = strokeRanges.concat(strokeRangePerLap(lastDistance));
       checkpoints = checkpoints.concat(subsequentLapCheckpoint(lastDistance));

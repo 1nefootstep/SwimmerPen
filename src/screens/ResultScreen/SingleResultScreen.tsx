@@ -105,6 +105,7 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
 
   const toCsv = (
     td: Array<TimeDistStatistic>,
+    lapSc: Array<StrokeCountStatistic>,
     tt: TurnStatistics,
     sc: Array<StrokeCountStatistic>,
     v: Array<VelocityAtRangeStatistic>,
@@ -127,6 +128,10 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
     //   });
     // }
     sc.forEach(e => {
+      header.push(`SC ${e.startRange}-${e.endRange}m`);
+      values.push(e.strokeCount.toFixed(2));
+    });
+    lapSc.forEach(e => {
       header.push(`SC ${e.startRange}-${e.endRange}m`);
       values.push(e.strokeCount.toFixed(2));
     });
@@ -157,6 +162,7 @@ export default function SingleResultScreen({ navigation }: NavigatorProps) {
     const uri = await createCsvInCacheDir(
       toCsv(
         timeAndDistances,
+        lapStrokeCounts,
         turnTimes,
         strokeCounts,
         averageVelocities,
