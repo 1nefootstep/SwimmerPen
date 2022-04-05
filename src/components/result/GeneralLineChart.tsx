@@ -82,25 +82,25 @@ export default function GeneralLineChart({
         yLabelsOffset={16}
         // verticalLabelRotation={rotation()}
         withVerticalLines={false}
-        renderDotContent={({ x, y, index, indexData }) => {
-          return (
-            <Box
-              key={`${x},${y}`}
-              px={2}
-              borderRadius={8}
-              style={{
-                position: 'absolute',
-                top: y + 12 + yLabelOffset(),
-                left: x - 15,
-              }}
-              bg="purple.50"
-            >
-              <Text fontSize={fontSize}>
-                {indexData.toFixed(precision !== undefined ? precision : 1)}
-              </Text>
-            </Box>
-          );
-        }}
+        // renderDotContent={({ x, y, index, indexData }) => {
+        //   return (
+        //     <Box
+        //       key={`${x},${y}`}
+        //       px={2}
+        //       borderRadius={8}
+        //       style={{
+        //         position: 'absolute',
+        //         top: y + 12 + yLabelOffset(),
+        //         left: x - 15,
+        //       }}
+        //       bg="purple.50"
+        //     >
+        //       <Text fontSize={fontSize}>
+        //         {indexData.toFixed(precision !== undefined ? precision : 1)}
+        //       </Text>
+        //     </Box>
+        //   );
+        // }}
         chartConfig={chartConfig}
       />
     </Column>
