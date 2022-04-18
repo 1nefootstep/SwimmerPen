@@ -4,6 +4,7 @@
 ## Developer installation guide
 
 Setup react-native: [https://reactnative.dev/docs/environment-setup](https://reactnative.dev/docs/environment-setup)
+
 Run
 ```
 yarn install
