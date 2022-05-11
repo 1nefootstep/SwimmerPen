@@ -105,30 +105,6 @@ export function updatePoolConfigAndResetCurrentDistance(
   };
 }
 
-function fn(uri: string, dispatch: any) {
-  'worklet';
-  getFrametimes(uri)
-    .then(async session => {
-      // Console output generated for this execution
-      const output: {
-        frames: Array<{ best_effort_timestamp_time: string }>;
-      } = JSON.parse(await session.getOutput());
-      const frameTimesInMillis = output.frames.map(e => {
-        const n = Number(e.best_effort_timestamp_time);
-        if (isNaN(n) || n === undefined || n === null) {
-          return 0;
-        }
-        return n * 1000;
-      });
-      dispatch(addFrameTimes(frameTimesInMillis));
-      dispatch(setFrameLoadingStatus('loaded'));
-    })
-    .catch(e => {
-      dispatch(setFrameLoadingStatus('failed'));
-    });
-}
-
-
 export function processFrames(uri: string): AppThunkAction {
   return (dispatch, getState) => {
     const { annotation } = getState();
@@ -137,6 +113,24 @@ export function processFrames(uri: string): AppThunkAction {
       return;
     }
     dispatch(setFrameLoadingStatus('loading'));
-    fn(uri, dispatch);
+    getFrametimes(uri)
+      .then(async session => {
+        // Console output generated for this execution
+        const output: {
+          frames: Array<{ best_effort_timestamp_time: string }>;
+        } = JSON.parse(await session.getOutput());
+        const frameTimesInMillis = output.frames.map(e => {
+          const n = Number(e.best_effort_timestamp_time);
+          if (isNaN(n) || n === undefined || n === null) {
+            return 0;
+          }
+          return n * 1000;
+        });
+        dispatch(addFrameTimes(frameTimesInMillis));
+        dispatch(setFrameLoadingStatus('loaded'));
+      })
+      .catch(e => {
+        dispatch(setFrameLoadingStatus('failed'));
+      });
   };
 }

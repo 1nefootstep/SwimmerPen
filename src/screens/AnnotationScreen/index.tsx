@@ -39,6 +39,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
   const pauseButtonToggle = useSharedValue(false);
   const playButtonToggle = useSharedValue(false);
 
+  // dynamic resizing to fit any device dimensions
   useLayoutEffect(() => {
     (async () => {
       const orientation = await getOrientationAsync();
@@ -58,6 +59,9 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
 
   return (
     <LineContext.Provider
+      // default or initial values of points of the line
+      // these values are stored here to keep track of the line
+      // position even after the line is deactivated
       value={{
         p1X: useSharedValue(100),
         p1Y: useSharedValue(100),
@@ -66,6 +70,8 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
       }}
     >
       <VideoBoundContext.Provider
+        // these bounds limits the area where the points of the line
+        // can be moved
         value={{
           x1: 0,
           y1: 0,
@@ -78,6 +84,7 @@ export default function AnnotationScreen({ navigation }: NavigatorProps) {
           <AnnotationDoneAlert />
           <BackButton
             goBack={() => {
+              // reset all settings and save the annotation when user exits annotationscreen
               dispatch(saveAnnotation());
               dispatch(clearControls());
               dispatch(clearAnnotation());

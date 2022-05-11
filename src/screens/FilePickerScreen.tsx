@@ -104,6 +104,11 @@ export default function FilePickerScreen({
 
   const updateVideoUris = () => {
     setIsLoading(true);
+    // get all video names
+    // then get their uris
+    // then sort them by their modification times
+    // also get all the video thumbnails
+    // update the uris for video and thumbnails
     getVideoNames().then(async names => {
       Promise.all(
         names.map(async e => {
@@ -138,6 +143,7 @@ export default function FilePickerScreen({
     });
   };
 
+  // rotate screen to portrait for more natural file picking experience
   useEffect(() => {
     ScreenOrientation.getOrientationAsync()
       .then(currOrientation => {
