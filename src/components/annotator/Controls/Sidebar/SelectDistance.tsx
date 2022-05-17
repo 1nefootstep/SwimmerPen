@@ -64,9 +64,8 @@ export default function SelectDistance() {
         currIndex + 1 > mode.checkpoints.length - 1 ? currIndex : currIndex + 1;
       const isLastCheckpoint =
         mode.checkpoints[mode.checkpoints.length - 1].distanceMeter ===
-          mode.checkpoints[currIndex].distanceMeter || 
-          currIndex === nextIndex;
-          
+          mode.checkpoints[currIndex].distanceMeter || currIndex === nextIndex;
+
       const d = mode.checkpoints[nextIndex].distanceMeter;
       dispatch(setCurrentDistance(d));
       const toSeek = annotations[d];
@@ -85,10 +84,10 @@ export default function SelectDistance() {
 
   return (
     <Row alignItems="center" justifyContent="flex-end" mr={4}>
-      <Box maxH={10} maxW={24} mt={1} mr={1}>
+      <Box mt={1} mr={1}>
         <DropDownPicker
           items={items}
-          style={{ maxHeight: 36, width: 86 }}
+          style={{ minHeight: 36, maxHeight: 36, width: 86 }}
           textStyle={{
             fontSize: 10,
             flex: 3,

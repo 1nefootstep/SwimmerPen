@@ -108,7 +108,7 @@ export default function SelectStrokeRange() {
           min={0}
           max={3}
           placeholder={items[0].value}
-          style={{ maxHeight: 36, width: 86 }}
+          style={{ minHeight: 36, maxHeight: 36, width: 86 }}
           textStyle={{ fontSize: 8, flex: 5 }}
           value={currentSr}
           listMode="SCROLLVIEW"

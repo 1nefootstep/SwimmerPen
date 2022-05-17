@@ -81,8 +81,7 @@ export default function LoadVideo() {
       </Modal>
       <Center>
         <Button
-          size={{ sm: 'sm', md: 'sm', lg: 'md' }}
-          w={24}
+          size="sm"
           colorScheme="info"
           variant="subtle"
           onPress={() => setIsFilePickerVisible(true)}
