@@ -146,6 +146,7 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
     }
     return filterFormats({ formats: device.formats });
   }, [device?.formats]);
+
   useEffect(() => {
     if (format === undefined && formats.length !== 0) {
       const format1080 = formats.find(e => e.photoHeight === 1080);
@@ -184,15 +185,11 @@ export default function CameraScreen({ navigation }: NavigatorProps) {
       setFormat(f);
     }
   };
-  
-  const frameProcessor = useFrameProcessor(
-    frame => {
-      'worklet';
-      console.log(frame.toString());
-      
-    },
-    []
-  );
+
+  const frameProcessor = useFrameProcessor(frame => {
+    'worklet';
+    console.log(frame.toString());
+  }, []);
 
   if (hasPermission === null) {
     return (
